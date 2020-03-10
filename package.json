@@ -1,0 +1,28 @@
+{
+	"name": "talk",
+	"version": "1.0.0",
+	"description": "A webrtc based group video chat.",
+	"main": "server.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/vasanthv/talk.git"
+	},
+	"keywords": [
+		"webrtc",
+		"socket.io",
+		"video"
+	],
+	"author": "Vasanth V",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/vasanthv/talk/issues"
+	},
+	"homepage": "https://github.com/vasanthv/talk#readme",
+	"dependencies": {
+		"express": "^4.17.1",
+		"socket.io": "^2.2.0"
+	}
+}
