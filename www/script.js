@@ -21,6 +21,7 @@ var USE_VIDEO = true;
 //var USE_VIDEO = { facingMode: "environment" }; // use this for back facing camera.
 var IS_SCREEN_STREAMING = false;
 var ROOM_ID = getRoomName();
+var peerConnection = null;
 
 var ICE_SERVERS = [
 	{ urls: 'stun:stun.l.google.com:19302' },
@@ -79,7 +80,7 @@ function init() {
 	signalingSocket.on('addPeer', function(config) {
 		var peer_id = config.peer_id;
 		if (peer_id in peers) return;
-		var peerConnection = new RTCPeerConnection(
+		peerConnection = new RTCPeerConnection(
 			{ iceServers: ICE_SERVERS },
 			{ optional: [{ DtlsSrtpKeyAgreement: true }] } // this will no longer be needed by chrome eventually (supposedly), but is necessary for now to get firefox to talk to chrome
 		);
@@ -107,6 +108,7 @@ function init() {
 			remoteMedia.controls = false;
 			peerMediaElements[peer_id] = remoteMedia;
 			document.body.appendChild(videoWrap);
+			document.getElementById('message').style.display = 'none';
 
 			attachMediaStream(remoteMedia, event.stream);
 			resizeVideos();
@@ -193,15 +195,7 @@ function init() {
 		delete peers[peer_id];
 		delete peerMediaElements[config.peer_id];
 	});
-	document.getElementById('roomurl').textContent = appURL() + '/' + getRoomName();
-	document.getElementById('roomurl').addEventListener('click', event => {
-		let range, selection;
-		selection = window.getSelection();
-		range = document.createRange();
-		range.selectNodeContents(event.target);
-		selection.removeAllRanges();
-		selection.addRange(range);
-	});
+	// document.getElementById('roomurl').value = appURL() + '/' + getRoomName();
 }
 
 function setup_local_media(callback, errorback) {
@@ -219,75 +213,31 @@ function setup_local_media(callback, errorback) {
 			const videoWrap = document.createElement('div');
 			videoWrap.className = 'video';
 			videoWrap.setAttribute('id', 'myVideoWrap');
-			const btnWrap = document.createElement('div');
-			btnWrap.setAttribute('id', 'btnWrap');
 
-			const muteBtn = document.createElement('button');
-			muteBtn.setAttribute('id', 'mutebtn');
-			muteBtn.className = 'fas fa-microphone';
-			muteBtn.addEventListener('click', e => {
+			document.getElementById('mutebtn').addEventListener('click', e => {
 				localMediaStream.getAudioTracks()[0].enabled = !localMediaStream.getAudioTracks()[0]
 					.enabled;
 				e.target.className =
 					'fas fa-microphone' + (localMediaStream.getAudioTracks()[0].enabled ? '' : '-slash');
 			});
-			btnWrap.appendChild(muteBtn);
 
-			const videoMuteBtn = document.createElement('button');
-			videoMuteBtn.setAttribute('id', 'videomutebtn');
-			videoMuteBtn.className = 'fas fa-video';
-			videoMuteBtn.addEventListener('click', e => {
+			document.getElementById('videomutebtn').addEventListener('click', e => {
 				localMediaStream.getVideoTracks()[0].enabled = !localMediaStream.getVideoTracks()[0]
 					.enabled;
 				e.target.className =
 					'fas fa-video' + (localMediaStream.getVideoTracks()[0].enabled ? '' : '-slash');
 			});
-			btnWrap.appendChild(videoMuteBtn);
 
-			const screenShareBtn = document.createElement('button');
-			screenShareBtn.setAttribute('id', 'screensharebtn');
-			screenShareBtn.className = 'fas fa-desktop';
-			if (
-				navigator.getDisplayMedia ||
-				navigator.mediaDevices.getDisplayMedia ||
-				navigator.userAgent.indexOf('Firefox') >= 0
-			) {
-				screenShareBtn.addEventListener('click', e => {
-					let screenMediaPromise;
-					if (!IS_SCREEN_STREAMING) {
-						if (navigator.getDisplayMedia) {
-							screenMediaPromise = navigator.getDisplayMedia({ video: true });
-						} else if (navigator.mediaDevices.getDisplayMedia) {
-							screenMediaPromise = navigator.mediaDevices.getDisplayMedia({ video: true });
-						} else {
-							screenMediaPromise = navigator.mediaDevices.getUserMedia({
-								video: { mediaSource: 'screen' }
-							});
-						}
-					} else {
-						screenMediaPromise = navigator.mediaDevices.getUserMedia({ video: true });
-					}
-					screenMediaPromise
-						.then(screenStream => {
-							if (IS_SCREEN_STREAMING) localMediaStream.getVideoTracks()[0].stop();
-							localMediaStream.removeTrack(localMediaStream.getVideoTracks()[0]);
-							localMediaStream.addTrack(screenStream.getVideoTracks()[0]);
-							IS_SCREEN_STREAMING = !IS_SCREEN_STREAMING;
-							signalingSocket.disconnect();
-							init();
-							document.getElementById('myVideo').classList.toggle('mirror');
-						})
-						.catch(e => {
-							alert('Unable to share screen.');
-							console.error(e);
-						});
+			if (navigator.getDisplayMedia || navigator.mediaDevices.getDisplayMedia) {
+				document.getElementById('screensharebtn').addEventListener('click', e => {
+					toggleScreenSharing();
 				});
 			} else {
-				screenShareBtn.setAttribute('disabled', true);
+				document.getElementById('screensharebtn').style.display = 'none';
+				document.getElementById('buttons').style.width = '12rem';
 			}
-			btnWrap.appendChild(screenShareBtn);
 
-			videoWrap.appendChild(btnWrap); // append all buttons to the local video wrap
+			document.getElementById('buttons').style.opacity = '1';
 
 			const localMedia = document.createElement('video');
 			videoWrap.appendChild(localMedia);
@@ -315,4 +265,69 @@ const resizeVideos = () => {
 	document.querySelectorAll('.video').forEach(v => {
 		v.className = 'video ' + numToString[videos.length];
 	});
+};
+
+function toggleScreenSharing() {
+	const screenShareBtn = document.getElementById('screensharebtn');
+	const videoMuteBtn = document.getElementById('videomutebtn');
+	let screenMediaPromise;
+	if (!IS_SCREEN_STREAMING) {
+		if (navigator.getDisplayMedia) {
+			screenMediaPromise = navigator.getDisplayMedia({ video: true });
+		} else if (navigator.mediaDevices.getDisplayMedia) {
+			screenMediaPromise = navigator.mediaDevices.getDisplayMedia({ video: true });
+		} else {
+			screenMediaPromise = navigator.mediaDevices.getUserMedia({
+				video: { mediaSource: 'screen' }
+			});
+		}
+	} else {
+		screenMediaPromise = navigator.mediaDevices.getUserMedia({ video: true });
+		videoMuteBtn.className = 'fas fa-video'; // make sure to enable video
+	}
+	screenMediaPromise
+		.then(screenStream => {
+			IS_SCREEN_STREAMING = !IS_SCREEN_STREAMING;
+
+			var sender = peerConnection
+				.getSenders()
+				.find(s => (s.track ? s.track.kind === 'video' : false));
+			sender.replaceTrack(screenStream.getVideoTracks()[0]);
+			screenStream.getVideoTracks()[0].enabled = true;
+
+			const newStream = new MediaStream([
+				screenStream.getVideoTracks()[0],
+				localMediaStream.getAudioTracks()[0]
+			]);
+			localMediaStream = newStream;
+			attachMediaStream(document.getElementById('myVideo'), newStream);
+
+			document.getElementById('myVideo').classList.toggle('mirror');
+			screenShareBtn.classList.toggle('active');
+
+			var videoBtnDState = document.getElementById('videomutebtn').getAttribute('disabled');
+			videoBtnDState = videoBtnDState === null ? false : true;
+			document.getElementById('videomutebtn').disabled = !videoBtnDState;
+			screenStream.getVideoTracks()[0].onended = function() {
+				if (IS_SCREEN_STREAMING) toggleScreenSharing();
+			};
+		})
+		.catch(e => {
+			alert('Unable to share screen.');
+			console.error(e);
+		});
+}
+
+const copyURL = () => {
+	/* Get the text field */
+	var copyText = document.getElementById('roomurl');
+	/* Select the text field */
+	copyText.select();
+	copyText.setSelectionRange(0, 99999); /*For mobile devices*/
+	/* Copy the text inside the text field */
+	document.execCommand('copy');
+	document.getElementById('copybtn').style.color = '#27ae60';
+	setTimeout(() => {
+		document.getElementById('copybtn').style.color = '#333';
+	}, 3000);
 };
