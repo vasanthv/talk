@@ -238,6 +238,7 @@ function setup_local_media(callback, errorback) {
 			}
 
 			document.getElementById('buttons').style.opacity = '1';
+			document.getElementById('message').style.opacity = '1';
 
 			const localMedia = document.createElement('video');
 			videoWrap.appendChild(localMedia);

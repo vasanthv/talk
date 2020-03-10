@@ -70,6 +70,9 @@ video:fullscreen {
 	box-sizing: border-box;
 	border-radius: 1rem;
 	font-style: italic;
+	opacity: 0;
+	transition: opacity 250ms;
+	transition-delay: 250ms;
 }
 
 #buttons {
