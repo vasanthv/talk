@@ -234,7 +234,6 @@ function setup_local_media(callback, errorback) {
 				});
 			} else {
 				document.getElementById('screensharebtn').style.display = 'none';
-				document.getElementById('buttons').style.width = '12rem';
 			}
 
 			document.getElementById('buttons').style.opacity = '1';
