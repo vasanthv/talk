@@ -329,10 +329,12 @@ const swapCamera = () => {
 	navigator.mediaDevices
 		.getUserMedia({ video: USE_VIDEO })
 		.then(camStream => {
-			var sender = peerConnection
-				.getSenders()
-				.find(s => (s.track ? s.track.kind === 'video' : false));
-			sender.replaceTrack(camStream.getVideoTracks()[0]);
+			if (peerConnection) {
+				var sender = peerConnection
+					.getSenders()
+					.find(s => (s.track ? s.track.kind === 'video' : false));
+				sender.replaceTrack(camStream.getVideoTracks()[0]);
+			}
 			camStream.getVideoTracks()[0].enabled = true;
 
 			const newStream = new MediaStream([
