@@ -228,9 +228,17 @@ function setup_local_media(callback, errorback) {
 				e.target.className =
 					'fas fa-video' + (localMediaStream.getVideoTracks()[0].enabled ? '' : '-slash');
 			});
-			document.getElementById('swapcamerabtn').addEventListener('click', e => {
-				swapCamera();
-			});
+
+			navigator.mediaDevices
+				.getUserMedia({ video: { facingMode: { exact: 'environment' } } })
+				.then(camStream => {
+					document.getElementById('swapcamerabtn').addEventListener('click', e => {
+						swapCamera();
+					});
+				})
+				.catch(err => {
+					document.getElementById('swapcamerabtn').style.display = 'none';
+				});
 
 			if (navigator.getDisplayMedia || navigator.mediaDevices.getDisplayMedia) {
 				document.getElementById('screensharebtn').addEventListener('click', e => {
