@@ -344,7 +344,10 @@ const swapCamera = () => {
 
 			document.getElementById('myVideo').classList.toggle('mirror');
 		})
-		.catch(err => alert('Error is swaping camera'));
+		.catch(err => {
+			console.log(err);
+			alert('Error is swaping camera');
+		});
 };
 
 const copyURL = () => {
