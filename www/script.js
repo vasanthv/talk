@@ -229,16 +229,16 @@ function setup_local_media(callback, errorback) {
 					'fas fa-video' + (localMediaStream.getVideoTracks()[0].enabled ? '' : '-slash');
 			});
 
-			navigator.mediaDevices
-				.getUserMedia({ video: { facingMode: { exact: 'environment' } } })
-				.then(camStream => {
+			navigator.mediaDevices.enumerateDevices().then(devices => {
+				const videoInput = devices.filter(device => device.kind === 'videoinput');
+				if (videoInput.length > 1) {
 					document.getElementById('swapcamerabtn').addEventListener('click', e => {
 						swapCamera();
 					});
-				})
-				.catch(err => {
+				} else {
 					document.getElementById('swapcamerabtn').style.display = 'none';
-				});
+				}
+			});
 
 			if (navigator.getDisplayMedia || navigator.mediaDevices.getDisplayMedia) {
 				document.getElementById('screensharebtn').addEventListener('click', e => {
