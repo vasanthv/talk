@@ -64,7 +64,7 @@ video:fullscreen {
 	left: 0px;
 	right: 0px;
 	z-index: 100;
-	width: 18rem;
+	width: 21rem;
 	margin: auto;
 	padding: 1rem 2rem;
 	box-sizing: border-box;
@@ -83,7 +83,7 @@ video:fullscreen {
 	left: 0px;
 	right: 0px;
 	z-index: 100;
-	width: 18rem;
+	width: 21rem;
 	margin: auto;
 	padding: 1rem 2rem;
 	box-sizing: border-box;
@@ -100,8 +100,10 @@ video:fullscreen {
 
 #mutebtn,
 #videomutebtn,
+#swapcamerabtn,
 #screensharebtn {
 	font-size: 2rem;
+	cursor: pointer;
 }
 
 @media only screen and (max-width: 960px) {

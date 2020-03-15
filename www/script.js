@@ -18,6 +18,7 @@ const getRoomName = () => {
 var SIGNALING_SERVER = appURL();
 var USE_AUDIO = true;
 var USE_VIDEO = true;
+var CAMERA = 'user';
 //var USE_VIDEO = { facingMode: "environment" }; // use this for back facing camera.
 var IS_SCREEN_STREAMING = false;
 var ROOM_ID = getRoomName();
@@ -227,6 +228,9 @@ function setup_local_media(callback, errorback) {
 				e.target.className =
 					'fas fa-video' + (localMediaStream.getVideoTracks()[0].enabled ? '' : '-slash');
 			});
+			document.getElementById('swapcamerabtn').addEventListener('click', e => {
+				swapCamera();
+			});
 
 			if (navigator.getDisplayMedia || navigator.mediaDevices.getDisplayMedia) {
 				document.getElementById('screensharebtn').addEventListener('click', e => {
@@ -317,6 +321,31 @@ function toggleScreenSharing() {
 			console.error(e);
 		});
 }
+
+const swapCamera = () => {
+	CAMERA = CAMERA == 'user' ? 'environment' : 'user';
+	if (CAMERA == 'user') USE_VIDEO = true;
+	else USE_VIDEO = { facingMode: { exact: CAMERA } };
+	navigator.mediaDevices
+		.getUserMedia({ video: USE_VIDEO })
+		.then(camStream => {
+			var sender = peerConnection
+				.getSenders()
+				.find(s => (s.track ? s.track.kind === 'video' : false));
+			sender.replaceTrack(camStream.getVideoTracks()[0]);
+			camStream.getVideoTracks()[0].enabled = true;
+
+			const newStream = new MediaStream([
+				camStream.getVideoTracks()[0],
+				localMediaStream.getAudioTracks()[0]
+			]);
+			localMediaStream = newStream;
+			attachMediaStream(document.getElementById('myVideo'), newStream);
+
+			document.getElementById('myVideo').classList.toggle('mirror');
+		})
+		.catch(err => alert('Error is swaping camera'));
+};
 
 const copyURL = () => {
 	/* Get the text field */
