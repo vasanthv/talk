@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+		/>
+		<meta name="description" content="Talk - A free video call app for the web." />
+		<meta
+			name="keywords"
+			content="group video chat, video communication, multiparty video chat, video chat, webrtc, peer to peer, p2p"
+		/>
+		<meta name="application-name" content="Talk" />
+		<link rel="icon" href="favicon.png" type="image/png" />
+		<link rel="stylesheet" href="style.css" />
+		<title>Talk - A free video call app for the web</title>
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-19124340-30"></script>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag() {
+				dataLayer.push(arguments);
+			}
+			gtag('js', new Date());
+
+			gtag('config', 'UA-19124340-30');
+		</script>
+		<style>
+			#wrapper {
+				width: 100%;
+				max-width: 640px;
+				padding: 10px;
+				box-sizing: border-box;
+				color: #fff;
+				margin: auto;
+			}
+			a {
+				color: #fff;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="wrapper">
+			<h2>Talk</h2>
+			<p>Talk is a free video call service for the web.</p>
+			<p>Talk uses WebRTC for video communication and a socket.io server that serves as a signaling server. It uses WebRTC mesh when more people are added to the call, it means each video stream in a group call uses a separate P2P connection. There is no hard limit on the number of people in the group video call, but the quality of the call will decrease when more than 6 people join the call.</p>
+			<h3>Contact</h3>
+			<p>This service is created by <a href="https://vasanthv.com" target="_blank">Vasanth.V</a>. <a href="mailto:hi@vasanthv.com">Contact me</a> if you are interested in using this video call feature in your
+				product or service</p>
+			<h3>Legal</h3>
+			<p>This service is provided under an "as is" condition. It might change or will be discontinued without prior notice. The maker of this service can't be held liable in any way for any reason.</p>
+			<h3>Privacy policy</h3>
+			<p>
+				We limit ourselves to collect the smallest amount of user data that we need in order to
+				create a seamless experience when using Talk. This data includes:
+				<a href="https://developer.mozilla.org/en-US/docs/Web/API/RTCIceCandidate" target="_blank">
+					RTCICECandidates
+				</a>
+				&
+				<a
+					href="https://developer.mozilla.org/en-US/docs/Web/API/RTCSessionDescription"
+					target="_blank"
+				>
+					RTCSessionDescription
+				</a>
+				which is needed to establish the video call using WebRTC. Also, both RTCICECandidates &
+				RTCSessionDescription is not stored in any persistent database, it's removed from the server
+				as soon as the user closes the browser window.
+			</p>
+			<p>Talk is purely peer-to-peer, which means the user's video & audio is not sent to our server at all. We use Google Analytics to track
+				aggregated usage statistics in order to improve our service.</p>
+			</p>
+			<p>
+				The maker of Talk has no intention of using personally or selling any of the
+				above-mentioned data.
+			</p>
+		</div>
+	</body>
+</html>
