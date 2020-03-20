@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+		/>
+		<meta name="description" content="Talk - A free video call app for the web." />
+		<meta
+			name="keywords"
+			content="group video chat, video communication, multiparty video chat, video chat, webrtc, peer to peer, p2p"
+		/>
+		<meta name="application-name" content="Talk" />
+		<link rel="icon" href="favicon.png" type="image/png" />
+		<link rel="stylesheet" href="style.css" />
+		<title>Talk - A free video call app for the web</title>
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-19124340-30"></script>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag() {
+				dataLayer.push(arguments);
+			}
+			gtag('js', new Date());
+
+			gtag('config', 'UA-19124340-30');
+		</script>
+		<style>
+			#wrapper {
+				width: 100%;
+				max-width: 768px;
+				padding: 10px;
+				box-sizing: border-box;
+				margin: 1rem auto;
+			}
+			header {
+				display: flex;
+				line-height: 48px;
+			}
+			#logo {
+				width: 48px;
+				margin-right: 0.5rem;
+			}
+			#logo svg {
+				width: 100%;
+			}
+			#title {
+				font-size: 1.6rem;
+				font-weight: bold;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="wrapper">
+			<header>
+				<div id="logo">
+					<a href="/about"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+						<path
+							id="talk-logo"
+							fill="#6669C4"
+							fill-rule="evenodd"
+							d="M 95.00,50.00 C 95.00,74.85 74.85,95.00 50.00,95.00 41.16,95.00 32.94,92.41 25.98,88.01 25.98,88.01 5.00,95.00 5.00,95.00 5.00,95.00 11.99,74.02 11.99,74.02 7.59,67.06 5.00,58.84 5.00,50.00 5.00,25.15 25.15,5.00 50.00,5.00 74.85,5.00 95.00,25.15 95.00,50.00 Z M 77.74,38.98 C 77.74,38.98 77.74,61.02 77.74,61.02 77.74,62.50 76.90,63.86 75.57,64.52 74.24,65.18 72.65,65.03 71.46,64.14 71.46,64.14 64.10,58.55 64.10,58.55 64.10,58.55 64.10,60.65 64.10,60.65 63.69,64.39 60.55,67.20 56.79,67.20 56.79,67.20 29.62,67.20 29.62,67.20 25.56,67.20 22.26,63.90 22.26,59.84 22.26,59.84 22.26,40.16 22.26,40.16 22.26,36.10 25.56,32.80 29.62,32.80 29.62,32.80 56.79,32.80 56.79,32.80 60.55,32.80 63.69,35.61 64.10,39.35 64.10,39.35 64.12,39.59 64.12,39.59 64.12,39.59 64.12,41.44 64.12,41.44 64.12,41.44 71.46,35.86 71.46,35.86 72.16,35.34 72.99,35.07 73.83,35.07 74.42,35.07 75.02,35.20 75.57,35.48 76.90,36.14 77.74,37.50 77.74,38.98 Z M 59.64,60.27 C 59.64,60.27 59.64,39.73 59.64,39.73 59.43,38.33 58.22,37.28 56.79,37.28 56.79,37.28 29.62,37.28 29.62,37.28 28.03,37.28 26.74,38.57 26.74,40.16 26.74,40.16 26.74,59.84 26.74,59.84 26.74,61.43 28.03,62.72 29.62,62.72 29.62,62.72 56.79,62.72 56.79,62.72 58.23,62.72 59.43,61.67 59.64,60.27 59.64,60.27 59.64,60.27 59.64,60.27 Z"
+						/>
+					</svg></a>
+				</div>
+				<div>
+					<span id="title">Talk</span>
+				</div>
+			</header>
+			<h3>Legal</h3>
+			<p>This service is provided under an "as is" condition. It might change or will be discontinued without prior notice. The maker of this service can't be held liable in any way for any reason. If discontinued all the Pro plan members will be given with the source code of the app, so that they can start their own instance of the app.</p>
+			<h3>Privacy policy</h3>
+			<p>
+				We limit ourselves to collect the smallest amount of user data that we need in order to
+				create a seamless experience when using Talk. This data includes:
+				<a href="https://developer.mozilla.org/en-US/docs/Web/API/RTCIceCandidate" target="_blank">
+					RTCICECandidates
+				</a>
+				&
+				<a
+					href="https://developer.mozilla.org/en-US/docs/Web/API/RTCSessionDescription"
+					target="_blank"
+				>
+					RTCSessionDescription
+				</a>
+				which is needed to establish the video call using WebRTC. Also, both RTCICECandidates &
+				RTCSessionDescription is not stored in any persistent database, it's removed from the server
+				as soon as the user unjoins the call by closing the browser window.
+			</p>
+			<p>Talk is purely peer-to-peer, which means the user's video & audio is not sent to our server at all. We use Google Analytics to track
+				aggregated usage statistics in order to improve our service.</p>
+			</p>
+			<p>
+				The maker of Talk has no intention of using personally or selling any of the
+				above-mentioned data.
+			</p>
+		</div>
+	</body>
+</html>

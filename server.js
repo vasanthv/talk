@@ -14,6 +14,9 @@ server.listen(PORT, null, function() {
 	console.log('Listening on port ' + PORT);
 });
 
+app.get('/about', (req, res) => res.sendFile(path.join(__dirname, 'www/about.html')));
+app.get('/legal', (req, res) => res.sendFile(path.join(__dirname, 'www/legal.html')));
+
 // All URL patterns should served with the same file.
 app.get(['/', '/:room'], (req, res) => res.sendFile(path.join(__dirname, 'www/index.html')));
 

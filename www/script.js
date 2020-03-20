@@ -210,6 +210,7 @@ function setup_local_media(callback, errorback) {
 	navigator.mediaDevices
 		.getUserMedia({ audio: USE_AUDIO, video: USE_VIDEO })
 		.then(stream => {
+			document.getElementById('allowaccess').style.display = 'none';
 			localMediaStream = stream;
 			const videoWrap = document.createElement('div');
 			videoWrap.className = 'video';
