@@ -79,6 +79,18 @@ video:fullscreen {
 	text-align: center;
 	opacity: 1;
 }
+#message a {
+	color: inherit;
+	font-style: normal;
+}
+
+#logo {
+	width: 48px;
+	margin-right: 0.5rem;
+}
+#logo svg {
+	width: 100%;
+}
 
 #buttons {
 	background: rgba(255, 255, 255, 0.8);
