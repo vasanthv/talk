@@ -7,8 +7,8 @@ const getRoomName = () => {
 	if (roomName == '') {
 		const randomName = () =>
 			Math.random()
-				.toString(36)
-				.substr(2, 6);
+			.toString(36)
+			.substr(2, 6);
 		roomName = randomName();
 		const newurl = appURL() + '/' + roomName;
 		window.history.pushState({ url: newurl }, roomName, newurl);
@@ -81,9 +81,7 @@ function init() {
 	signalingSocket.on('addPeer', function(config) {
 		var peer_id = config.peer_id;
 		if (peer_id in peers) return;
-		peerConnection = new RTCPeerConnection(
-			{ iceServers: ICE_SERVERS },
-			{ optional: [{ DtlsSrtpKeyAgreement: true }] } // this will no longer be needed by chrome eventually (supposedly), but is necessary for now to get firefox to talk to chrome
+		peerConnection = new RTCPeerConnection({ iceServers: ICE_SERVERS }, { optional: [{ DtlsSrtpKeyAgreement: true }] } // this will no longer be needed by chrome eventually (supposedly), but is necessary for now to get firefox to talk to chrome
 		);
 		peers[peer_id] = peerConnection;
 
@@ -129,7 +127,8 @@ function init() {
 								session_description: local_description
 							});
 						},
-						function() {
+						function(err) {
+							console.log(err);
 							alert('Offer setLocalDescription failed!');
 						}
 					);
@@ -161,8 +160,9 @@ function init() {
 										session_description: local_description
 									});
 								},
-								function() {
-									Alert('Answer setLocalDescription failed!');
+								function(err) {
+									console.log(err);
+									alert('Answer setLocalDescription failed!');
 								}
 							);
 						},
