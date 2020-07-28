@@ -1,227 +1,238 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+    <meta name="description" content="Talk - A free video call app for the web." />
+    <meta
+      name="keywords"
+      content="group video chat, video communication, multiparty video chat, video chat, webrtc, peer to peer, p2p"
+    />
+    <meta name="application-name" content="Talk" />
+    <link rel="icon" href="favicon.png" type="image/png" />
+    <link rel="stylesheet" href="style.css" />
+    <title>About Talk</title>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-19124340-30"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
 
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
-	<meta name="description" content="Talk - A free video call app for the web." />
-	<meta name="keywords" content="group video chat, video communication, multiparty video chat, video chat, webrtc, peer to peer, p2p" />
-	<meta name="application-name" content="Talk" />
-	<link rel="icon" href="favicon.png" type="image/png" />
-	<link rel="stylesheet" href="style.css" />
-	<title>About Talk</title>
-	<!-- Global site tag (gtag.js) - Google Analytics -->
-	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-19124340-30"></script>
-	<script>
-	window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
 
-	function gtag() {
-		dataLayer.push(arguments);
-	}
-	gtag('js', new Date());
+      gtag("config", "UA-19124340-30");
+    </script>
+    <style>
+      #wrapper {
+        width: 100%;
+        max-width: 768px;
+        padding: 10px;
+        box-sizing: border-box;
+        margin: 1rem auto;
+      }
+      header {
+        display: flex;
+        line-height: 48px;
+      }
+      footer {
+        text-align: center;
+      }
+      footer a {
+        color: inherit;
+      }
+      .display {
+        font-size: 1.2rem;
+        font-weight: 500;
+      }
+      .center {
+        text-align: center;
+      }
+      .italic {
+        font-style: italic;
+      }
+      #title {
+        font-size: 1.6rem;
+        font-weight: bold;
+      }
+      #legallink {
+        float: right;
+        color: #666;
+        text-decoration: none;
+      }
+      #intro {
+        display: flex;
+        min-height: 72vh;
+        margin: auto;
+        align-items: center;
+        font-size: 2.4rem;
+        font-style: italic;
+      }
+      #intro #pitch {
+        line-height: 1.4;
+      }
+      #intro #desc {
+        font-style: normal;
+        font-size: 1.2rem;
+        margin-top: 1rem;
+      }
+      #pricing {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+      }
+      #pricing .plan {
+        flex: 1;
+        margin: 1rem 0.5rem;
+        border: 1px solid #6669c4;
+        border-radius: 0.6rem;
+      }
+      #pricing .plan .planname {
+        border-top-left-radius: 0.5rem;
+        border-top-right-radius: 0.5rem;
+        background: #6669c4;
+        color: #fff;
+        text-align: center;
+        font-size: 2rem;
+      }
+      #pricing .plan .plandetails {
+        padding: 1rem;
+      }
+      .actionbtn {
+        display: block;
+        font-size: 1.4rem;
+        text-decoration: none;
+        background: #6669c4;
+        color: #fff;
+        text-align: center;
+        margin-top: 1rem;
+        padding: 0.3rem;
+        border-radius: 0.5rem;
+      }
 
-	gtag('config', 'UA-19124340-30');
+      #pricing #free.plan {
+        border-color: #2ecc71;
+      }
+      #pricing #free.plan .planname {
+        background-color: #2ecc71;
+      }
+      #pricing #free .actionbtn {
+        background-color: #2ecc71;
+      }
 
-	</script>
-	<style>
-	#wrapper {
-		width: 100%;
-		max-width: 768px;
-		padding: 10px;
-		box-sizing: border-box;
-		margin: 1rem auto;
-	}
-	header {
-		display: flex;
-		line-height: 48px;
-	}
-	footer {
-		text-align: center;
-	}
-	footer a {
-		color: inherit;
-	}
-	.display {
-		font-size: 1.2rem;
-		font-weight: 500;
-	}
-	.center {
-		text-align: center;
-	}
-	.italic {
-		font-style: italic;
-	}
-	#title {
-		font-size: 1.6rem;
-		font-weight: bold;
-	}
-	#legallink {
-		float: right;
-		color: #666;
-		text-decoration: none;
-	}
-	#intro {
-		display: flex;
-		min-height: 72vh;
-		margin: auto;
-		align-items: center;
-		font-size: 2.4rem;
-		font-style: italic;
-	}
-	#intro #pitch {
-		line-height: 1.4;
-	}
-	#intro #desc {
-		font-style: normal;
-		font-size: 1.2rem;
-		margin-top: 1rem;
-	}
-	#pricing {
-		display: flex;
-		flex-direction: row;
-		align-items: flex-start;
-	}
-	#pricing .plan {
-		flex: 1;
-		margin: 1rem 0.5rem;
-		border: 1px solid #6669c4;
-		border-radius: 0.6rem;
-	}
-	#pricing .plan .planname {
-		border-top-left-radius: 0.5rem;
-		border-top-right-radius: 0.5rem;
-		background: #6669c4;
-		color: #fff;
-		text-align: center;
-		font-size: 2rem;
-	}
-	#pricing .plan .plandetails {
-		padding: 1rem;
-	}
-	.actionbtn {
-		display: block;
-		font-size: 1.4rem;
-		text-decoration: none;
-		background: #6669c4;
-		color: #fff;
-		text-align: center;
-		margin-top: 1rem;
-		padding: 0.3rem;
-		border-radius: 0.5rem;
-	}
+      #pricing #own.plan {
+        border-color: #f1c40f;
+      }
+      #pricing #own.plan .planname {
+        background-color: #f1c40f;
+        color: #000;
+      }
+      #pricing #own .actionbtn {
+        background-color: #f1c40f;
+        color: #000;
+      }
 
-	#pricing #free.plan {
-		border-color: #2ecc71;
-	}
-	#pricing #free.plan .planname {
-		background-color: #2ecc71;
-	}
-	#pricing #free .actionbtn {
-		background-color: #2ecc71;
-	}
+      #applink {
+        display: flex;
+        min-height: 40vh;
+        width: 320px;
+        margin: auto;
+        flex-direction: column;
+        justify-content: center;
+      }
+      #applink .actionbtn {
+        background-color: #333;
+      }
+    </style>
+  </head>
 
-	#pricing #own.plan {
-		border-color: #f1c40f;
-	}
-	#pricing #own.plan .planname {
-		background-color: #f1c40f;
-		color: #000;
-	}
-	#pricing #own .actionbtn {
-		background-color: #f1c40f;
-		color: #000;
-	}
-
-	#applink {
-		display: flex;
-		min-height: 40vh;
-		width: 320px;
-		margin: auto;
-		flex-direction: column;
-		justify-content: center;
-	}
-	#applink .actionbtn {
-		background-color: #333;
-	}
-
-	</style>
-</head>
-
-<body>
-	<div id="wrapper">
-		<header>
-			<div id="logo">
-				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-					<path id="talk-logo" fill="#6669C4" fill-rule="evenodd" d="M 95.00,50.00 C 95.00,74.85 74.85,95.00 50.00,95.00 41.16,95.00 32.94,92.41 25.98,88.01 25.98,88.01 5.00,95.00 5.00,95.00 5.00,95.00 11.99,74.02 11.99,74.02 7.59,67.06 5.00,58.84 5.00,50.00 5.00,25.15 25.15,5.00 50.00,5.00 74.85,5.00 95.00,25.15 95.00,50.00 Z M 77.74,38.98 C 77.74,38.98 77.74,61.02 77.74,61.02 77.74,62.50 76.90,63.86 75.57,64.52 74.24,65.18 72.65,65.03 71.46,64.14 71.46,64.14 64.10,58.55 64.10,58.55 64.10,58.55 64.10,60.65 64.10,60.65 63.69,64.39 60.55,67.20 56.79,67.20 56.79,67.20 29.62,67.20 29.62,67.20 25.56,67.20 22.26,63.90 22.26,59.84 22.26,59.84 22.26,40.16 22.26,40.16 22.26,36.10 25.56,32.80 29.62,32.80 29.62,32.80 56.79,32.80 56.79,32.80 60.55,32.80 63.69,35.61 64.10,39.35 64.10,39.35 64.12,39.59 64.12,39.59 64.12,39.59 64.12,41.44 64.12,41.44 64.12,41.44 71.46,35.86 71.46,35.86 72.16,35.34 72.99,35.07 73.83,35.07 74.42,35.07 75.02,35.20 75.57,35.48 76.90,36.14 77.74,37.50 77.74,38.98 Z M 59.64,60.27 C 59.64,60.27 59.64,39.73 59.64,39.73 59.43,38.33 58.22,37.28 56.79,37.28 56.79,37.28 29.62,37.28 29.62,37.28 28.03,37.28 26.74,38.57 26.74,40.16 26.74,40.16 26.74,59.84 26.74,59.84 26.74,61.43 28.03,62.72 29.62,62.72 29.62,62.72 56.79,62.72 56.79,62.72 58.23,62.72 59.43,61.67 59.64,60.27 59.64,60.27 59.64,60.27 59.64,60.27 Z" />
-				</svg>
-			</div>
-			<div style="flex:1">
-				<span id="title">Talk</span>
-				<a href="/legal" id="legallink">Legal</a>
-			</div>
-		</header>
-		<section id="intro">
-			<div>
-				<div id="pitch">Talk is a free group video call app with screen sharing.</div>
-				<div id="desc">
-					It is built using WebRTC, so all your video chat is peer-to-peer. Group video call is
-					achieved using WebRTC mesh. So the quality of the call is inversely proportional to the number of people on the call. The sweet number is somewhere around 6 to 8 people in an average high-speed connection.
-				</div>
-			</div>
-		</section>
-		<section id="pricing">
-			<div class="plan" id="free">
-				<div class="planname">Free</div>
-				<div class="plandetails">
-					Use the app as much as you need.
-					<ul>
-						<li>Unlimited rooms</li>
-						<li>Unlimited call time</li>
-						<li>No limitations</li>
-						<li>No signups</li>
-						<li>No downloads</li>
-						<li>100% Free</li>
-					</ul>
-					<a href="/" class="actionbtn">Open app</a>
-				</div>
-			</div>
-			<div class="plan" id="pro">
-				<div class="planname">Pro</div>
-				<div class="plandetails">
-					Same as free plan, but you get to do it in your own domain. Create rooms that are
-					private to your own domain like:
-					<ul>
-						<li>talk.example.com/standup</li>
-						<li>john.example.com/jane</li>
-						<li>
-							<a href="https://talk.jsonbox.io/test" target="_blank">talk.jsonbox.io/test</a>
-						</li>
-						<li>...</li>
-					</ul>
-					<div class="display center">$2 / Month</div>
-					<div class="italic center">Billed Annually at $24</div>
-					<a href="https://forms.gle/T9qwbSS3zyuMXBvh6" target="_blank" class="actionbtn">Request Pro</a>
-				</div>
-			</div>
-			<div class="plan" id="own">
-				<div class="planname">You own it</div>
-				<div class="plandetails">
-					I give you the source code, and you can use it as you wish. You can add video call
-					feature in your product, protect the rooms with authentication. Anything you wish. No
-					attribution required.
-					<p class="display center">One time fee $500</p>
-					<a href="mailto:hi@vasanthv.com?subject=Hi, I am interested in purchasing the source code of Talk." class="actionbtn">Contact me</a>
-				</div>
-			</div>
-		</section>
-		<section id="applink">
-			<a href="/" class="actionbtn">Launch the app</a>
-		</section>
-		<footer>
-			Made with <span style="color: #e74c3c;">&hearts;</span> by
-			<a href="https://vasanthv.com">Vasanth.V</a>
-		</footer>
-	</div>
-</body>
-
+  <body>
+    <div id="wrapper">
+      <header>
+        <div id="logo">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+            <path
+              id="talk-logo"
+              fill="#6669C4"
+              fill-rule="evenodd"
+              d="M 95.00,50.00 C 95.00,74.85 74.85,95.00 50.00,95.00 41.16,95.00 32.94,92.41 25.98,88.01 25.98,88.01 5.00,95.00 5.00,95.00 5.00,95.00 11.99,74.02 11.99,74.02 7.59,67.06 5.00,58.84 5.00,50.00 5.00,25.15 25.15,5.00 50.00,5.00 74.85,5.00 95.00,25.15 95.00,50.00 Z M 77.74,38.98 C 77.74,38.98 77.74,61.02 77.74,61.02 77.74,62.50 76.90,63.86 75.57,64.52 74.24,65.18 72.65,65.03 71.46,64.14 71.46,64.14 64.10,58.55 64.10,58.55 64.10,58.55 64.10,60.65 64.10,60.65 63.69,64.39 60.55,67.20 56.79,67.20 56.79,67.20 29.62,67.20 29.62,67.20 25.56,67.20 22.26,63.90 22.26,59.84 22.26,59.84 22.26,40.16 22.26,40.16 22.26,36.10 25.56,32.80 29.62,32.80 29.62,32.80 56.79,32.80 56.79,32.80 60.55,32.80 63.69,35.61 64.10,39.35 64.10,39.35 64.12,39.59 64.12,39.59 64.12,39.59 64.12,41.44 64.12,41.44 64.12,41.44 71.46,35.86 71.46,35.86 72.16,35.34 72.99,35.07 73.83,35.07 74.42,35.07 75.02,35.20 75.57,35.48 76.90,36.14 77.74,37.50 77.74,38.98 Z M 59.64,60.27 C 59.64,60.27 59.64,39.73 59.64,39.73 59.43,38.33 58.22,37.28 56.79,37.28 56.79,37.28 29.62,37.28 29.62,37.28 28.03,37.28 26.74,38.57 26.74,40.16 26.74,40.16 26.74,59.84 26.74,59.84 26.74,61.43 28.03,62.72 29.62,62.72 29.62,62.72 56.79,62.72 56.79,62.72 58.23,62.72 59.43,61.67 59.64,60.27 59.64,60.27 59.64,60.27 59.64,60.27 Z"
+            />
+          </svg>
+        </div>
+        <div style="flex:1">
+          <span id="title">Talk</span>
+          <a href="/legal" id="legallink">Legal</a>
+        </div>
+      </header>
+      <section id="intro">
+        <div>
+          <div id="pitch">Talk is a free group video call app with screen sharing.</div>
+          <div id="desc">
+            It is built using WebRTC, so all your video chat is peer-to-peer. Group video call is achieved using WebRTC
+            mesh. So the quality of the call is inversely proportional to the number of people on the call. The sweet
+            number is somewhere around 6 to 8 people in an average high-speed connection.
+          </div>
+        </div>
+      </section>
+      <section id="pricing">
+        <div class="plan" id="free">
+          <div class="planname">Free</div>
+          <div class="plandetails">
+            Use the app as much as you need.
+            <ul>
+              <li>Unlimited rooms</li>
+              <li>Unlimited call time</li>
+              <li>No limitations</li>
+              <li>No signups</li>
+              <li>No downloads</li>
+              <li>100% Free</li>
+            </ul>
+            <a href="/" class="actionbtn">Open app</a>
+          </div>
+        </div>
+        <!-- <div class="plan" id="pro">
+        <div class="planname">Pro</div>
+        <div class="plandetails">
+          Same as free plan, but you get to do it in your own domain. Create rooms that are
+          private to your own domain like:
+          <ul>
+            <li>talk.example.com/standup</li>
+            <li>john.example.com/jane</li>
+            <li>
+              <a href="https://talk.jsonbox.io/test" target="_blank">talk.jsonbox.io/test</a>
+            </li>
+            <li>...</li>
+          </ul>
+          <div class="display center">$2 / Month</div>
+          <div class="italic center">Billed Annually at $24</div>
+          <a href="https://forms.gle/T9qwbSS3zyuMXBvh6" target="_blank" class="actionbtn">Request Pro</a>
+        </div>
+      </div> -->
+        <div class="plan" id="own">
+          <div class="planname">You own it</div>
+          <div class="plandetails">
+            I give you the source code, and you can use it as you wish. You can add video call feature in your product,
+            protect the rooms with authentication. Anything you wish. No attribution required.
+            <p class="display center">One time fee $500</p>
+            <a
+              href="mailto:hi@vasanthv.com?subject=Hi, I am interested in purchasing the source code of Talk."
+              class="actionbtn"
+              >Contact me</a
+            >
+          </div>
+        </div>
+      </section>
+      <section id="applink">
+        <a href="/" class="actionbtn">Launch the app</a>
+      </section>
+      <footer>
+        Made with <span style="color: #e74c3c;">&hearts;</span> by
+        <a href="https://vasanthv.com">Vasanth.V</a>
+      </footer>
+    </div>
+  </body>
 </html>
