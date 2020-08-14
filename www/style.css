@@ -9,13 +9,13 @@ body {
 	line-height: 1.6;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
-	background: #fff;
+	background: #222;
 }
 video {
 	width: 100%;
 	height: auto;
 	height: 100%;
-	object-fit: cover;
+	object-fit: contain;
 }
 video:fullscreen {
 	object-fit: contain;
