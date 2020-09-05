@@ -1,0 +1,48 @@
+version: '3.7'
+
+services:
+  ## Container that proxies all trafic to the containers configured
+  ## with VIRTUAL_HOST
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    container_name: nginx-proxy
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - conf:/etc/nginx/conf.d
+      - vhost:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+      - dhparam:/etc/nginx/dhparam
+      - certs:/etc/nginx/certs:ro
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+  ## Container that generates SSL certificates with Let's Encrypt
+  ## for all containers with the LETSENCRYPT_HOST LETSENCRYPT_EMAIL
+  ## enviroment settings
+  letsencrypt:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    container_name: nginx-proxy-le
+    volumes:
+      - conf:/etc/nginx/conf.d
+      - vhost:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+      - dhparam:/etc/nginx/dhparam
+      - certs:/etc/nginx/certs:rw
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+  ## App container exposing the port 3000 for the proxy
+  talk:
+    image: talk:latest
+    build: 
+      context: .
+    expose:
+      - 3000
+    environment:
+      - VIRTUAL_HOST=talk.vasanthv.com
+      - LETSENCRYPT_HOST=talk.vasanthv.com
+      - LETSENCRYPT_EMAIL=admin@vasanthv.com
+volumes:
+  conf:
+  vhost:
+  html:
+  dhparam:
+  certs:

@@ -34,6 +34,12 @@ Open the following url in the browser
 http://localhost:3000
 ```
 
+### Docker compose
+
+[https://hub.docker.com/r/jwilder/nginx-proxy](NGINX proxy) container with [https://github.com/nginx-proxy/docker-letsencrypt-nginx-proxy-companion](its companion) to proxy the access to the app and generate a SSL certificate with [https://letsencrypt.org/](Let's Encrypt).
+
+**Note:** its recommended to launch without the companion in local environments.
+
 ### LICENSE
 
 MIT
