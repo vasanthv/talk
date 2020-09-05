@@ -1,63 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<meta
-			name="viewport"
-			content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
-		/>
-		<meta name="description" content="Talk - A free video call app for the web." />
-		<meta
-			name="keywords"
-			content="group video chat, video communication, multiparty video chat, video chat, webrtc, peer to peer, p2p"
-		/>
-		<meta name="application-name" content="Talk" />
-		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-		<link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
-		<link rel="stylesheet" href="style.css" />
-		<script src="https://kit.fontawesome.com/d2f1016e6f.js" crossorigin="anonymous"></script>
-		<script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
-		<script src="/socket.io/socket.io.js"></script>
-		<script src="script.js"></script>
-		<title>Talk - A free video call app for the web</title>
-		<!-- Global site tag (gtag.js) - Google Analytics -->
-		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-19124340-30"></script>
-		<script>
-			window.dataLayer = window.dataLayer || [];
-			function gtag() {
-				dataLayer.push(arguments);
-			}
-			gtag('js', new Date());
 
-			gtag('config', 'UA-19124340-30');
-		</script>
-	</head>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+	<meta name="description" content="Talk - A free video call app for the web." />
+	<meta name="keywords" content="group video chat, video communication, multiparty video chat, video chat, webrtc, peer to peer, p2p" />
+	<meta name="application-name" content="Talk" />
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
+	<link rel="stylesheet" href="style.css" />
+	<script src="https://kit.fontawesome.com/d2f1016e6f.js" crossorigin="anonymous"></script>
+	<script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="script.js"></script>
+	<title>Talk - A free video call app for the web</title>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-19124340-30"></script>
+	<script>
+	window.dataLayer = window.dataLayer || [];
 
-	<body onload="init()">
-		<div id="message">
-			Share the URL of this page with your friends to start talking.<br />
-			<a href="https://talk.vasanthv.com/about" target="_blank">About Talk</a> &middot;
-			<a href="/legal" target="_blank">Legal</a>
-		</div>
-		<div id="allowaccess">
-			<div id="logo" style="margin:auto;">
-				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-					<path
-						id="talk-logo"
-						fill="#6669C4"
-						fill-rule="evenodd"
-						d="M 95.00,50.00 C 95.00,74.85 74.85,95.00 50.00,95.00 41.16,95.00 32.94,92.41 25.98,88.01 25.98,88.01 5.00,95.00 5.00,95.00 5.00,95.00 11.99,74.02 11.99,74.02 7.59,67.06 5.00,58.84 5.00,50.00 5.00,25.15 25.15,5.00 50.00,5.00 74.85,5.00 95.00,25.15 95.00,50.00 Z M 77.74,38.98 C 77.74,38.98 77.74,61.02 77.74,61.02 77.74,62.50 76.90,63.86 75.57,64.52 74.24,65.18 72.65,65.03 71.46,64.14 71.46,64.14 64.10,58.55 64.10,58.55 64.10,58.55 64.10,60.65 64.10,60.65 63.69,64.39 60.55,67.20 56.79,67.20 56.79,67.20 29.62,67.20 29.62,67.20 25.56,67.20 22.26,63.90 22.26,59.84 22.26,59.84 22.26,40.16 22.26,40.16 22.26,36.10 25.56,32.80 29.62,32.80 29.62,32.80 56.79,32.80 56.79,32.80 60.55,32.80 63.69,35.61 64.10,39.35 64.10,39.35 64.12,39.59 64.12,39.59 64.12,39.59 64.12,41.44 64.12,41.44 64.12,41.44 71.46,35.86 71.46,35.86 72.16,35.34 72.99,35.07 73.83,35.07 74.42,35.07 75.02,35.20 75.57,35.48 76.90,36.14 77.74,37.50 77.74,38.98 Z M 59.64,60.27 C 59.64,60.27 59.64,39.73 59.64,39.73 59.43,38.33 58.22,37.28 56.79,37.28 56.79,37.28 29.62,37.28 29.62,37.28 28.03,37.28 26.74,38.57 26.74,40.16 26.74,40.16 26.74,59.84 26.74,59.84 26.74,61.43 28.03,62.72 29.62,62.72 29.62,62.72 56.79,62.72 56.79,62.72 58.23,62.72 59.43,61.67 59.64,60.27 59.64,60.27 59.64,60.27 59.64,60.27 Z"
-					/>
-				</svg>
-			</div>
+	function gtag() {
+		dataLayer.push(arguments);
+	}
+	gtag('js', new Date());
 
-			Please allow camera & microphone access to use this app.
+	gtag('config', 'UA-19124340-30');
+
+	</script>
+</head>
+
+<body onload="init()">
+	<div id="message">
+		Share the URL of this page with your friends to start talking.<br />
+		<a href="http://github.com/vasanthv/talk" target="_blank">Source code</a> &middot;
+		<a href="/legal" target="_blank">Legal</a>
+	</div>
+	<div id="allowaccess">
+		<div id="logo" style="margin:auto;">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+				<path
+				      id="talk-logo"
+				      fill="#6669C4"
+				      fill-rule="evenodd"
+				      d="M 95.00,50.00 C 95.00,74.85 74.85,95.00 50.00,95.00 41.16,95.00 32.94,92.41 25.98,88.01 25.98,88.01 5.00,95.00 5.00,95.00 5.00,95.00 11.99,74.02 11.99,74.02 7.59,67.06 5.00,58.84 5.00,50.00 5.00,25.15 25.15,5.00 50.00,5.00 74.85,5.00 95.00,25.15 95.00,50.00 Z M 77.74,38.98 C 77.74,38.98 77.74,61.02 77.74,61.02 77.74,62.50 76.90,63.86 75.57,64.52 74.24,65.18 72.65,65.03 71.46,64.14 71.46,64.14 64.10,58.55 64.10,58.55 64.10,58.55 64.10,60.65 64.10,60.65 63.69,64.39 60.55,67.20 56.79,67.20 56.79,67.20 29.62,67.20 29.62,67.20 25.56,67.20 22.26,63.90 22.26,59.84 22.26,59.84 22.26,40.16 22.26,40.16 22.26,36.10 25.56,32.80 29.62,32.80 29.62,32.80 56.79,32.80 56.79,32.80 60.55,32.80 63.69,35.61 64.10,39.35 64.10,39.35 64.12,39.59 64.12,39.59 64.12,39.59 64.12,41.44 64.12,41.44 64.12,41.44 71.46,35.86 71.46,35.86 72.16,35.34 72.99,35.07 73.83,35.07 74.42,35.07 75.02,35.20 75.57,35.48 76.90,36.14 77.74,37.50 77.74,38.98 Z M 59.64,60.27 C 59.64,60.27 59.64,39.73 59.64,39.73 59.43,38.33 58.22,37.28 56.79,37.28 56.79,37.28 29.62,37.28 29.62,37.28 28.03,37.28 26.74,38.57 26.74,40.16 26.74,40.16 26.74,59.84 26.74,59.84 26.74,61.43 28.03,62.72 29.62,62.72 29.62,62.72 56.79,62.72 56.79,62.72 58.23,62.72 59.43,61.67 59.64,60.27 59.64,60.27 59.64,60.27 59.64,60.27 Z" />
+			</svg>
 		</div>
-		<div id="buttons">
-			<button id="mutebtn" class="fas fa-microphone"></button>
-			<button id="videomutebtn" class="fas fa-video"></button>
-			<button id="swapcamerabtn" class="fas fa-sync-alt"></button>
-			<button id="screensharebtn" class="fas fa-desktop"></button>
-		</div>
-	</body>
+
+		Please allow camera & microphone access to use this app.
+	</div>
+	<div id="buttons">
+		<button id="mutebtn" class="fas fa-microphone"></button>
+		<button id="videomutebtn" class="fas fa-video"></button>
+		<button id="swapcamerabtn" class="fas fa-sync-alt"></button>
+		<button id="screensharebtn" class="fas fa-desktop"></button>
+	</div>
+</body>
+
 </html>

@@ -33,3 +33,7 @@ Open the following url in the browser
 ```
 http://localhost:3000
 ```
+
+### LICENSE
+
+MIT
