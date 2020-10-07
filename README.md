@@ -36,4 +36,4 @@ http://localhost:3000
 
 ### LICENSE
 
-MIT
+<a href="https://github.com/vasanthv/talk/blob/master/LICENSE">MIT License</a>
