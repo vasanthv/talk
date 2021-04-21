@@ -1,25 +1,7 @@
-const appURL = () => {
-	const protocol = "http" + (location.hostname == "localhost" ? "" : "s") + "://";
-	return protocol + location.hostname + (location.hostname == "localhost" ? ":3000" : "");
-};
-const getRoomName = () => {
-	let roomName = location.pathname.substring(1);
-	if (roomName == "") {
-		const randomName = () =>
-			Math.random()
-				.toString(36)
-				.substr(2, 6);
-		roomName = randomName();
-		const newurl = appURL() + "/" + roomName;
-		window.history.pushState({ url: newurl }, roomName, newurl);
-	}
-	return roomName;
-};
 var SIGNALING_SERVER = appURL();
 var USE_AUDIO = true;
 var USE_VIDEO = true;
 var CAMERA = "user";
-//var USE_VIDEO = { facingMode: "environment" }; // use this for back facing camera.
 var IS_SCREEN_STREAMING = false;
 var ROOM_ID = getRoomName();
 var peerConnection = null;
@@ -270,13 +252,6 @@ function setup_local_media(callback, errorback) {
 			if (errorback) errorback();
 		});
 }
-const resizeVideos = () => {
-	const numToString = ["", "one", "two", "three", "four", "five", "six"];
-	const videos = document.querySelectorAll(".video");
-	document.querySelectorAll(".video").forEach((v) => {
-		v.className = "video " + numToString[videos.length];
-	});
-};
 
 function toggleScreenSharing() {
 	const screenShareBtn = document.getElementById("screensharebtn");
@@ -351,16 +326,4 @@ const swapCamera = () => {
 		});
 };
 
-const copyURL = () => {
-	/* Get the text field */
-	var copyText = document.getElementById("roomurl");
-	/* Select the text field */
-	copyText.select();
-	copyText.setSelectionRange(0, 99999); /*For mobile devices*/
-	/* Copy the text inside the text field */
-	document.execCommand("copy");
-	document.getElementById("copybtn").style.color = "#27ae60";
-	setTimeout(() => {
-		document.getElementById("copybtn").style.color = "#333";
-	}, 3000);
-};
+init();
