@@ -31,6 +31,10 @@ const copyURL = () => {
 	}, 3000);
 };
 
+const attachMediaStream = function(element, stream) {
+	element.srcObject = stream;
+};
+
 const resizeVideos = () => {
 	const numToString = ["", "one", "two", "three", "four", "five", "six"];
 	const videos = document.querySelectorAll(".video");

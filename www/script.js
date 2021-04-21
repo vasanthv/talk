@@ -1,3 +1,5 @@
+/* global appURL, getRoomName, resizeVideos */
+
 var SIGNALING_SERVER = appURL();
 var USE_AUDIO = true;
 var USE_VIDEO = true;
@@ -188,9 +190,7 @@ function setup_local_media(callback, errorback) {
 		if (callback) callback();
 		return;
 	}
-	attachMediaStream = function(element, stream) {
-		element.srcObject = stream;
-	};
+
 	navigator.mediaDevices
 		.getUserMedia({ audio: USE_AUDIO, video: USE_VIDEO })
 		.then((stream) => {
