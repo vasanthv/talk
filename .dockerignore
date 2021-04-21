@@ -1,0 +1,15 @@
+# git folder
+.git
+
+# NPM
+node_modules
+npm-debug.log
+
+# Testing
+.nyc_output
+
+# Mac
+.DS_Store
+
+# cache
+.cache
