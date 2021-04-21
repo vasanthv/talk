@@ -1,4 +1,4 @@
-/* global appURL, getRoomName, resizeVideos */
+/* global appURL, getRoomName, resizeVideos, attachMediaStream */
 
 var SIGNALING_SERVER = appURL();
 var USE_AUDIO = true;
