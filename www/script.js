@@ -202,12 +202,12 @@ function setup_local_media(callback, errorback) {
 
 			document.getElementById("mutebtn").addEventListener("click", (e) => {
 				localMediaStream.getAudioTracks()[0].enabled = !localMediaStream.getAudioTracks()[0].enabled;
-				e.target.className = "fas fa-microphone" + (localMediaStream.getAudioTracks()[0].enabled ? "" : "-slash");
+				e.target.className = "icon-mic" + (localMediaStream.getAudioTracks()[0].enabled ? "" : "-off");
 			});
 
 			document.getElementById("videomutebtn").addEventListener("click", (e) => {
 				localMediaStream.getVideoTracks()[0].enabled = !localMediaStream.getVideoTracks()[0].enabled;
-				e.target.className = "fas fa-video" + (localMediaStream.getVideoTracks()[0].enabled ? "" : "-slash");
+				e.target.className = "icon-video" + (localMediaStream.getVideoTracks()[0].enabled ? "" : "-off");
 			});
 
 			navigator.mediaDevices.enumerateDevices().then((devices) => {

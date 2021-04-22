@@ -13,14 +13,13 @@
 		/>
 		<meta name="application-name" content="Talk" />
 		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-		<link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
-		<link rel="stylesheet" href="style.css" />
-		<script src="https://kit.fontawesome.com/d2f1016e6f.js" crossorigin="anonymous"></script>
+		<link rel="icon" href="/favicon.svg" />
+		<link rel="stylesheet" href="/style.css" />
 		<script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
 		<script src="/socket.io/socket.io.js"></script>
 		<script defer src="utils.js"></script>
 		<script defer src="script.js"></script>
-		<title>Talk - A free video call app for the web</title>
+		<title>Talk - Free group video call app for the web</title>
 	</head>
 
 	<body>
@@ -44,10 +43,10 @@
 			Please allow camera & microphone access to use this app.
 		</div>
 		<div id="buttons">
-			<button id="mutebtn" class="fas fa-microphone"></button>
-			<button id="videomutebtn" class="fas fa-video"></button>
+			<button id="mutebtn" class="icon-mic"></button>
+			<button id="videomutebtn" class="icon-video"></button>
+			<button id="screensharebtn" class="icon-monitor"></button>
 			<button id="swapcamerabtn" class="fas fa-sync-alt"></button>
-			<button id="screensharebtn" class="fas fa-desktop"></button>
 		</div>
 	</body>
 </html>
