@@ -109,10 +109,10 @@ function init() {
 	signalingSocket = io();
 
 	signalingSocket.on("connect", function() {
-		if (localMediaStream) join_chat_channel(ROOM_ID, {});
+		if (localMediaStream) joinChatChannel(ROOM_ID, {});
 		else
 			setupLocalMedia(function() {
-				join_chat_channel(ROOM_ID, {});
+				joinChatChannel(ROOM_ID, {});
 			});
 	});
 	signalingSocket.on("disconnect", function() {
@@ -128,7 +128,7 @@ function init() {
 		peerMediaElements = {};
 	});
 
-	function join_chat_channel(channel, userdata) {
+	function joinChatChannel(channel, userdata) {
 		signalingSocket.emit("join", { channel: channel, userdata: userdata });
 	}
 
