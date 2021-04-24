@@ -8,6 +8,7 @@ const io = require("socket.io").listen(server);
 // Server all the static files from www folder
 app.use(express.static(path.join(__dirname, "www")));
 app.use(express.static(path.join(__dirname, "icons")));
+app.use(express.static(path.join(__dirname, "node_modules/vue/dist/")));
 
 // Get PORT from env variable else assign 3000 for development
 const PORT = process.env.PORT || 3000;
