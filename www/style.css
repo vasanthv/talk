@@ -11,15 +11,9 @@ body {
 	line-height: 1.6;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
-	background: #fff;
+	background: #d3d7e1;
 }
-video {
-	max-width: 100%;
-	height: 100%;
-}
-video:fullscreen {
-	object-fit: contain;
-}
+
 .video {
 	float: left;
 	width: 25vw;
@@ -47,7 +41,19 @@ video:fullscreen {
 	width: 33.33vw;
 	height: 50vh;
 }
-#myVideo.mirror {
+.video video {
+	max-width: 100%;
+	height: 100%;
+	display: block;
+	margin: auto;
+	padding: 1rem;
+	box-sizing: border-box;
+	border-radius: 0.8rem;
+}
+.video video:fullscreen {
+	object-fit: contain;
+}
+.video video.mirror {
 	transform: rotateY(180deg);
 	-webkit-transform: rotateY(180deg);
 	-moz-transform: rotateY(180deg);
@@ -57,7 +63,6 @@ video:fullscreen {
 	color: #e74c3c !important;
 }
 
-#allowaccess,
 #message {
 	background: #fff;
 	position: fixed;
@@ -70,18 +75,8 @@ video:fullscreen {
 	padding: 1rem 2rem;
 	box-sizing: border-box;
 	border-radius: 1rem;
-	font-style: italic;
-	opacity: 0;
 	transition: opacity 250ms;
 	transition-delay: 250ms;
-}
-#allowaccess {
-	text-align: center;
-	opacity: 1;
-}
-#message a {
-	color: inherit;
-	font-style: normal;
 }
 
 #logo {
@@ -92,35 +87,34 @@ video:fullscreen {
 	width: 100%;
 }
 
-#buttons {
-	background: rgba(255, 255, 255, 0.8);
-	opacity: 0;
+#actionsWrap {
 	position: fixed;
 	bottom: 1rem;
 	left: 0px;
 	right: 0px;
 	z-index: 100;
-	width: 21rem;
+	display: inline-flex;
+}
+#actions {
+	background: rgba(255, 255, 255, 0.5);
 	margin: auto;
-	padding: 1rem 2rem;
 	box-sizing: border-box;
 	border-radius: 1rem;
-	display: flex;
-	justify-content: space-between;
 	transition: opacity 250ms;
 }
 
-#buttons button {
+#actions button {
+	flex: 1;
 	background: none;
 	border: none;
-}
-
-#mutebtn,
-#videomutebtn,
-#swapcamerabtn,
-#screensharebtn {
 	font-size: 1.25rem;
+	padding: 1rem 2rem;
 	cursor: pointer;
+	margin: auto;
+}
+#actions button:hover {
+	background: #fafafa;
+	border-radius: 1rem;
 }
 
 @media only screen and (max-width: 960px) {

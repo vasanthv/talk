@@ -47,7 +47,52 @@ const App = new Vue({
 	},
 	computed: {},
 	methods: {
-		init: function() {},
+		audioToggle: function() {
+			local_media_stream.getAudioTracks()[0].enabled = !local_media_stream.getAudioTracks()[0].enabled;
+			this.audioEnabled = !this.audioEnabled;
+		},
+		videoToggle: function() {
+			local_media_stream.getVideoTracks()[0].enabled = !local_media_stream.getVideoTracks()[0].enabled;
+			this.videoEnabled = !this.videoEnabled;
+		},
+		screenShareToggle: function() {
+			let screenMediaPromise;
+			if (!App.screenshareEnabled) {
+				if (navigator.getDisplayMedia) {
+					screenMediaPromise = navigator.getDisplayMedia({ video: true });
+				} else if (navigator.mediaDevices.getDisplayMedia) {
+					screenMediaPromise = navigator.mediaDevices.getDisplayMedia({ video: true });
+				} else {
+					screenMediaPromise = navigator.mediaDevices.getUserMedia({
+						video: { mediaSource: "screen" },
+					});
+				}
+			} else {
+				screenMediaPromise = navigator.mediaDevices.getUserMedia({ video: true });
+			}
+			screenMediaPromise
+				.then((screenStream) => {
+					App.screenshareEnabled = !App.screenshareEnabled;
+
+					for (let peer_id in peers) {
+						const sender = peers[peer_id].getSenders().find((s) => (s.track ? s.track.kind === "video" : false));
+						sender.replaceTrack(screenStream.getVideoTracks()[0]);
+					}
+					screenStream.getVideoTracks()[0].enabled = true;
+					const newStream = new MediaStream([screenStream.getVideoTracks()[0], local_media_stream.getAudioTracks()[0]]);
+					local_media_stream = newStream;
+					attachMediaStream(document.getElementById("selfVideo"), newStream);
+					document.querySelector("#videos .video #selfVideo").classList.toggle("mirror");
+
+					screenStream.getVideoTracks()[0].onended = function() {
+						if (App.screenshareEnabled) App.screenShareToggle();
+					};
+				})
+				.catch((e) => {
+					alert("Unable to share screen.");
+					console.error(e);
+				});
+		},
 	},
 });
 
@@ -94,10 +139,6 @@ function init() {
 		signaling_socket.emit("join", { channel: channel, userdata: userdata });
 	}
 
-	function part_chat_channel(channel) {
-		signaling_socket.emit("part", channel);
-	}
-
 	/**
 	 * When we join a group, our signaling server will send out 'addPeer' events to each pair
 	 * of users in the group (creating a fully-connected graph of users, ie if there are 6 people
@@ -131,25 +172,25 @@ function init() {
 		};
 		peer_connection.onaddstream = function(event) {
 			// console.log("onAddStream", event);
-			const videoWrap = document.createElement("div");
-			videoWrap.className = "video";
-			const remote_media = document.createElement("video");
-			videoWrap.appendChild(remote_media);
-			remote_media.setAttribute("playsinline", true);
-			remote_media.mediaGroup = "remotevideo";
-			remote_media.autoplay = true;
-			remote_media.controls = false;
+			// const videoWrap = document.createElement("div");
+			// videoWrap.className = "video";
+			const remote_media = getVideoElement();
+			// videoWrap.appendChild(remote_media);
+			// remote_media.setAttribute("playsinline", true);
+			// remote_media.mediaGroup = "remotevideo";
+			// remote_media.autoplay = true;
+			// remote_media.controls = false;
 			peer_media_elements[peer_id] = remote_media;
-			document.getElementById("videos").appendChild(videoWrap);
+			// document.getElementById("videos").appendChild(videoWrap);
 
-			if (remote_media.requestFullscreen) {
-				const fullScreenBtn = document.createElement("button");
-				fullScreenBtn.className = "fullscreenbtn fas fa-expand";
-				fullScreenBtn.addEventListener("click", (e) => {
-					remote_media.requestFullscreen();
-				});
-				videoWrap.appendChild(fullScreenBtn);
-			}
+			// if (remote_media.requestFullscreen) {
+			// 	const fullScreenBtn = document.createElement("button");
+			// 	fullScreenBtn.className = "fullscreenbtn fas fa-expand";
+			// 	fullScreenBtn.addEventListener("click", (e) => {
+			// 		remote_media.requestFullscreen();
+			// 	});
+			// 	videoWrap.appendChild(fullScreenBtn);
+			// }
 
 			attachMediaStream(remote_media, event.stream);
 			resizeVideos();
@@ -274,18 +315,18 @@ function init() {
 		delete peers[peer_id];
 		delete peer_media_elements[config.peer_id];
 	});
-	document.getElementById("roomurl").textContent = APP_URL + "/" + ROOM_ID;
-	document.getElementById("roomurl").addEventListener("click", (event) => {
-		let range, selection;
-		selection = window.getSelection();
-		range = document.createRange();
-		range.selectNodeContents(event.target);
-		selection.removeAllRanges();
-		selection.addRange(range);
-	});
-	document.getElementById("closebtn").addEventListener("click", () => {
-		document.getElementById("intro").style.display = "none";
-	});
+	// document.getElementById("roomurl").textContent = APP_URL + "/" + ROOM_ID;
+	// document.getElementById("roomurl").addEventListener("click", (event) => {
+	// 	let range, selection;
+	// 	selection = window.getSelection();
+	// 	range = document.createRange();
+	// 	range.selectNodeContents(event.target);
+	// 	selection.removeAllRanges();
+	// 	selection.addRange(range);
+	// });
+	// document.getElementById("closebtn").addEventListener("click", () => {
+	// 	document.getElementById("intro").style.display = "none";
+	// });
 }
 const attachMediaStream = function(element, stream) {
 	// console.log('DEPRECATED, attachMediaStream will soon be removed.');
@@ -303,42 +344,43 @@ function setup_local_media(callback, errorback) {
 		.getUserMedia({ audio: USE_AUDIO, video: USE_VIDEO })
 		.then((stream) => {
 			local_media_stream = stream;
-			const videoWrap = document.createElement("div");
-			videoWrap.className = "video";
-			videoWrap.setAttribute("id", "selfVideoWrap");
-			const btnWrap = document.createElement("div");
-			btnWrap.setAttribute("id", "btnWrap");
+			// const videoWrap = document.createElement("div");
+			// videoWrap.className = "video";
+			// videoWrap.setAttribute("id", "selfVideoWrap");
 
-			const muteBtn = document.createElement("button");
-			muteBtn.setAttribute("id", "mutebtn");
-			muteBtn.className = "fas fa-microphone";
-			muteBtn.addEventListener("click", (e) => {
-				local_media_stream.getAudioTracks()[0].enabled = !local_media_stream.getAudioTracks()[0].enabled;
-				e.target.className = "fas fa-microphone" + (local_media_stream.getAudioTracks()[0].enabled ? "" : "-slash");
-			});
-			btnWrap.appendChild(muteBtn);
+			// const btnWrap = document.createElement("div");
+			// btnWrap.setAttribute("id", "btnWrap");
+			// const muteBtn = document.createElement("button");
+			// muteBtn.setAttribute("id", "mutebtn");
+			// muteBtn.className = "fas fa-microphone";
+			// muteBtn.addEventListener("click", (e) => {
+			// 	local_media_stream.getAudioTracks()[0].enabled = !local_media_stream.getAudioTracks()[0].enabled;
+			// 	e.target.className = "fas fa-microphone" + (local_media_stream.getAudioTracks()[0].enabled ? "" : "-slash");
+			// });
+			// btnWrap.appendChild(muteBtn);
 
-			const videoMuteBtn = document.createElement("button");
-			videoMuteBtn.setAttribute("id", "videomutebtn");
-			videoMuteBtn.className = "fas fa-video";
-			videoMuteBtn.addEventListener("click", (e) => {
-				local_media_stream.getVideoTracks()[0].enabled = !local_media_stream.getVideoTracks()[0].enabled;
-				e.target.className = "fas fa-video" + (local_media_stream.getVideoTracks()[0].enabled ? "" : "-slash");
-			});
-			btnWrap.appendChild(videoMuteBtn);
+			// const videoMuteBtn = document.createElement("button");
+			// videoMuteBtn.setAttribute("id", "videomutebtn");
+			// videoMuteBtn.className = "fas fa-video";
+			// videoMuteBtn.addEventListener("click", (e) => {
+			// 	local_media_stream.getVideoTracks()[0].enabled = !local_media_stream.getVideoTracks()[0].enabled;
+			// 	e.target.className = "fas fa-video" + (local_media_stream.getVideoTracks()[0].enabled ? "" : "-slash");
+			// });
+			// btnWrap.appendChild(videoMuteBtn);
 
-			videoWrap.appendChild(btnWrap); // append all buttons to the local video wrap
+			// videoWrap.appendChild(btnWrap); // append all buttons to the local video wrap
 
-			const local_media = document.createElement("video");
-			videoWrap.appendChild(local_media);
-			local_media.setAttribute("id", "selfVideo");
-			local_media.setAttribute("playsinline", true);
-			local_media.className = "mirror";
-			local_media.autoplay = true;
-			local_media.muted = true;
-			local_media.volume = 0;
-			local_media.controls = false;
-			document.getElementById("videos").appendChild(videoWrap);
+			const local_media = getVideoElement(true);
+
+			// local_media.setAttribute("id", "selfVideo");
+			// local_media.setAttribute("playsinline", true);
+			// local_media.className = "mirror";
+			// local_media.autoplay = true;
+			// local_media.muted = true;
+			// local_media.volume = 0;
+			// local_media.controls = false;
+			// videoWrap.appendChild(local_media);
+			// document.getElementById("videos").appendChild(videoWrap);
 			attachMediaStream(local_media, stream);
 			resizeVideos();
 			if (callback) callback();
@@ -349,10 +391,47 @@ function setup_local_media(callback, errorback) {
 			if (errorback) errorback();
 		});
 }
+
+const getVideoElement = (isLocal) => {
+	const videoWrap = document.createElement("div");
+	videoWrap.className = "video";
+	const media = document.createElement("video");
+	media.setAttribute("playsinline", true);
+	media.autoplay = true;
+	media.controls = false;
+	if (isLocal) {
+		media.setAttribute("id", "selfVideo");
+		media.className = "mirror";
+		media.muted = true;
+		media.volume = 0;
+	} else {
+		media.mediaGroup = "remotevideo";
+	}
+	videoWrap.appendChild(media);
+	document.getElementById("videos").appendChild(videoWrap);
+	return media;
+
+	// const local_media = document.createElement("video");
+	// local_media.setAttribute("id", "selfVideo");
+	// local_media.setAttribute("playsinline", true);
+	// local_media.className = "mirror";
+	// local_media.autoplay = true;
+	// local_media.muted = true;
+	// local_media.volume = 0;
+	// local_media.controls = false;
+
+	// const remote_media = document.createElement("video");
+	// videoWrap.appendChild(remote_media);
+	// remote_media.setAttribute("playsinline", true);
+	// remote_media.mediaGroup = "remotevideo";
+	// remote_media.autoplay = true;
+	// remote_media.controls = false;
+};
+
 const resizeVideos = () => {
 	const numToString = ["", "one", "two", "three", "four", "five", "six"];
-	const videos = document.querySelectorAll(".video");
-	document.querySelectorAll(".video").forEach((v) => {
+	const videos = document.querySelectorAll("#videos .video");
+	document.querySelectorAll("#videos .video").forEach((v) => {
 		v.className = "video " + numToString[videos.length];
 	});
 };

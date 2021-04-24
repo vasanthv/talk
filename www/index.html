@@ -26,11 +26,17 @@
 		<section id="videos"></section>
 		<main id="app">
 			<div id="message">
-				Share the URL of this page with your friends to start talking.<br />
-				<a href="http://github.com/vasanthv/talk" target="_blank">Source code</a> &middot;
-				<a href="/legal" target="_blank">Legal</a>
+				Talk is a free & open-source video conference app for the Web.<br />
+				<iframe
+					src="https://ghbtns.com/github-btn.html?user=vasanthv&repo=talk&type=star&count=true"
+					frameborder="0"
+					scrolling="0"
+					width="150"
+					height="20"
+					title="GitHub"
+				></iframe>
 			</div>
-			<div id="allowaccess">
+			<!-- <div id="allowaccess">
 				<div id="logo" style="margin:auto;">
 					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
 						<path
@@ -43,12 +49,14 @@
 				</div>
 
 				Please allow camera & microphone access to use this app.
-			</div>
-			<div id="buttons">
-				<button id="mutebtn" class="icon-mic"></button>
-				<button id="videomutebtn" class="icon-video"></button>
-				<button id="screensharebtn" class="icon-monitor"></button>
-				<button id="swapcamerabtn" class="fas fa-sync-alt"></button>
+			</div> -->
+			<div id="actionsWrap">
+				<div id="actions">
+					<button v-bind:class="'icon-mic'+(audioEnabled ? '' : '-off')" v-on:click="audioToggle"></button>
+					<button v-bind:class="'icon-video'+(videoEnabled ? '' : '-off')" v-on:click="videoToggle"></button>
+					<button class="icon-monitor" v-on:click="screenShareToggle"></button>
+					<!-- <button id="swapcamerabtn" class="fas fa-sync-alt"></button> -->
+				</div>
 			</div>
 		</main>
 	</body>
