@@ -48,7 +48,7 @@ io.sockets.on("connection", (socket) => {
 			channels[channel] = {};
 		}
 
-		for (id in channels[channel]) {
+		for (const id in channels[channel]) {
 			channels[channel][id].emit("addPeer", { peer_id: socket.id, should_create_offer: false });
 			socket.emit("addPeer", { peer_id: id, should_create_offer: true });
 		}
@@ -64,7 +64,7 @@ io.sockets.on("connection", (socket) => {
 		delete socket.channels[channel];
 		delete channels[channel][socket.id];
 
-		for (id in channels[channel]) {
+		for (const id in channels[channel]) {
 			channels[channel][id].emit("removePeer", { peer_id: socket.id });
 			socket.emit("removePeer", { peer_id: id });
 		}
