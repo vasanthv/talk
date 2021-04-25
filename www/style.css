@@ -13,7 +13,16 @@ body {
 	-moz-osx-font-smoothing: grayscale;
 	background: #fff;
 }
-
+input {
+	display: block;
+	box-sizing: border-box;
+	border: 1px solid #efefef;
+	border-radius: 0.5rem;
+	padding: 0.6rem;
+}
+.light {
+	color: #878787;
+}
 .video {
 	float: left;
 	width: 25vw;
@@ -65,11 +74,79 @@ body {
 	z-index: 100;
 	width: 18rem;
 	margin: auto;
-	padding: 1rem 2rem;
+	padding: 1rem;
 	box-sizing: border-box;
 	border-radius: 1rem;
 	box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.16), 0px 1px 4px rgba(0, 0, 0, 0.16);
 }
+
+#chatWrap {
+	background: #fff;
+	position: fixed;
+	bottom: 6rem;
+	left: 0px;
+	right: 0px;
+	z-index: 100;
+	width: 18rem;
+	margin: auto;
+	padding: 1rem;
+	box-sizing: border-box;
+	border-radius: 1rem;
+	box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.16), 0px 1px 4px rgba(0, 0, 0, 0.16);
+}
+#chatWrap #chats {
+	overflow-y: auto;
+	overflow: auto;
+	max-height: 240px;
+	margin: auto;
+	background: /* Shadow covers */ linear-gradient(white 30%, rgba(255, 255, 255, 0)),
+		linear-gradient(rgba(255, 255, 255, 0), white 70%) 0 100%,
+		/* Shadows */ radial-gradient(50% 0, farthest-side, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)),
+		radial-gradient(50% 100%, farthest-side, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)) 0 100%;
+	background: /* Shadow covers */ linear-gradient(white 30%, rgba(255, 255, 255, 0)),
+		linear-gradient(rgba(255, 255, 255, 0), white 70%) 0 100%,
+		/* Shadows */ radial-gradient(farthest-side at 50% 0, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)),
+		radial-gradient(farthest-side at 50% 100%, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)) 0 100%;
+	background-repeat: no-repeat;
+	background-color: white;
+	background-size: 100% 40px, 100% 40px, 100% 14px, 100% 14px;
+
+	background-attachment: local, local, scroll, scroll;
+}
+#chatWrap .chat {
+	margin: 0.5rem 0rem;
+}
+#chatWrap .chat .name {
+	font-weight: bold;
+}
+#chatWrap .chat .message {
+}
+#chatWrap .chat .date {
+	font-size: small;
+}
+#chatWrap #composeBox {
+	position: relative;
+	background: #f6f6f6;
+	border-radius: 1rem;
+	padding: 0.7rem 1rem;
+	margin-top: 0.5rem;
+	max-height: 4.2rem;
+	overflow-y: auto;
+}
+#chatWrap #composeBox #placeholder {
+	position: absolute;
+	z-index: 5;
+	opacity: 0.5;
+}
+#chatWrap #composeBox #compose {
+	position: relative;
+	z-index: 10;
+}
+#chatWrap #noChat {
+	padding: 1rem;
+	text-align: center;
+}
+
 #settings {
 	background: rgba(255, 255, 255, 0.9);
 	box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.16), 0px 1px 4px rgba(0, 0, 0, 0.16);
@@ -104,6 +181,10 @@ body {
 #settings .link:hover {
 	background: #fff;
 }
+#settings input {
+	margin: 0rem 1rem 1rem;
+	width: calc(100% - 2rem);
+}
 
 #actionsWrap {
 	position: fixed;
@@ -121,7 +202,6 @@ body {
 	border-radius: 1rem;
 	transition: opacity 250ms;
 }
-
 #actions button {
 	flex: 1;
 	background: none;
@@ -131,7 +211,10 @@ body {
 	cursor: pointer;
 	margin: auto;
 }
-#actions button:hover,
+#actions button:hover {
+	background: rgba(255, 255, 255, 0.8);
+	border-radius: 1rem;
+}
 #actions button.active {
 	background: #fafafa;
 	border-radius: 1rem;

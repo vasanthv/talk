@@ -48,6 +48,8 @@ const App = new Vue({
 		selectedAudioDeviceId: "",
 		selectedVideoDeviceId: "",
 		name: window.localStorage.name || "",
+		typing: "",
+		chats: [],
 	},
 	computed: {},
 	methods: {
@@ -61,6 +63,9 @@ const App = new Vue({
 		},
 		toggleSelfVideoMirror: function() {
 			document.querySelector("#videos .video #selfVideo").classList.toggle("mirror");
+		},
+		nameToLocalStorage: function() {
+			window.localStorage.name = this.name;
 		},
 		screenShareToggle: function() {
 			let screenMediaPromise;
@@ -141,6 +146,68 @@ const App = new Vue({
 					alert("Error while swaping microphone");
 				});
 		},
+		linkify: function(str) {
+			return str.replace(/(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%]+/gi, (match) => {
+				let displayURL = match
+					.trim()
+					.replace("https://", "")
+					.replace("https://", "");
+				displayURL = displayURL.length > 25 ? displayURL.substr(0, 25) + "&hellip;" : displayURL;
+				const url = !/^https?:\/\//i.test(match) ? "http://" + match : match;
+				return `<a href="${url}" target="_blank" class="link" rel="noopener">${displayURL}</a>`;
+			});
+		},
+		edit: function(e) {
+			this.typing = e.srcElement.textContent;
+		},
+		paste: function(e) {
+			e.preventDefault();
+			const clipboardData = e.clipboardData || window.clipboardData;
+			const pastedText = clipboardData.getData("Text");
+			document.execCommand("inserttext", false, pastedText.replace(/(\r\n\t|\n|\r\t)/gm, " "));
+		},
+		sendChat: function(e) {
+			e.stopPropagation();
+			e.preventDefault();
+			if (this.typing.length) {
+				const composeElement = document.getElementById("compose");
+				const chatMessage = {
+					type: "chat",
+					name: this.name || "Unnamed",
+					message: this.typing,
+					date: new Date().toISOString(),
+				};
+				this.chats.push(chatMessage);
+				Object.keys(dataChannels).map((peer_id) => dataChannels[peer_id].send(JSON.stringify(chatMessage)));
+				this.typing = "";
+				composeElement.textContent = "";
+				composeElement.blur;
+			}
+		},
+		handleIncomingDataChannelMessage: function(chatMessage) {
+			switch (chatMessage.type) {
+				case "chat":
+					this.showChat = true;
+					this.chats.push(chatMessage);
+					break;
+				default:
+					break;
+			}
+		},
+		formatDate: function(datestring) {
+			const seconds = Math.floor((new Date() - new Date(datestring)) / 1000);
+			let interval = seconds / 31536000;
+			if (interval > 1) return Math.floor(interval) + "Y";
+			interval = seconds / 2592000;
+			if (interval > 1) return Math.floor(interval) + "M";
+			interval = seconds / 86400;
+			if (interval > 1) return Math.floor(interval) + "d";
+			interval = seconds / 3600;
+			if (interval > 1) return Math.floor(interval) + "h";
+			interval = seconds / 60;
+			if (interval > 1) return Math.floor(interval) + "m";
+			return "now";
+		},
 	},
 });
 
@@ -151,6 +218,7 @@ let signalingSocket = null; /* our socket.io connection to our webserver */
 let localMediaStream = null; /* our own microphone / webcam */
 let peers = {}; /* keep track of our peer connections, indexed by peer_id (aka socket.io id) */
 let peerMediaElements = {}; /* keep track of our <video>/<audio> tags, indexed by peer_id */
+let dataChannels = {};
 
 function init() {
 	signalingSocket = io(APP_URL);
@@ -208,9 +276,22 @@ function init() {
 			resizeVideos();
 			App.showIntro = false;
 		};
+		peerConnection.ondatachannel = function(event) {
+			console.log("Datachannel event" + peer_id, event);
+			event.channel.onmessage = (msg) => {
+				let chatMessage = {};
+				try {
+					chatMessage = JSON.parse(msg.data);
+					App.handleIncomingDataChannelMessage(chatMessage);
+				} catch (err) {
+					console.log(err);
+				}
+			};
+		};
 
 		/* Add our local stream */
 		peerConnection.addStream(localMediaStream);
+		dataChannels[peer_id] = peerConnection.createDataChannel("talk__data_channel");
 
 		if (config.should_create_offer) {
 			peerConnection.createOffer(
@@ -277,6 +358,7 @@ function init() {
 		if (peer_id in peers) {
 			peers[peer_id].close();
 		}
+		delete dataChannels[peer_id];
 		delete peers[peer_id];
 		delete peerMediaElements[config.peer_id];
 	});

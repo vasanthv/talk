@@ -25,7 +25,7 @@
 	<body>
 		<section id="videos"></section>
 		<main id="app">
-			<div id="intro" v-if="showIntro && !showSettings">
+			<div id="intro" v-if="showIntro && !showChat && !showSettings">
 				<p>
 					<strong>Talk</strong> is a free & open-source video conference app for the web. <br />Works in all major
 					browsers. No signups. No downloads. 100% peer-to-peer.
@@ -41,6 +41,28 @@
 					height="20"
 					title="GitHub"
 				></iframe>
+			</div>
+
+			<div id="chatWrap" v-if="showChat">
+				<div id="chats">
+					<div class="chat" v-for="(chat, i) in chats" v-bind:key="i">
+						<span class="name">{{chat.name}}</span>
+						<span class="date light"> &middot; {{formatDate(chat.date)}}</span>
+						<div class="message">{{chat.message}}</div>
+					</div>
+					<div id="noChat" class="light" v-if="!chats.length"><small>No chat messages.</small></div>
+				</div>
+				<div id="composeBox">
+					<div id="placeholder" v-if="typing.length <= 0">Type message...</div>
+					<div
+						id="compose"
+						contenteditable="true"
+						v-on:keydown.enter="sendChat"
+						v-on:input="edit($event)"
+						v-on:paste="paste($event)"
+					></div>
+				</div>
+				<small class="light">Press enter to submit</small>
 			</div>
 
 			<div id="settings" v-if="showSettings">
@@ -63,13 +85,19 @@
 						{{audioDevice.label}}
 					</div>
 				</div>
+
+				<div class="label">Name 📛</div>
+				<input type="text" placeholder="Your name" v-model="name" v-on:keyup="nameToLocalStorage" />
 			</div>
 
 			<div id="actionsWrap">
 				<div id="actions">
 					<button v-bind:class="'icon-mic'+(audioEnabled ? '' : '-off')" v-on:click="audioToggle"></button>
 					<button v-bind:class="'icon-video'+(videoEnabled ? '' : '-off')" v-on:click="videoToggle"></button>
-					<button v-bind:class="'icon-message-square'"></button>
+					<button
+						v-bind:class="'icon-message-square '+(showChat ? 'active' : '')"
+						v-on:click="showChat = !showChat"
+					></button>
 					<button
 						v-bind:class="'icon-monitor '+(screenshareEnabled ? 'active' : '')"
 						v-on:click="screenShareToggle"
