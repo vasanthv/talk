@@ -55,10 +55,6 @@ body {
 	-webkit-transform: rotateY(180deg);
 	-moz-transform: rotateY(180deg);
 }
-.icon-mic-off,
-.icon-video-off {
-	color: #e74c3c !important;
-}
 
 #intro {
 	background: #fff;
@@ -139,6 +135,10 @@ body {
 #actions button.active {
 	background: #fafafa;
 	border-radius: 1rem;
+}
+#actions button.icon-mic-off,
+#actions button.icon-video-off {
+	color: #e74c3c !important;
 }
 
 @media only screen and (max-width: 960px) {
