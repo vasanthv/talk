@@ -37,10 +37,14 @@ const ROOM_ID = (() => {
 const App = new Vue({
 	el: "#app",
 	data: {
+		videoDevices: [],
+		audioDevices: [],
 		audioEnabled: true,
 		videoEnabled: true,
 		screenshareEnabled: false,
+		showIntro: true,
 		showChat: false,
+		showSettings: false,
 		selectedAudioDeviceId: "",
 		selectedVideoDeviceId: "",
 		name: window.localStorage.name || "",
@@ -54,6 +58,9 @@ const App = new Vue({
 		videoToggle: function() {
 			localMediaStream.getVideoTracks()[0].enabled = !localMediaStream.getVideoTracks()[0].enabled;
 			this.videoEnabled = !this.videoEnabled;
+		},
+		toggleSelfVideoMirror: function() {
+			document.querySelector("#videos .video #selfVideo").classList.toggle("mirror");
 		},
 		screenShareToggle: function() {
 			let screenMediaPromise;
@@ -82,15 +89,56 @@ const App = new Vue({
 					const newStream = new MediaStream([screenStream.getVideoTracks()[0], localMediaStream.getAudioTracks()[0]]);
 					localMediaStream = newStream;
 					attachMediaStream(document.getElementById("selfVideo"), newStream);
-					document.querySelector("#videos .video #selfVideo").classList.toggle("mirror");
+					this.toggleSelfVideoMirror();
 
 					screenStream.getVideoTracks()[0].onended = function() {
 						if (App.screenshareEnabled) App.screenShareToggle();
 					};
 				})
 				.catch((e) => {
-					alert("Unable to share screen.");
+					alert("Unable to share screen. Please use a supported browser.");
 					console.error(e);
+				});
+		},
+		changeCamera: function(deviceId) {
+			navigator.mediaDevices
+				.getUserMedia({ video: { deviceId: deviceId } })
+				.then((camStream) => {
+					console.log(camStream);
+					for (let peer_id in peers) {
+						const sender = peers[peer_id].getSenders().find((s) => (s.track ? s.track.kind === "video" : false));
+						sender.replaceTrack(camStream.getVideoTracks()[0]);
+					}
+					camStream.getVideoTracks()[0].enabled = true;
+
+					const newStream = new MediaStream([camStream.getVideoTracks()[0], localMediaStream.getAudioTracks()[0]]);
+					localMediaStream = newStream;
+					attachMediaStream(document.getElementById("selfVideo"), newStream);
+					this.selectedVideoDeviceId = deviceId;
+				})
+				.catch((err) => {
+					console.log(err);
+					alert("Error while swaping camera");
+				});
+		},
+		changeMicrophone: function(deviceId) {
+			navigator.mediaDevices
+				.getUserMedia({ audio: { deviceId: deviceId } })
+				.then((micStream) => {
+					for (let peer_id in peers) {
+						const sender = peers[peer_id].getSenders().find((s) => (s.track ? s.track.kind === "audio" : false));
+						sender.replaceTrack(micStream.getAudioTracks()[0]);
+					}
+					micStream.getAudioTracks()[0].enabled = true;
+
+					const newStream = new MediaStream([localMediaStream.getVideoTracks()[0], micStream.getAudioTracks()[0]]);
+					localMediaStream = newStream;
+					attachMediaStream(document.getElementById("selfVideo"), newStream);
+					this.selectedAudioDeviceId = deviceId;
+				})
+				.catch((err) => {
+					console.log(err);
+					alert("Error while swaping microphone");
 				});
 		},
 	},
@@ -158,6 +206,7 @@ function init() {
 			peerMediaElements[peer_id] = remoteMedia;
 			attachMediaStream(remoteMedia, event.stream);
 			resizeVideos();
+			App.showIntro = false;
 		};
 
 		/* Add our local stream */
@@ -247,6 +296,11 @@ function setupLocalMedia(callback, errorback) {
 			attachMediaStream(localMedia, stream);
 			resizeVideos();
 			if (callback) callback();
+
+			navigator.mediaDevices.enumerateDevices().then((devices) => {
+				App.videoDevices = devices.filter((device) => device.kind === "videoinput" && device.deviceId !== "default");
+				App.audioDevices = devices.filter((device) => device.kind === "audioinput" && device.deviceId !== "default");
+			});
 		})
 		.catch(() => {
 			/* user denied access to a/v */

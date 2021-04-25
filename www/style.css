@@ -11,7 +11,7 @@ body {
 	line-height: 1.6;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
-	background: #d3d7e1;
+	background: #fff;
 }
 
 .video {
@@ -46,9 +46,6 @@ body {
 	height: 100%;
 	display: block;
 	margin: auto;
-	padding: 1rem;
-	box-sizing: border-box;
-	border-radius: 0.8rem;
 }
 .video video:fullscreen {
 	object-fit: contain;
@@ -63,28 +60,53 @@ body {
 	color: #e74c3c !important;
 }
 
-#message {
+#intro {
 	background: #fff;
 	position: fixed;
 	bottom: 6rem;
 	left: 0px;
 	right: 0px;
 	z-index: 100;
-	width: 21rem;
+	width: 18rem;
 	margin: auto;
 	padding: 1rem 2rem;
 	box-sizing: border-box;
 	border-radius: 1rem;
-	transition: opacity 250ms;
-	transition-delay: 250ms;
+	box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.16), 0px 1px 4px rgba(0, 0, 0, 0.16);
 }
-
-#logo {
-	width: 48px;
+#settings {
+	background: rgba(255, 255, 255, 0.9);
+	box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.16), 0px 1px 4px rgba(0, 0, 0, 0.16);
+	position: fixed;
+	bottom: 5rem;
+	left: 0px;
+	right: 0px;
+	z-index: 100;
+	width: 15rem;
+	margin: auto;
+	box-sizing: border-box;
+	border-radius: 1rem;
+}
+#settings .label {
+	padding: 1rem 1rem 0.25rem;
+	font-weight: bold;
+}
+#settings .link {
+	padding: 0.25rem 1rem;
+	white-space: nowrap;
+	width: 100%;
+	box-sizing: border-box;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	cursor: pointer;
+	border-radius: 1rem;
+}
+#settings .link.active:before {
+	content: "✔️";
 	margin-right: 0.5rem;
 }
-#logo svg {
-	width: 100%;
+#settings .link:hover {
+	background: #fff;
 }
 
 #actionsWrap {
@@ -97,6 +119,7 @@ body {
 }
 #actions {
 	background: rgba(255, 255, 255, 0.5);
+	box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.16), 0px 1px 4px rgba(0, 0, 0, 0.16);
 	margin: auto;
 	box-sizing: border-box;
 	border-radius: 1rem;
@@ -108,11 +131,12 @@ body {
 	background: none;
 	border: none;
 	font-size: 1.25rem;
-	padding: 1rem 2rem;
+	padding: 1rem;
 	cursor: pointer;
 	margin: auto;
 }
-#actions button:hover {
+#actions button:hover,
+#actions button.active {
 	background: #fafafa;
 	border-radius: 1rem;
 }
