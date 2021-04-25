@@ -1,4 +1,4 @@
-/* globals App, io */
+/* globals App, io, cabin*/
 const ICE_SERVERS = [
 	{ urls: "stun:stun.l.google.com:19302" },
 	{ urls: "stun:stun.stunprotocol.org:3478" },
@@ -53,6 +53,8 @@ function init() {
 			setupLocalMedia(function() {
 				joinChatChannel(ROOM_ID, {});
 			});
+		// skip tracking if its someother domain
+		if (window.location.hostname !== "usetalk.io") cabin.blockMe(true);
 	});
 	signalingSocket.on("disconnect", function() {
 		for (let peer_id in peerMediaElements) {
