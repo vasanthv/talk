@@ -24,7 +24,7 @@
 
 	<body>
 		<section id="videos"></section>
-		<main id="app">
+		<main id="app" v-bind:style="'display:block'">
 			<div id="intro" v-if="showIntro && !showChat && !showSettings">
 				<p>
 					<strong>Talk</strong> is a free & open-source video conference app for the web. <br />Works in all major
@@ -33,14 +33,17 @@
 				<p>
 					<i><small>Share the URL of this page with your friends to start talking.</small></i>
 				</p>
-				<iframe
-					src="https://ghbtns.com/github-btn.html?user=vasanthv&repo=talk&type=star&count=true"
-					frameborder="0"
-					scrolling="0"
-					width="150"
-					height="20"
-					title="GitHub"
-				></iframe>
+				<div class="footer">
+					<iframe
+						src="https://ghbtns.com/github-btn.html?user=vasanthv&repo=talk&type=star&count=true"
+						frameborder="0"
+						scrolling="0"
+						width="150"
+						height="20"
+						title="GitHub"
+					></iframe>
+					<a href="/legal.html" class="terms light"><small>Terms</small></a>
+				</div>
 			</div>
 
 			<div id="chatWrap" v-if="showChat">
