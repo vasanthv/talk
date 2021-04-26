@@ -1,30 +1,5 @@
-const appURL = () => {
-	const protocol = "http" + (location.hostname == "localhost" ? "" : "s") + "://";
-	return protocol + location.hostname + (location.hostname == "localhost" ? ":3000" : "");
-};
-const getRoomName = () => {
-	let roomName = location.pathname.substring(1);
-	if (roomName == "") {
-		const randomName = () =>
-			Math.random()
-				.toString(36)
-				.substr(2, 6);
-		roomName = randomName();
-		const newurl = appURL() + "/" + roomName;
-		window.history.pushState({ url: newurl }, roomName, newurl);
-	}
-	return roomName;
-};
-var SIGNALING_SERVER = appURL();
-var USE_AUDIO = true;
-var USE_VIDEO = true;
-var CAMERA = "user";
-//var USE_VIDEO = { facingMode: "environment" }; // use this for back facing camera.
-var IS_SCREEN_STREAMING = false;
-var ROOM_ID = getRoomName();
-var peerConnection = null;
-
-var ICE_SERVERS = [
+/* globals App, io, cabin*/
+const ICE_SERVERS = [
 	{ urls: "stun:stun.l.google.com:19302" },
 	{ urls: "stun:stun.stunprotocol.org:3478" },
 	{ urls: "stun:stun.sipnet.net:3478" },
@@ -43,31 +18,51 @@ var ICE_SERVERS = [
 	},
 ];
 
-var signalingSocket = null; /* socket.io connection to our webserver */
-var localMediaStream = null; /* my own microphone / webcam */
-var peers = {}; /* keep track of our peer connections, indexed by peer_id (aka socket.io id) */
-var peerMediaElements = {}; /* keep track of our <video> tags, indexed by peer_id */
+const APP_URL = (() => {
+	const protocol = "http" + (location.hostname == "localhost" ? "" : "s") + "://";
+	return protocol + location.hostname + (location.hostname == "localhost" ? ":3000" : "");
+})();
+
+const ROOM_ID = (() => {
+	let roomName = location.pathname.substring(1);
+	if (!roomName) {
+		roomName = Math.random()
+			.toString(36)
+			.substr(2, 6);
+		window.history.pushState({ url: `${APP_URL}/${roomName}` }, roomName, `${APP_URL}/${roomName}`);
+	}
+	return roomName;
+})();
+
+const USE_AUDIO = true;
+const USE_VIDEO = true;
+
+let signalingSocket = null; /* our socket.io connection to our webserver */
+let localMediaStream = null; /* our own microphone / webcam */
+let peers = {}; /* keep track of our peer connections, indexed by peer_id (aka socket.io id) */
+let peerMediaElements = {}; /* keep track of our <video>/<audio> tags, indexed by peer_id */
+let dataChannels = {};
 
 function init() {
-	console.log("Connecting to signaling server");
-	signalingSocket = io(SIGNALING_SERVER);
+	// skip analytics if its some other domain
+	if (window.location.hostname !== "usetalk.io" && cabin) cabin.blockMe(true);
+
+	signalingSocket = io(APP_URL);
 	signalingSocket = io();
 
 	signalingSocket.on("connect", function() {
-		console.log("Connected to signaling server");
-		if (localMediaStream) joinChannel(ROOM_ID, {});
+		if (localMediaStream) joinChatChannel(ROOM_ID, {});
 		else
-			setup_local_media(function() {
-				// Join the channel once user gives access to microphone & webcam
-				joinChannel(ROOM_ID, {});
+			setupLocalMedia(function() {
+				joinChatChannel(ROOM_ID, {});
 			});
 	});
 	signalingSocket.on("disconnect", function() {
-		for (peer_id in peerMediaElements) {
-			document.body.removeChild(peerMediaElements[peer_id].parentNode);
+		for (let peer_id in peerMediaElements) {
+			document.getElementById("videos").removeChild(peerMediaElements[peer_id].parentNode);
 			resizeVideos();
 		}
-		for (peer_id in peers) {
+		for (let peer_id in peers) {
 			peers[peer_id].close();
 		}
 
@@ -75,15 +70,17 @@ function init() {
 		peerMediaElements = {};
 	});
 
-	function joinChannel(channel, userdata) {
+	function joinChatChannel(channel, userdata) {
 		signalingSocket.emit("join", { channel: channel, userdata: userdata });
 	}
+
 	signalingSocket.on("addPeer", function(config) {
-		var peer_id = config.peer_id;
+		const peer_id = config.peer_id;
 		if (peer_id in peers) return;
-		peerConnection = new RTCPeerConnection(
+
+		const peerConnection = new RTCPeerConnection(
 			{ iceServers: ICE_SERVERS },
-			{ optional: [{ DtlsSrtpKeyAgreement: true }] } // this will no longer be needed by chrome eventually (supposedly), but is necessary for now to get firefox to talk to chrome
+			{ optional: [{ DtlsSrtpKeyAgreement: true }] }
 		);
 		peers[peer_id] = peerConnection;
 
@@ -99,268 +96,153 @@ function init() {
 			}
 		};
 		peerConnection.onaddstream = function(event) {
-			const videoWrap = document.createElement("div");
-			videoWrap.className = "video";
-			const remoteMedia = document.createElement("video");
-			videoWrap.appendChild(remoteMedia);
-			remoteMedia.setAttribute("playsinline", true);
-			remoteMedia.mediaGroup = "remotevideo";
-			remoteMedia.autoplay = true;
-			remoteMedia.controls = false;
+			const remoteMedia = getVideoElement();
 			peerMediaElements[peer_id] = remoteMedia;
-			document.body.appendChild(videoWrap);
-			document.getElementById("message").style.display = "none";
-
 			attachMediaStream(remoteMedia, event.stream);
 			resizeVideos();
+			App.showIntro = false;
+		};
+		peerConnection.ondatachannel = function(event) {
+			console.log("Datachannel event" + peer_id, event);
+			event.channel.onmessage = (msg) => {
+				let chatMessage = {};
+				try {
+					chatMessage = JSON.parse(msg.data);
+					App.handleIncomingDataChannelMessage(chatMessage);
+				} catch (err) {
+					console.log(err);
+				}
+			};
 		};
 
 		/* Add our local stream */
 		peerConnection.addStream(localMediaStream);
+		dataChannels[peer_id] = peerConnection.createDataChannel("talk__data_channel");
 
 		if (config.should_create_offer) {
 			peerConnection.createOffer(
-				function(local_description) {
+				(localDescription) => {
 					peerConnection.setLocalDescription(
-						local_description,
-						function() {
+						localDescription,
+						() => {
 							signalingSocket.emit("relaySessionDescription", {
 								peer_id: peer_id,
-								session_description: local_description,
+								session_description: localDescription,
 							});
 						},
-						function(err) {
-							console.log(err);
-							alert("Offer setLocalDescription failed!");
-						}
+						() => alert("Offer setLocalDescription failed!")
 					);
 				},
-				function(error) {
-					console.log("Error sending offer: ", error);
-				}
+				(error) => console.log("Error sending offer: ", error)
 			);
 		}
 	});
 
 	signalingSocket.on("sessionDescription", function(config) {
-		var peer_id = config.peer_id;
-		var peer = peers[peer_id];
-		var remote_description = config.session_description;
+		const peer_id = config.peer_id;
+		const peer = peers[peer_id];
+		const remoteDescription = config.session_description;
 
-		var desc = new RTCSessionDescription(remote_description);
-		var stuff = peer.setRemoteDescription(
+		const desc = new RTCSessionDescription(remoteDescription);
+		peer.setRemoteDescription(
 			desc,
-			function() {
-				if (remote_description.type == "offer") {
+			() => {
+				if (remoteDescription.type == "offer") {
 					peer.createAnswer(
-						function(local_description) {
+						(localDescription) => {
 							peer.setLocalDescription(
-								local_description,
-								function() {
+								localDescription,
+								() => {
 									signalingSocket.emit("relaySessionDescription", {
 										peer_id: peer_id,
-										session_description: local_description,
+										session_description: localDescription,
 									});
 								},
-								function(err) {
-									console.log(err);
-									alert("Answer setLocalDescription failed!");
-								}
+								() => alert("Answer setLocalDescription failed!")
 							);
 						},
-						function(error) {
-							console.log("Error creating answer: ", error);
-						}
+						(error) => console.log("Error creating answer: ", error)
 					);
 				}
 			},
-			function(error) {
-				console.log("setRemoteDescription error: ", error);
-			}
+			(error) => console.log("setRemoteDescription error: ", error)
 		);
 	});
 
 	signalingSocket.on("iceCandidate", function(config) {
-		var peer = peers[config.peer_id];
-		var ice_candidate = config.ice_candidate;
-		peer.addIceCandidate(new RTCIceCandidate(ice_candidate));
+		const peer = peers[config.peer_id];
+		const iceCandidate = config.ice_candidate;
+		peer.addIceCandidate(new RTCIceCandidate(iceCandidate));
 	});
+
 	signalingSocket.on("removePeer", function(config) {
-		var peer_id = config.peer_id;
+		const peer_id = config.peer_id;
 		if (peer_id in peerMediaElements) {
-			document.body.removeChild(peerMediaElements[peer_id].parentNode);
+			document.getElementById("videos").removeChild(peerMediaElements[peer_id].parentNode);
 			resizeVideos();
 		}
 		if (peer_id in peers) {
 			peers[peer_id].close();
 		}
-
+		delete dataChannels[peer_id];
 		delete peers[peer_id];
 		delete peerMediaElements[config.peer_id];
 	});
-	// document.getElementById('roomurl').value = appURL() + '/' + getRoomName();
 }
-
-function setup_local_media(callback, errorback) {
+const attachMediaStream = (element, stream) => (element.srcObject = stream);
+function setupLocalMedia(callback, errorback) {
 	if (localMediaStream != null) {
 		if (callback) callback();
 		return;
 	}
-	attachMediaStream = function(element, stream) {
-		element.srcObject = stream;
-	};
+
 	navigator.mediaDevices
 		.getUserMedia({ audio: USE_AUDIO, video: USE_VIDEO })
 		.then((stream) => {
-			document.getElementById("allowaccess").style.display = "none";
 			localMediaStream = stream;
-			const videoWrap = document.createElement("div");
-			videoWrap.className = "video";
-			videoWrap.setAttribute("id", "myVideoWrap");
-
-			document.getElementById("mutebtn").addEventListener("click", (e) => {
-				localMediaStream.getAudioTracks()[0].enabled = !localMediaStream.getAudioTracks()[0].enabled;
-				e.target.className = "fas fa-microphone" + (localMediaStream.getAudioTracks()[0].enabled ? "" : "-slash");
-			});
-
-			document.getElementById("videomutebtn").addEventListener("click", (e) => {
-				localMediaStream.getVideoTracks()[0].enabled = !localMediaStream.getVideoTracks()[0].enabled;
-				e.target.className = "fas fa-video" + (localMediaStream.getVideoTracks()[0].enabled ? "" : "-slash");
-			});
-
-			navigator.mediaDevices.enumerateDevices().then((devices) => {
-				const videoInput = devices.filter((device) => device.kind === "videoinput");
-				if (videoInput.length > 1) {
-					document.getElementById("swapcamerabtn").addEventListener("click", (e) => {
-						swapCamera();
-					});
-				} else {
-					document.getElementById("swapcamerabtn").style.display = "none";
-				}
-			});
-
-			if (navigator.getDisplayMedia || navigator.mediaDevices.getDisplayMedia) {
-				document.getElementById("screensharebtn").addEventListener("click", (e) => {
-					toggleScreenSharing();
-				});
-			} else {
-				document.getElementById("screensharebtn").style.display = "none";
-			}
-
-			document.getElementById("buttons").style.opacity = "1";
-			document.getElementById("message").style.opacity = "1";
-
-			const localMedia = document.createElement("video");
-			videoWrap.appendChild(localMedia);
-			localMedia.setAttribute("id", "myVideo");
-			localMedia.setAttribute("playsinline", true);
-			localMedia.className = "mirror";
-			localMedia.autoplay = true;
-			localMedia.muted = true;
-			localMedia.volume = 0;
-			localMedia.controls = false;
-			document.body.appendChild(videoWrap);
+			const localMedia = getVideoElement(true);
 			attachMediaStream(localMedia, stream);
 			resizeVideos();
 			if (callback) callback();
+
+			navigator.mediaDevices.enumerateDevices().then((devices) => {
+				App.videoDevices = devices.filter((device) => device.kind === "videoinput" && device.deviceId !== "default");
+				App.audioDevices = devices.filter((device) => device.kind === "audioinput" && device.deviceId !== "default");
+			});
 		})
 		.catch(() => {
 			/* user denied access to a/v */
-			alert("This app will not work without camera/microphone access.");
+			alert("This site will not work without camera/microphone access.");
 			if (errorback) errorback();
 		});
 }
+
+const getVideoElement = (isLocal) => {
+	const videoWrap = document.createElement("div");
+	videoWrap.className = "video";
+	const media = document.createElement("video");
+	media.setAttribute("playsinline", true);
+	media.autoplay = true;
+	media.controls = false;
+	if (isLocal) {
+		media.setAttribute("id", "selfVideo");
+		media.className = "mirror";
+		media.muted = true;
+		media.volume = 0;
+	} else {
+		media.mediaGroup = "remotevideo";
+	}
+	videoWrap.appendChild(media);
+	document.getElementById("videos").appendChild(videoWrap);
+	return media;
+};
+
 const resizeVideos = () => {
 	const numToString = ["", "one", "two", "three", "four", "five", "six"];
-	const videos = document.querySelectorAll(".video");
-	document.querySelectorAll(".video").forEach((v) => {
+	const videos = document.querySelectorAll("#videos .video");
+	document.querySelectorAll("#videos .video").forEach((v) => {
 		v.className = "video " + numToString[videos.length];
 	});
 };
 
-function toggleScreenSharing() {
-	const screenShareBtn = document.getElementById("screensharebtn");
-	const videoMuteBtn = document.getElementById("videomutebtn");
-	let screenMediaPromise;
-	if (!IS_SCREEN_STREAMING) {
-		if (navigator.getDisplayMedia) {
-			screenMediaPromise = navigator.getDisplayMedia({ video: true });
-		} else if (navigator.mediaDevices.getDisplayMedia) {
-			screenMediaPromise = navigator.mediaDevices.getDisplayMedia({ video: true });
-		} else {
-			screenMediaPromise = navigator.mediaDevices.getUserMedia({
-				video: { mediaSource: "screen" },
-			});
-		}
-	} else {
-		screenMediaPromise = navigator.mediaDevices.getUserMedia({ video: true });
-		videoMuteBtn.className = "fas fa-video"; // make sure to enable video
-	}
-	screenMediaPromise
-		.then((screenStream) => {
-			IS_SCREEN_STREAMING = !IS_SCREEN_STREAMING;
-
-			if (peerConnection) {
-				var sender = peerConnection.getSenders().find((s) => (s.track ? s.track.kind === "video" : false));
-				sender.replaceTrack(screenStream.getVideoTracks()[0]);
-			}
-			screenStream.getVideoTracks()[0].enabled = true;
-
-			const newStream = new MediaStream([screenStream.getVideoTracks()[0], localMediaStream.getAudioTracks()[0]]);
-			localMediaStream = newStream;
-			attachMediaStream(document.getElementById("myVideo"), newStream);
-
-			document.getElementById("myVideo").classList.toggle("mirror");
-			screenShareBtn.classList.toggle("active");
-
-			var videoBtnDState = document.getElementById("videomutebtn").getAttribute("disabled");
-			videoBtnDState = videoBtnDState === null ? false : true;
-			document.getElementById("videomutebtn").disabled = !videoBtnDState;
-			screenStream.getVideoTracks()[0].onended = function() {
-				if (IS_SCREEN_STREAMING) toggleScreenSharing();
-			};
-		})
-		.catch((e) => {
-			alert("Unable to share screen.");
-			console.error(e);
-		});
-}
-
-const swapCamera = () => {
-	CAMERA = CAMERA == "user" ? "environment" : "user";
-	if (CAMERA == "user") USE_VIDEO = true;
-	else USE_VIDEO = { facingMode: { exact: CAMERA } };
-	navigator.mediaDevices
-		.getUserMedia({ video: USE_VIDEO })
-		.then((camStream) => {
-			if (peerConnection) {
-				var sender = peerConnection.getSenders().find((s) => (s.track ? s.track.kind === "video" : false));
-				sender.replaceTrack(camStream.getVideoTracks()[0]);
-			}
-			camStream.getVideoTracks()[0].enabled = true;
-
-			const newStream = new MediaStream([camStream.getVideoTracks()[0], localMediaStream.getAudioTracks()[0]]);
-			localMediaStream = newStream;
-			attachMediaStream(document.getElementById("myVideo"), newStream);
-
-			document.getElementById("myVideo").classList.toggle("mirror");
-		})
-		.catch((err) => {
-			console.log(err);
-			alert("Error is swaping camera");
-		});
-};
-
-const copyURL = () => {
-	/* Get the text field */
-	var copyText = document.getElementById("roomurl");
-	/* Select the text field */
-	copyText.select();
-	copyText.setSelectionRange(0, 99999); /*For mobile devices*/
-	/* Copy the text inside the text field */
-	document.execCommand("copy");
-	document.getElementById("copybtn").style.color = "#27ae60";
-	setTimeout(() => {
-		document.getElementById("copybtn").style.color = "#333";
-	}, 3000);
-};
+window.onload = init;

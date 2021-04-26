@@ -15,7 +15,7 @@
 		"socket.io",
 		"video"
 	],
-	"author": "Vasanth V",
+	"author": "Vasanth.V <imvasanthv@gmail.com>",
 	"license": "ISC",
 	"bugs": {
 		"url": "https://github.com/vasanthv/talk/issues"
@@ -23,6 +23,7 @@
 	"homepage": "https://github.com/vasanthv/talk#readme",
 	"dependencies": {
 		"express": "^4.17.1",
-		"socket.io": "^2.4.0"
+		"socket.io": "^2.4.0",
+		"vue": "^2.6.12"
 	}
 }
