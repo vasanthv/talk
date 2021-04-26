@@ -44,6 +44,9 @@ let peerMediaElements = {}; /* keep track of our <video>/<audio> tags, indexed b
 let dataChannels = {};
 
 function init() {
+	// skip analytics if its some other domain
+	if (window.location.hostname !== "usetalk.io" && cabin) cabin.blockMe(true);
+
 	signalingSocket = io(APP_URL);
 	signalingSocket = io();
 
@@ -53,8 +56,6 @@ function init() {
 			setupLocalMedia(function() {
 				joinChatChannel(ROOM_ID, {});
 			});
-		// skip tracking if its someother domain
-		if (window.location.hostname !== "usetalk.io") cabin.blockMe(true);
 	});
 	signalingSocket.on("disconnect", function() {
 		for (let peer_id in peerMediaElements) {
@@ -244,4 +245,4 @@ const resizeVideos = () => {
 	});
 };
 
-init();
+window.onload = init;
