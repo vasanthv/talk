@@ -47,6 +47,7 @@ input {
 	width: 50vw;
 	height: 50vh;
 }
+.video.five,
 .video.six {
 	width: 33.33vw;
 	height: 50vh;
@@ -251,6 +252,7 @@ input {
 		width: 100vw;
 		height: 33.33vh;
 	}
+	.video.five,
 	.video.six {
 		width: 50vw;
 		height: 33.33vh;
