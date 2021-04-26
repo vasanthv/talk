@@ -41,6 +41,10 @@ http://localhost:3000
 
 **Note:** its recommended to launch without the companion in local environments.
 
+### Deploy to DigitalOcean App Platform
+
+[![Deploy to DO](https://www.deploytodo.com/do-btn-blue.svg)](https://cloud.digitalocean.com/apps/new?repo=https://github.com/toast38coza/talk/tree/master)
+
 ### LICENSE
 
 <a href="https://github.com/vasanthv/talk/blob/master/LICENSE">MIT License</a>

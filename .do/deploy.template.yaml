@@ -1,0 +1,15 @@
+spec:
+  name: talk
+  region: nyc
+  services:
+  - dockerfile_path: Dockerfile
+    git:
+      branch: master
+      repo_clone_url: https://github.com/vasanthv/talk
+    http_port: 3000
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    name: talk
+    routes:
+    - path: /
+    run_command: npm start
