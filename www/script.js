@@ -234,7 +234,13 @@ const getVideoElement = (peerId, isLocal) => {
 	}
 	const fullScreenBtn = document.createElement("button");
 	fullScreenBtn.className = "icon-maximize";
-	fullScreenBtn.addEventListener("click", () => videoWrap.requestFullscreen());
+	fullScreenBtn.addEventListener("click", () => {
+		if (videoWrap.requestFullscreen) {
+			videoWrap.requestFullscreen();
+		} else if (videoWrap.webkitRequestFullscreen) {
+			videoWrap.webkitRequestFullscreen();
+		}
+	});
 
 	videoWrap.setAttribute("id", peerId || "");
 	videoWrap.appendChild(media);

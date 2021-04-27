@@ -66,6 +66,7 @@ input {
 	-moz-transform: rotateY(180deg);
 }
 .video:fullscreen video {
+	background: #acadd3;
 	object-fit: contain;
 	border: none;
 }
