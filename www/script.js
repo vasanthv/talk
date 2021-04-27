@@ -232,8 +232,13 @@ const getVideoElement = (peerId, isLocal) => {
 	} else {
 		media.mediaGroup = "remotevideo";
 	}
+	const fullScreenBtn = document.createElement("button");
+	fullScreenBtn.className = "icon-maximize";
+	fullScreenBtn.addEventListener("click", () => videoWrap.requestFullscreen());
+
 	videoWrap.setAttribute("id", peerId || "");
 	videoWrap.appendChild(media);
+	videoWrap.appendChild(fullScreenBtn);
 	document.getElementById("videos").appendChild(videoWrap);
 	return media;
 };
