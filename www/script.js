@@ -96,7 +96,7 @@ function init() {
 			}
 		};
 		peerConnection.onaddstream = function(event) {
-			const remoteMedia = getVideoElement();
+			const remoteMedia = getVideoElement(peer_id);
 			peerMediaElements[peer_id] = remoteMedia;
 			attachMediaStream(remoteMedia, event.stream);
 			resizeVideos();
@@ -200,7 +200,7 @@ function setupLocalMedia(callback, errorback) {
 		.getUserMedia({ audio: USE_AUDIO, video: USE_VIDEO })
 		.then((stream) => {
 			localMediaStream = stream;
-			const localMedia = getVideoElement(true);
+			const localMedia = getVideoElement(null, true);
 			attachMediaStream(localMedia, stream);
 			resizeVideos();
 			if (callback) callback();
@@ -217,7 +217,7 @@ function setupLocalMedia(callback, errorback) {
 		});
 }
 
-const getVideoElement = (isLocal) => {
+const getVideoElement = (peerId, isLocal) => {
 	const videoWrap = document.createElement("div");
 	videoWrap.className = "video";
 	const media = document.createElement("video");
@@ -232,6 +232,7 @@ const getVideoElement = (isLocal) => {
 	} else {
 		media.mediaGroup = "remotevideo";
 	}
+	videoWrap.setAttribute("id", peerId || "");
 	videoWrap.appendChild(media);
 	document.getElementById("videos").appendChild(videoWrap);
 	return media;
