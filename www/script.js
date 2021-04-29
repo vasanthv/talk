@@ -44,7 +44,7 @@ let peerMediaElements = {}; /* keep track of our <video>/<audio> tags, indexed b
 let dataChannels = {};
 
 function init() {
-	// skip analytics if its some other domain
+	// skip analytics if its some other domain. Ideally you should delete this line.
 	if (window.location.hostname !== "usetalk.io" && cabin) cabin.blockMe(true);
 
 	signalingSocket = io(APP_URL);
