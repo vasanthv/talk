@@ -43,7 +43,11 @@
 					browsers. No signups. No downloads. 100% peer-to-peer.
 				</p>
 				<p>
-					<i><small>Share the URL of this page with your friends to start talking.</small></i>
+					<small>
+						<i>Share this link to start talking. </i><br />
+						<span class="roomLink">{{roomLink}}</span>
+						<a class="copyURL" href="javascript:void(0)" v-on:click="copyURL">{{copyText || "Copy"}}</a>
+					</small>
 				</p>
 				<div class="footer">
 					<iframe
@@ -103,6 +107,8 @@
 
 				<div class="label">Name 📛</div>
 				<input type="text" placeholder="Your name" v-model="name" v-on:keyup="nameToLocalStorage" />
+
+				<div class="copy link" v-on:click="copyURL">{{copyText || "Copy room link"}}</div>
 			</div>
 
 			<div id="actionsWrap">

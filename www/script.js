@@ -47,6 +47,8 @@ function init() {
 	// skip analytics if its some other domain. Ideally you should delete this line.
 	if (window.location.hostname !== "usetalk.io" && cabin) cabin.blockMe(true);
 
+	App.roomLink = `${APP_URL}/${ROOM_ID}`;
+
 	signalingSocket = io(APP_URL);
 	signalingSocket = io();
 

@@ -2,6 +2,8 @@
 const App = new Vue({
 	el: "#app",
 	data: {
+		roomLink: "",
+		copyText: "",
 		videoDevices: [],
 		audioDevices: [],
 		audioEnabled: true,
@@ -18,6 +20,15 @@ const App = new Vue({
 	},
 	computed: {},
 	methods: {
+		copyURL: function() {
+			navigator.clipboard.writeText(this.roomLink).then(
+				() => {
+					this.copyText = "Copied 👍";
+					setTimeout(() => (this.copyText = ""), 3000);
+				},
+				(err) => console.error(err)
+			);
+		},
 		audioToggle: function() {
 			localMediaStream.getAudioTracks()[0].enabled = !localMediaStream.getAudioTracks()[0].enabled;
 			this.audioEnabled = !this.audioEnabled;

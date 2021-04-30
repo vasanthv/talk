@@ -103,6 +103,20 @@ input {
 	border-radius: 1rem;
 	box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.16), 0px 1px 4px rgba(0, 0, 0, 0.16);
 }
+#intro .roomLink {
+	text-decoration: underline;
+	text-decoration-style: dashed;
+	text-underline-offset: 0.2rem;
+	word-wrap: break-word;
+	word-break: break-word;
+}
+#intro .copyURL {
+	color: inherit;
+	text-decoration: none;
+	font-weight: bold;
+	-webkit-user-select: none;
+	user-select: none;
+}
 #intro .footer {
 	display: flex;
 	justify-content: space-between;
@@ -212,6 +226,9 @@ input {
 }
 #settings .link:hover {
 	background: #fff;
+}
+#settings .link.copy {
+	margin-bottom: 0.5rem;
 }
 #settings input {
 	margin: 0rem 1rem 1rem;
