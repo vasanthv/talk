@@ -20,6 +20,10 @@ const App = new Vue({
 	},
 	computed: {},
 	methods: {
+		appBlur: function() {
+			this.showChat = false;
+			this.showSettings = false;
+		},
 		copyURL: function() {
 			navigator.clipboard.writeText(this.roomLink).then(
 				() => {
