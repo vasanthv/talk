@@ -205,6 +205,8 @@ input {
 	margin: auto;
 	box-sizing: border-box;
 	border-radius: 1rem;
+	max-height: 26rem;
+	overflow-y: auto;
 }
 #settings .label {
 	padding: 1rem 1rem 0.25rem;
