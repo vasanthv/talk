@@ -245,7 +245,6 @@ const getVideoElement = (peerId, isLocal) => {
 	});
 
 	videoWrap.setAttribute("id", peerId || "");
-	videoWrap.addEventListener("click", () => App.appBlur());
 	videoWrap.appendChild(media);
 	videoWrap.appendChild(fullScreenBtn);
 	document.getElementById("videos").appendChild(videoWrap);
