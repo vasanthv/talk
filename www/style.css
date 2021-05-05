@@ -81,6 +81,7 @@ input {
 	border: none;
 	cursor: pointer;
 	text-shadow: 2px 2px 5px #989898;
+	padding: 0.1rem 0.4rem;
 }
 .video:fullscreen button {
 	display: none;
