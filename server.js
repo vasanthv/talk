@@ -3,7 +3,7 @@ const path = require("path");
 const http = require("http");
 const app = express();
 const server = http.createServer(app);
-const io = require("socket.io").listen(server);
+const io = require("socket.io")(server);
 
 // Server all the static files from www folder
 app.use(express.static(path.join(__dirname, "www")));
