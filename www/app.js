@@ -12,6 +12,7 @@ const App = new Vue({
 		showIntro: true,
 		showChat: false,
 		showSettings: false,
+		hideToolbar: false,
 		selectedAudioDeviceId: "",
 		selectedVideoDeviceId: "",
 		name: window.localStorage.name || "",
@@ -29,11 +30,13 @@ const App = new Vue({
 				(err) => console.error(err)
 			);
 		},
-		audioToggle: function() {
+		audioToggle: function(e) {
+			e.stopPropagation();
 			localMediaStream.getAudioTracks()[0].enabled = !localMediaStream.getAudioTracks()[0].enabled;
 			this.audioEnabled = !this.audioEnabled;
 		},
-		videoToggle: function() {
+		videoToggle: function(e) {
+			e.stopPropagation();
 			localMediaStream.getVideoTracks()[0].enabled = !localMediaStream.getVideoTracks()[0].enabled;
 			this.videoEnabled = !this.videoEnabled;
 		},
@@ -43,7 +46,8 @@ const App = new Vue({
 		nameToLocalStorage: function() {
 			window.localStorage.name = this.name;
 		},
-		screenShareToggle: function() {
+		screenShareToggle: function(e) {
+			e.stopPropagation();
 			let screenMediaPromise;
 			if (!App.screenshareEnabled) {
 				if (navigator.getDisplayMedia) {

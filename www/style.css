@@ -81,6 +81,7 @@ input {
 	border: none;
 	cursor: pointer;
 	text-shadow: 2px 2px 5px #989898;
+	padding: 0.1rem 0.4rem;
 }
 .video:fullscreen button {
 	display: none;
@@ -201,7 +202,7 @@ input {
 	left: 0px;
 	right: 0px;
 	z-index: 100;
-	width: 15rem;
+	width: 17rem;
 	margin: auto;
 	box-sizing: border-box;
 	border-radius: 1rem;
@@ -244,7 +245,16 @@ input {
 	right: 0px;
 	z-index: 100;
 	display: inline-flex;
+	transition: all 0.25s ease-out;
+	opacity: 1;
+	transform: translateY(0rem);
 }
+#actionsWrap.hidden {
+	opacity: 0;
+	transform: translateY(1rem);
+	z-index: -1;
+}
+
 #actions {
 	background: rgba(255, 255, 255, 0.5);
 	box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.16), 0px 1px 4px rgba(0, 0, 0, 0.16);
