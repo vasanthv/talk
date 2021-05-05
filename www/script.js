@@ -260,4 +260,10 @@ const resizeVideos = () => {
 	});
 };
 
+document.body.addEventListener("click", () => {
+	if (!App.showChat && !App.showSettings && !App.showIntro) {
+		App.hideToolbar = !App.hideToolbar;
+	}
+});
+
 window.onload = init;
