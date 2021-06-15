@@ -29,17 +29,7 @@ Run the app
 npm start
 ```
 
-Open the following url in the browser
-
-```
-http://localhost:3000
-```
-
-### Docker compose
-
-[NGINX proxy](https://hub.docker.com/r/jwilder/nginx-proxy) container with [its companion](https://github.com/nginx-proxy/docker-letsencrypt-nginx-proxy-companion) to proxy the access to the app and generate a SSL certificate with [Let's Encrypt](https://letsencrypt.org/).
-
-**Note:** its recommended to launch without the companion in local environments.
+to start the talk server on port 3000. Your talk instance will be running on http://localhost:3000. Alternatively you can run the application using docker with `docker-compose up`.
 
 ### LICENSE
 
