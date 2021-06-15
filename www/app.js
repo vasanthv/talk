@@ -168,6 +168,7 @@ const App = new Vue({
 			switch (chatMessage.type) {
 				case "chat":
 					this.showChat = true;
+					this.hideToolbar = false;
 					this.chats.push(chatMessage);
 					break;
 				default:
