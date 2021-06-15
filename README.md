@@ -11,10 +11,10 @@ It is built using WebRTC, so all your video, audio & text chat is peer-to-peer. 
 
 ### How to Build this app locally
 
-Clone the repo locally, or extract the contents of the source code.
+Fork this repo and then clone it:
 
 ```
-git clone https://github.com/vasanthv/talk.git
+git clone https://github.com/<your_name>/talk.git
 ```
 
 `cd talk` and then install dependencies
