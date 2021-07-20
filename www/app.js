@@ -181,19 +181,16 @@ const App = new Vue({
 					break;
 			}
 		},
-		formatDate: function(datestring) {
-			const seconds = Math.floor((new Date() - new Date(datestring)) / 1000);
-			let interval = seconds / 31536000;
-			if (interval > 1) return Math.floor(interval) + "Y";
-			interval = seconds / 2592000;
-			if (interval > 1) return Math.floor(interval) + "M";
-			interval = seconds / 86400;
-			if (interval > 1) return Math.floor(interval) + "d";
-			interval = seconds / 3600;
-			if (interval > 1) return Math.floor(interval) + "h";
-			interval = seconds / 60;
-			if (interval > 1) return Math.floor(interval) + "m";
-			return "now";
+		formatDate: function(dateString) {
+			const date = new Date(dateString);
+			const hours = date.getHours() > 12 ? date.getHours() - 12 : date.getHours();
+			return (
+				(hours < 10 ? "0" + hours : hours) +
+				":" +
+				(date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()) +
+				" " +
+				(date.getHours() >= 12 ? "PM" : "AM")
+			);
 		},
 	},
 });
