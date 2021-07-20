@@ -67,7 +67,7 @@
 					<div class="chat" v-for="(chat, i) in chats" v-bind:key="i">
 						<span class="name">{{chat.name}}</span>
 						<span class="date light"> &middot; {{formatDate(chat.date)}}</span>
-						<div class="message">{{chat.message}}</div>
+						<div class="message" v-html="linkify(chat.message)"></div>
 					</div>
 					<div id="noChat" class="light" v-if="!chats.length"><small>No chat messages.</small></div>
 				</div>

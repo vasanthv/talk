@@ -126,8 +126,14 @@ const App = new Vue({
 					alert("Error while swaping microphone");
 				});
 		},
+		sanitizeString: function(str) {
+			const tagsToReplace = { "&": "&amp;", "<": "&lt;", ">": "&gt;" };
+			const replaceTag = (tag) => tagsToReplace[tag] || tag;
+			const safe_tags_replace = (str) => str.replace(/[&<>]/g, replaceTag);
+			return safe_tags_replace(str);
+		},
 		linkify: function(str) {
-			return str.replace(/(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%]+/gi, (match) => {
+			return this.sanitizeString(str).replace(/(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%]+/gi, (match) => {
 				let displayURL = match
 					.trim()
 					.replace("https://", "")
