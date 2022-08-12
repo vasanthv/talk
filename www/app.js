@@ -15,7 +15,7 @@ const App = new Vue({
 		hideToolbar: false,
 		selectedAudioDeviceId: "",
 		selectedVideoDeviceId: "",
-		name: window.localStorage.name || "",
+		name: window.localStorage.name || "Unnamed",
 		typing: "",
 		chats: [],
 	},
@@ -97,7 +97,7 @@ const App = new Vue({
 
 			const dataMessage = {
 				type: key,
-				name: this.name || "Unnamed",
+				name: this.name,
 				id: thisPeerId,
 				message: value,
 				date: new Date().toISOString(),
@@ -185,7 +185,7 @@ const App = new Vue({
 			e.preventDefault();
 			const clipboardData = e.clipboardData || window.clipboardData;
 			const pastedText = clipboardData.getData("Text");
-			document.execCommand("inserttext", false, pastedText.replace(/(\r\n\t|\n|\r\t)/gm, " "));
+			navigator.clipboard.writeText(pastedText.replace(/(\r\n\t|\n|\r\t)/gm));
 		},
 		sendChat: function(e) {
 			e.stopPropagation();
@@ -194,7 +194,7 @@ const App = new Vue({
 				const composeElement = document.getElementById("compose");
 				const dataMessage = {
 					type: "chat",
-					name: this.name || "Unnamed",
+					name: this.name,
 					message: this.typing,
 					date: new Date().toISOString(),
 				};

@@ -63,7 +63,6 @@ function init() {
 		console.log('PEER_ID: ' + thisPeerId);
 
 		const userData = {
-			peerId: thisPeerId,
 			peerName: App.name,
 			videoEnabled: App.videoEnabled 
 		};
@@ -117,6 +116,7 @@ function init() {
 				});
 			}
 		};
+
 		peerConnection.onaddstream = function(event) {
 			const remoteMedia = getVideoElement(peer_id);
 			peerMediaElements[peer_id] = remoteMedia;
@@ -158,21 +158,26 @@ function init() {
 		dataChannels[peer_id] = peerConnection.createDataChannel("talk__data_channel");
 
 		if (config.should_create_offer) {
-			peerConnection.createOffer(
-				(localDescription) => {
-					peerConnection.setLocalDescription(
-						localDescription,
-						() => {
-							signalingSocket.emit("relaySessionDescription", {
-								peer_id: peer_id,
-								session_description: localDescription,
+			peerConnection.onnegotiationneeded = () => {
+				peerConnection
+					.createOffer()
+					.then((localDescription) => {
+						peerConnection
+							.setLocalDescription(localDescription)
+							.then(() => {
+								signalingSocket.emit("relaySessionDescription", {
+									peer_id: peer_id,
+									session_description: localDescription,
+								});
+							})
+							.catch((err) => {
+								alert("Offer setLocalDescription failed!")
 							});
-						},
-						() => alert("Offer setLocalDescription failed!")
-					);
-				},
-				(error) => console.log("Error sending offer: ", error)
-			);
+					})
+					.catch((error) => {
+						console.log("Error sending offer: ", error)
+					});
+			}
 		}
 	});
 
@@ -210,7 +215,9 @@ function init() {
 	signalingSocket.on("iceCandidate", function(config) {
 		const peer = peers[config.peer_id];
 		const iceCandidate = config.ice_candidate;
-		peer.addIceCandidate(new RTCIceCandidate(iceCandidate));
+		peer.addIceCandidate(new RTCIceCandidate(iceCandidate)).catch((error) => {
+			console.log('Error addIceCandidate', error);
+		});
 	});
 
 	signalingSocket.on("removePeer", function(config) {
@@ -276,7 +283,7 @@ const getVideoElement = (peerId, isLocal) => {
 	const peerName = document.createElement("p");
 	peerName.setAttribute("id", peerId + "_videoPeerName");
 	peerName.className = "videoPeerName";
-	peerName.innerHTML = (App.name || "Unnamed") + " (you)";
+	peerName.innerHTML = App.name + " (you)";
 	const fullScreenBtn = document.createElement("button");
 	fullScreenBtn.className = "icon-maximize";
 	fullScreenBtn.addEventListener("click", () => {
