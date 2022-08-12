@@ -63,6 +63,7 @@ function init() {
 		console.log('PEER_ID: ' + thisPeerId);
 
 		const userData = {
+			peerId: thisPeerId,
 			peerName: App.name,
 			videoEnabled: App.videoEnabled 
 		};

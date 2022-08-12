@@ -4,6 +4,12 @@ const http = require("http");
 const app = express();
 const server = http.createServer(app);
 const io = require("socket.io")(server);
+const util = require('util');
+
+const options = {
+    depth: null,
+    colors: true,
+};
 
 // Server all the static files from www folder
 app.use(express.static(path.join(__dirname, "www")));
@@ -56,11 +62,10 @@ io.sockets.on("connection", (socket) => {
 		}
 
 		peers[channel][socket.id] = {
-            peer_id: socket.id,
 			user_data: config.userData,
         };
 
-		console.log("[" + socket.id + "] join - connected peers grouped by channel", JSON.stringify(peers, null, 2));
+		console.log("[" + socket.id + "] join - connected peers grouped by channel", util.inspect(peers, options));
 
 		for (const id in channels[channel]) {
 			channels[channel][id].emit("addPeer", { peer_id: socket.id, should_create_offer: false, peers_info: peers[channel] });
@@ -76,7 +81,7 @@ io.sockets.on("connection", (socket) => {
         const key = config.key;
         const value = config.value;
 		for (let id in peers[channel]) {
-			if (peers[channel][id]["peer_id"] == socket.id) {
+			if (id == socket.id) {
 				peers[channel][id]["user_data"][key] = value;
 			}
 		}
@@ -95,7 +100,7 @@ io.sockets.on("connection", (socket) => {
 			// last peer disconnected from the channel
 			delete peers[channel]; 
 		}
-		console.log("[" + socket.id + "] part - connected peers grouped by channel", JSON.stringify(peers, null, 2));
+		console.log("[" + socket.id + "] part - connected peers grouped by channel", util.inspect(peers, options));
 
 		for (const id in channels[channel]) {
 			channels[channel][id].emit("removePeer", { peer_id: socket.id });
