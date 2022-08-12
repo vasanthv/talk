@@ -183,7 +183,9 @@ const App = new Vue({
 		},
 		paste: function(e) {
 			e.preventDefault();
-			navigator.clipboard.writeText(pastedText.replace(/(\r\n\t|\n|\r\t)/gm));
+			const clipboardData = e.clipboardData || window.clipboardData;
+			const pastedText = clipboardData.getData("Text");
+			document.execCommand("inserttext", false, pastedText.replace(/(\r\n\t|\n|\r\t)/gm, " "));
 		},
 		sendChat: function(e) {
 			e.stopPropagation();
