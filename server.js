@@ -12,7 +12,9 @@ app.use(express.static(path.join(__dirname, "node_modules/vue/dist/")));
 
 // Get PORT from env variable else assign 3000 for development
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, null, () => console.log("Listening on port " + PORT));
+server.listen(PORT, null, () => console.log("Server", { 
+	listening_on: "http://localhost:" + PORT
+}));
 
 app.get("/legal", (req, res) => res.sendFile(path.join(__dirname, "www/legal.html")));
 
@@ -21,6 +23,7 @@ app.get(["/", "/:room"], (req, res) => res.sendFile(path.join(__dirname, "www/in
 
 const channels = {};
 const sockets = {};
+const peers = {};
 
 io.sockets.on("connection", (socket) => {
 	const socketHostName = socket.handshake.headers.host.split(":")[0];
@@ -48,14 +51,42 @@ io.sockets.on("connection", (socket) => {
 			channels[channel] = {};
 		}
 
+		if (!(channel in peers)) {
+			peers[channel] = {};
+		}
+
+		peers[channel][socket.id] = {
+            peer_id: socket.id,
+			user_data: config.userData,
+        };
+
+		console.log("[" + socket.id + "] join - connected peers grouped by channel", JSON.stringify(peers, null, 2));
+
 		for (const id in channels[channel]) {
-			channels[channel][id].emit("addPeer", { peer_id: socket.id, should_create_offer: false });
-			socket.emit("addPeer", { peer_id: id, should_create_offer: true });
+			channels[channel][id].emit("addPeer", { peer_id: socket.id, should_create_offer: false, peers_info: peers[channel] });
+			socket.emit("addPeer", { peer_id: id, should_create_offer: true, peers_info: peers[channel] });
 		}
 
 		channels[channel][socket.id] = socket;
 		socket.channels[channel] = channel;
 	});
+
+	socket.on("updateUserData", async (config) => {
+        const channel = socketHostName + config.channel;
+        const key = config.key;
+        const value = config.value;
+		for (let id in peers[channel]) {
+			if (peers[channel][id]["peer_id"] == socket.id) {
+				switch (key) {
+					case "videoEnabled":
+						peers[channel][id]["user_data"][key] = value;
+						break;
+					//...
+				}
+			}
+		}
+		console.log("[" + socket.id + "] updateUserData", peers[channel][socket.id]);
+    });
 
 	const part = (channel) => {
 		// Socket not in channel
@@ -63,6 +94,13 @@ io.sockets.on("connection", (socket) => {
 
 		delete socket.channels[channel];
 		delete channels[channel][socket.id];
+
+		delete peers[channel][socket.id];
+		if (Object.keys(peers[channel]).length == 0) {
+			// last peer disconnected from the channel
+			delete peers[channel]; 
+		}
+		console.log("[" + socket.id + "] part - connected peers grouped by channel", JSON.stringify(peers, null, 2));
 
 		for (const id in channels[channel]) {
 			channels[channel][id].emit("removePeer", { peer_id: socket.id });

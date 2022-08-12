@@ -1,4 +1,9 @@
 /* globals App, io, cabin*/
+
+/**
+ * TODO Recommended to using only one Stun/Turn
+ * https://github.com/coturn/coturn
+ */
 const ICE_SERVERS = [
 	{ urls: "stun:stun.l.google.com:19302" },
 	{ urls: "stun:stun.stunprotocol.org:3478" },
@@ -37,9 +42,11 @@ const ROOM_ID = (() => {
 const USE_AUDIO = true;
 const USE_VIDEO = true;
 
+let thisPeerId = null; /* this peer_id aka signalingSocket.id */
 let signalingSocket = null; /* our socket.io connection to our webserver */
 let localMediaStream = null; /* our own microphone / webcam */
 let peers = {}; /* keep track of our peer connections, indexed by peer_id (aka socket.io id) */
+let peersInfo = {} /* keep track of the peers Info in the channel, indexed by peer_id (aka socket.io id) */
 let peerMediaElements = {}; /* keep track of our <video>/<audio> tags, indexed by peer_id */
 let dataChannels = {};
 
@@ -50,10 +57,17 @@ function init() {
 	signalingSocket = io();
 
 	signalingSocket.on("connect", function() {
-		if (localMediaStream) joinChatChannel(ROOM_ID, {});
+
+		thisPeerId = signalingSocket.id;
+
+		console.log('PEER_ID: ' + thisPeerId);
+
+		const userData = { videoEnabled: App.videoEnabled };
+
+		if (localMediaStream) joinChatChannel(ROOM_ID, userData);
 		else
 			setupLocalMedia(function() {
-				joinChatChannel(ROOM_ID, {});
+				joinChatChannel(ROOM_ID, userData);
 			});
 	});
 	signalingSocket.on("disconnect", function() {
@@ -69,13 +83,18 @@ function init() {
 		peerMediaElements = {};
 	});
 
-	function joinChatChannel(channel, userdata) {
-		signalingSocket.emit("join", { channel: channel, userdata: userdata });
+	function joinChatChannel(channel, userData) {
+		signalingSocket.emit("join", { channel: channel, userData: userData });
 	}
 
 	signalingSocket.on("addPeer", function(config) {
+		//console.log("addPeer", config);
+
 		const peer_id = config.peer_id;
 		if (peer_id in peers) return;
+
+		peersInfo = config.peers_info;
+		//console.log('[Join] - connected peers in the channel', JSON.stringify(peersInfo, null, 2));
 
 		const peerConnection = new RTCPeerConnection(
 			{ iceServers: ICE_SERVERS },
@@ -100,14 +119,21 @@ function init() {
 			attachMediaStream(remoteMedia, event.stream);
 			resizeVideos();
 			App.showIntro = false;
+			for (let id in peersInfo) {
+				const videoAvatarImg = document.getElementById(id + "_videoEnabled");
+				const videoEnabled = peersInfo[id]["user_data"]["videoEnabled"];
+				if (videoAvatarImg && !videoEnabled) {
+					videoAvatarImg.style.display = "block";
+				}
+			}
 		};
 		peerConnection.ondatachannel = function(event) {
 			console.log("Datachannel event" + peer_id, event);
 			event.channel.onmessage = (msg) => {
-				let chatMessage = {};
+				let dataMessage = {};
 				try {
-					chatMessage = JSON.parse(msg.data);
-					App.handleIncomingDataChannelMessage(chatMessage);
+					dataMessage = JSON.parse(msg.data);
+					App.handleIncomingDataChannelMessage(dataMessage);
 				} catch (err) {
 					console.log(err);
 				}
@@ -186,6 +212,9 @@ function init() {
 		delete dataChannels[peer_id];
 		delete peers[peer_id];
 		delete peerMediaElements[config.peer_id];
+
+		delete peersInfo[config.peer_id];
+		//console.log('removePeer', JSON.stringify(peersInfo, null, 2));
 	});
 }
 const attachMediaStream = (element, stream) => (element.srcObject = stream);
@@ -199,7 +228,7 @@ function setupLocalMedia(callback, errorback) {
 		.getUserMedia({ audio: USE_AUDIO, video: USE_VIDEO })
 		.then((stream) => {
 			localMediaStream = stream;
-			const localMedia = getVideoElement(null, true);
+			const localMedia = getVideoElement(thisPeerId, true);
 			attachMediaStream(localMedia, stream);
 			resizeVideos();
 			if (callback) callback();
@@ -240,10 +269,14 @@ const getVideoElement = (peerId, isLocal) => {
 			videoWrap.webkitRequestFullscreen();
 		}
 	});
-
-	videoWrap.setAttribute("id", peerId || "");
+	const videoAvatarImg = document.createElement('img');
+	videoAvatarImg.setAttribute("id", peerId + "_videoEnabled");
+	videoAvatarImg.setAttribute("src", "img/videoOff.png")
+	videoAvatarImg.className = "videoAvatarImg";
+	videoWrap.setAttribute("id", peerId);
 	videoWrap.appendChild(media);
 	videoWrap.appendChild(fullScreenBtn);
+	videoWrap.appendChild(videoAvatarImg);
 	document.getElementById("videos").appendChild(videoWrap);
 	return media;
 };
@@ -259,6 +292,10 @@ const resizeVideos = () => {
 document.body.addEventListener("click", () => {
 	if (!App.showChat && !App.showSettings && !App.showIntro) {
 		App.hideToolbar = !App.hideToolbar;
+	}
+	if(App.showSettings && App.showChat) {
+		App.showChat = !App.showChat;
+		App.showSettings = !App.showSettings;
 	}
 });
 

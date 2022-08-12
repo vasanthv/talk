@@ -87,6 +87,15 @@ input {
 	display: none;
 }
 
+.videoAvatarImg {
+	z-index: auto;
+	display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
 #app {
 	display: none;
 }
