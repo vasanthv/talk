@@ -77,12 +77,7 @@ io.sockets.on("connection", (socket) => {
         const value = config.value;
 		for (let id in peers[channel]) {
 			if (peers[channel][id]["peer_id"] == socket.id) {
-				switch (key) {
-					case "videoEnabled":
-						peers[channel][id]["user_data"][key] = value;
-						break;
-					//...
-				}
+				peers[channel][id]["user_data"][key] = value;
 			}
 		}
 		console.log("[" + socket.id + "] updateUserData", peers[channel][socket.id]);

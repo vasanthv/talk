@@ -62,7 +62,10 @@ function init() {
 
 		console.log('PEER_ID: ' + thisPeerId);
 
-		const userData = { videoEnabled: App.videoEnabled };
+		const userData = {
+			peerName: App.name,
+			videoEnabled: App.videoEnabled 
+		};
 
 		if (localMediaStream) joinChatChannel(ROOM_ID, userData);
 		else
@@ -119,9 +122,18 @@ function init() {
 			attachMediaStream(remoteMedia, event.stream);
 			resizeVideos();
 			App.showIntro = false;
+
 			for (let id in peersInfo) {
+				const videoPeerName = document.getElementById(id + "_videoPeerName");
+				const peerName = peersInfo[id]["user_data"]["peerName"];
+
+				if (videoPeerName && peerName) {
+					videoPeerName.innerHTML = peerName + (id == thisPeerId ? " (you)" : "");
+				}
+
 				const videoAvatarImg = document.getElementById(id + "_videoEnabled");
 				const videoEnabled = peersInfo[id]["user_data"]["videoEnabled"];
+
 				if (videoAvatarImg && !videoEnabled) {
 					videoAvatarImg.style.display = "block";
 				}
@@ -260,6 +272,10 @@ const getVideoElement = (peerId, isLocal) => {
 	} else {
 		media.mediaGroup = "remotevideo";
 	}
+	const peerName = document.createElement("p");
+	peerName.setAttribute("id", peerId + "_videoPeerName");
+	peerName.className = "videoPeerName";
+	peerName.innerHTML = (App.name || "Unnamed") + " (you)";
 	const fullScreenBtn = document.createElement("button");
 	fullScreenBtn.className = "icon-maximize";
 	fullScreenBtn.addEventListener("click", () => {
@@ -275,6 +291,7 @@ const getVideoElement = (peerId, isLocal) => {
 	videoAvatarImg.className = "videoAvatarImg";
 	videoWrap.setAttribute("id", peerId);
 	videoWrap.appendChild(media);
+	videoWrap.appendChild(peerName);
 	videoWrap.appendChild(fullScreenBtn);
 	videoWrap.appendChild(videoAvatarImg);
 	document.getElementById("videos").appendChild(videoWrap);

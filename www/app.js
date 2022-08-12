@@ -39,13 +39,14 @@ const App = new Vue({
 			e.stopPropagation();
 			localMediaStream.getVideoTracks()[0].enabled = !localMediaStream.getVideoTracks()[0].enabled;
 			this.videoEnabled = !this.videoEnabled;
-			this.updateVideoStatus();
+			this.updateUserData("videoEnabled", this.videoEnabled);
 		},
 		toggleSelfVideoMirror: function() {
 			document.querySelector("#videos .video #selfVideo").classList.toggle("mirror");
 		},
 		nameToLocalStorage: function() {
 			window.localStorage.name = this.name;
+			this.updateUserData("peerName", this.name);
 		},
 		screenShareToggle: function(e) {
 			e.stopPropagation();
@@ -69,7 +70,7 @@ const App = new Vue({
 					App.screenshareEnabled = !App.screenshareEnabled;
 
 					this.videoEnabled = true;
-					this.updateVideoStatus();
+					this.updateUserData("videoEnabled", this.videoEnabled);
 
 					for (let peer_id in peers) {
 						const sender = peers[peer_id].getSenders().find((s) => (s.track ? s.track.kind === "video" : false));
@@ -91,18 +92,29 @@ const App = new Vue({
 					console.error(e);
 				});
 		},
-		updateVideoStatus: function() {
-			signalingSocket.emit("updateUserData", { channel: ROOM_ID, key: "videoEnabled", value: this.videoEnabled });
+		updateUserData: function(key, value) {
+			signalingSocket.emit("updateUserData", { channel: ROOM_ID, key: key, value: value });
 
 			const dataMessage = {
-				type: "videoEnabled",
+				type: key,
 				name: this.name || "Unnamed",
 				id: thisPeerId,
-				message: this.videoEnabled,
+				message: value,
 				date: new Date().toISOString(),
 			};
 			Object.keys(dataChannels).map((peer_id) => dataChannels[peer_id].send(JSON.stringify(dataMessage)));
-			document.getElementById(thisPeerId + "_videoEnabled").style.display = this.videoEnabled ? "none" : "block";
+
+			switch(key) {
+				case "videoEnabled":
+					document.getElementById(thisPeerId + "_videoEnabled").style.display = value ? "none" : "block";
+					break;
+				case "peerName":
+					document.getElementById(dataMessage.id + "_videoPeerName").innerHTML = value + " (you)";
+					break
+				// ...
+				default:
+					break;
+			}
 		},
 		changeCamera: function(deviceId) {
 			navigator.mediaDevices
@@ -111,7 +123,7 @@ const App = new Vue({
 					console.log(camStream);
 
 					this.videoEnabled = true;
-					this.updateVideoStatus();
+					this.updateUserData("videoEnabled", this.videoEnabled);
 
 					for (let peer_id in peers) {
 						const sender = peers[peer_id].getSenders().find((s) => (s.track ? s.track.kind === "video" : false));
@@ -205,6 +217,9 @@ const App = new Vue({
 					break;
 				case "videoEnabled":
 					document.getElementById(dataMessage.id + "_videoEnabled").style.display = dataMessage.message ? "none" : "block";
+					break;
+				case "peerName":
+					document.getElementById(dataMessage.id + "_videoPeerName").innerHTML = dataMessage.message;
 					break;
 				// ...
 				default:
