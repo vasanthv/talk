@@ -4,6 +4,11 @@ const App = new Vue({
 	data: {
 		roomLink: "",
 		copyText: "",
+		userAgent: "",
+		isMobileDevice: false,
+		isTablet: false,
+		isIpad: false,
+		isDesktop: false,
 		videoDevices: [],
 		audioDevices: [],
 		audioEnabled: true,
@@ -34,6 +39,7 @@ const App = new Vue({
 			e.stopPropagation();
 			localMediaStream.getAudioTracks()[0].enabled = !localMediaStream.getAudioTracks()[0].enabled;
 			this.audioEnabled = !this.audioEnabled;
+			this.updateUserData("audioEnabled", this.audioEnabled);
 		},
 		videoToggle: function(e) {
 			e.stopPropagation();
@@ -105,6 +111,9 @@ const App = new Vue({
 			Object.keys(dataChannels).map((peer_id) => dataChannels[peer_id].send(JSON.stringify(dataMessage)));
 
 			switch(key) {
+				case "audioEnabled":
+					// TODO add audio status icon
+					break;
 				case "videoEnabled":
 					document.getElementById(thisPeerId + "_videoEnabled").style.display = value ? "none" : "block";
 					break;
@@ -145,6 +154,10 @@ const App = new Vue({
 			navigator.mediaDevices
 				.getUserMedia({ audio: { deviceId: deviceId } })
 				.then((micStream) => {
+
+					this.audioEnabled = true;
+					this.updateUserData("audioEnabled", this.audioEnabled);
+
 					for (let peer_id in peers) {
 						const sender = peers[peer_id].getSenders().find((s) => (s.track ? s.track.kind === "audio" : false));
 						sender.replaceTrack(micStream.getAudioTracks()[0]);
@@ -214,6 +227,9 @@ const App = new Vue({
 					this.showChat = true;
 					this.hideToolbar = false;
 					this.chats.push(dataMessage);
+					break;
+				case "audioEnabled":
+					// TODO add audio status icon
 					break;
 				case "videoEnabled":
 					document.getElementById(dataMessage.id + "_videoEnabled").style.display = dataMessage.message ? "none" : "block";

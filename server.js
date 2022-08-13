@@ -62,7 +62,7 @@ io.sockets.on("connection", (socket) => {
 		}
 
 		peers[channel][socket.id] = {
-			user_data: config.userData,
+			userData: config.userData,
         };
 
 		console.log("[" + socket.id + "] join - connected peers grouped by channel", util.inspect(peers, options));
@@ -82,7 +82,7 @@ io.sockets.on("connection", (socket) => {
         const value = config.value;
 		for (let id in peers[channel]) {
 			if (id == socket.id) {
-				peers[channel][id]["user_data"][key] = value;
+				peers[channel][id]["userData"][key] = value;
 			}
 		}
 		console.log("[" + socket.id + "] updateUserData", peers[channel][socket.id]);

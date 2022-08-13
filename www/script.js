@@ -51,6 +51,12 @@ let peerMediaElements = {}; /* keep track of our <video>/<audio> tags, indexed b
 let dataChannels = {};
 
 function init() {
+	App.userAgent = navigator.userAgent;
+	App.isMobileDevice = !!(/Android|webOS|iPhone|iPad|iPod|BB10|BlackBerry|IEMobile|Opera Mini|Mobile|mobile/i.test(App.userAgent.toUpperCase() || ''));
+	App.isTablet = /(ipad|tablet|(android(?!.*mobile))|(windows(?!.*phone)(.*touch))|kindle|playbook|silk|(puffin(?!.*(IP|AP|WP))))/.test(App.userAgent.toLowerCase());
+	App.isIpad = /macintosh/.test(App.userAgent.toLowerCase()) && 'ontouchend' in document;
+	App.isDesktop = (!App.isMobileDevice && !App.isTablet && !App.isIpad);
+
 	App.roomLink = `${APP_URL}/${ROOM_ID}`;
 
 	signalingSocket = io(APP_URL);
@@ -64,7 +70,13 @@ function init() {
 
 		const userData = {
 			peerName: App.name,
-			videoEnabled: App.videoEnabled 
+			videoEnabled: App.videoEnabled,
+			audioEnabled: App.audioEnabled,
+			userAgent: App.userAgent,
+			isMobileDevice: App.isMobileDevice,
+			isTablet: App.isTablet,
+			isIpad: App.isIpad,
+			isDesktop: App.isDesktop,
 		};
 
 		if (localMediaStream) joinChatChannel(ROOM_ID, userData);
@@ -126,18 +138,18 @@ function init() {
 
 			for (let id in peersInfo) {
 				const videoPeerName = document.getElementById(id + "_videoPeerName");
-				const peerName = peersInfo[id]["user_data"]["peerName"];
-
+				const peerName = peersInfo[id]["userData"]["peerName"];
 				if (videoPeerName && peerName) {
 					videoPeerName.innerHTML = peerName + (id == thisPeerId ? " (you)" : "");
 				}
 
 				const videoAvatarImg = document.getElementById(id + "_videoEnabled");
-				const videoEnabled = peersInfo[id]["user_data"]["videoEnabled"];
-
+				const videoEnabled = peersInfo[id]["userData"]["videoEnabled"];
 				if (videoAvatarImg && !videoEnabled) {
 					videoAvatarImg.style.display = "block";
 				}
+
+				// TODO handle audio status icon
 			}
 		};
 		peerConnection.ondatachannel = function(event) {
