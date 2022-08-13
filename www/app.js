@@ -112,7 +112,7 @@ const App = new Vue({
 
 			switch(key) {
 				case "audioEnabled":
-					// TODO add audio status icon
+					document.getElementById(thisPeerId + "_audioEnabled").className = "audioEnabled icon-mic" + (value ? "" : "-off");
 					break;
 				case "videoEnabled":
 					document.getElementById(thisPeerId + "_videoEnabled").style.display = value ? "none" : "block";
@@ -229,7 +229,7 @@ const App = new Vue({
 					this.chats.push(dataMessage);
 					break;
 				case "audioEnabled":
-					// TODO add audio status icon
+					document.getElementById(dataMessage.id + "_audioEnabled").className = "audioEnabled icon-mic" + (dataMessage.message ? "" : "-off");
 					break;
 				case "videoEnabled":
 					document.getElementById(dataMessage.id + "_videoEnabled").style.display = dataMessage.message ? "none" : "block";

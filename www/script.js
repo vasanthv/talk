@@ -149,7 +149,11 @@ function init() {
 					videoAvatarImg.style.display = "block";
 				}
 
-				// TODO handle audio status icon
+				const audioEnabledEl = document.getElementById(id + "_audioEnabled");
+				const audioEnabled = peersInfo[id]["userData"]["audioEnabled"];
+				if (audioEnabledEl) {
+					audioEnabledEl.className = "audioEnabled icon-mic" + (audioEnabled ? "" : "-off");
+				}
 			}
 		};
 		peerConnection.ondatachannel = function(event) {
@@ -280,6 +284,7 @@ function setupLocalMedia(callback, errorback) {
 const getVideoElement = (peerId, isLocal) => {
 	const videoWrap = document.createElement("div");
 	videoWrap.className = "video";
+
 	const media = document.createElement("video");
 	media.setAttribute("playsinline", true);
 	media.autoplay = true;
@@ -292,10 +297,16 @@ const getVideoElement = (peerId, isLocal) => {
 	} else {
 		media.mediaGroup = "remotevideo";
 	}
+
+	const audioEnabled = document.createElement("i");
+	audioEnabled.setAttribute("id", peerId + "_audioEnabled");
+	audioEnabled.className = "audioEnabled icon-mic";
+
 	const peerName = document.createElement("p");
 	peerName.setAttribute("id", peerId + "_videoPeerName");
 	peerName.className = "videoPeerName";
 	peerName.innerHTML = App.name + " (you)";
+
 	const fullScreenBtn = document.createElement("button");
 	fullScreenBtn.className = "icon-maximize";
 	fullScreenBtn.addEventListener("click", () => {
@@ -305,12 +316,15 @@ const getVideoElement = (peerId, isLocal) => {
 			videoWrap.webkitRequestFullscreen();
 		}
 	});
+
 	const videoAvatarImg = document.createElement('img');
 	videoAvatarImg.setAttribute("id", peerId + "_videoEnabled");
 	videoAvatarImg.setAttribute("src", "img/videoOff.png")
 	videoAvatarImg.className = "videoAvatarImg";
+
 	videoWrap.setAttribute("id", peerId);
 	videoWrap.appendChild(media);
+	videoWrap.appendChild(audioEnabled);
 	videoWrap.appendChild(peerName);
 	videoWrap.appendChild(fullScreenBtn);
 	videoWrap.appendChild(videoAvatarImg);

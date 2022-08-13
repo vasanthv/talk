@@ -112,6 +112,22 @@ input {
 	box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.16), 0px 1px 4px rgba(0, 0, 0, 0.16);
 }
 
+.audioEnabled.icon-mic-off,
+.audioEnabled.icon-mic {
+	z-index: auto;
+	position: absolute;
+	padding: 5px;
+	top: 5px;
+    left: 5px;
+	font-weight: bold;
+	font-size: 1.2rem;
+	color: #FFFFFF;
+	background-color: #00000031;
+	border: none;
+	border-radius: 5px;
+	box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.16), 0px 1px 4px rgba(0, 0, 0, 0.16);
+}
+
 #app {
 	display: none;
 }
