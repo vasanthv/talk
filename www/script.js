@@ -84,6 +84,7 @@ function init() {
 				joinChatChannel(ROOM_ID, userData);
 			});
 	});
+
 	signalingSocket.on("disconnect", function() {
 		for (let peer_id in peerMediaElements) {
 			document.getElementById("videos").removeChild(peerMediaElements[peer_id].parentNode);
@@ -155,6 +156,7 @@ function init() {
 				}
 			}
 		};
+
 		peerConnection.ondatachannel = function(event) {
 			console.log("Datachannel event" + peer_id, event);
 			event.channel.onmessage = (msg) => {
@@ -252,7 +254,9 @@ function init() {
 		//console.log('removePeer', JSON.stringify(channel, null, 2));
 	});
 }
+
 const attachMediaStream = (element, stream) => (element.srcObject = stream);
+
 function setupLocalMedia(callback, errorback) {
 	if (localMediaStream != null) {
 		if (callback) callback();
@@ -316,7 +320,7 @@ const getVideoElement = (peerId, isLocal) => {
 		}
 	});
 
-	const videoAvatarImgSize = App.isMobileDevice ? "60px" : "200px";
+	const videoAvatarImgSize = App.isMobileDevice ? "100px" : "200px";
 	const videoAvatarImg = document.createElement('img');
 	videoAvatarImg.setAttribute("id", peerId + "_videoEnabled");
 	videoAvatarImg.setAttribute("src", "img/videoOff.png");

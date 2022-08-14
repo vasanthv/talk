@@ -70,7 +70,7 @@ const App = new Vue({
 				}
 			} else {
 				screenMediaPromise = navigator.mediaDevices.getUserMedia({ video: true });
-				document.getElementById(App.peerId + "_videoEnabled").style.display = "none";
+				document.getElementById(this.peerId + "_videoEnabled").style.display = "none";
 			}
 			screenMediaPromise
 				.then((screenStream) => {
