@@ -88,7 +88,7 @@ input {
 }
 
 .videoAvatarImg {
-	z-index: auto;
+	z-index: 1;
 	display: none;
     position: absolute;
     top: 50%;
@@ -97,7 +97,7 @@ input {
 }
 
 .videoPeerName {
-	z-index: auto;
+	z-index: 2;
 	position: absolute;
 	padding: 5px;
 	top: 10px;
@@ -114,7 +114,7 @@ input {
 
 .audioEnabled.icon-mic-off,
 .audioEnabled.icon-mic {
-	z-index: auto;
+	z-index: 3;
 	position: absolute;
 	padding: 5px;
 	top: 5px;
@@ -297,6 +297,7 @@ input {
 }
 
 #actions {
+	z-index: 100;
 	background: rgba(255, 255, 255, 0.5);
 	box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.16), 0px 1px 4px rgba(0, 0, 0, 0.16);
 	margin: auto;

@@ -2,6 +2,7 @@
 const App = new Vue({
 	el: "#app",
 	data: {
+		peerId: "",
 		roomLink: "",
 		copyText: "",
 		userAgent: "",
@@ -69,7 +70,7 @@ const App = new Vue({
 				}
 			} else {
 				screenMediaPromise = navigator.mediaDevices.getUserMedia({ video: true });
-				document.getElementById(thisPeerId + "_videoEnabled").style.display = "none";
+				document.getElementById(App.peerId + "_videoEnabled").style.display = "none";
 			}
 			screenMediaPromise
 				.then((screenStream) => {
@@ -101,24 +102,17 @@ const App = new Vue({
 		updateUserData: function(key, value) {
 			signalingSocket.emit("updateUserData", { channel: ROOM_ID, key: key, value: value });
 
-			const dataMessage = {
-				type: key,
-				name: this.name,
-				id: thisPeerId,
-				message: value,
-				date: new Date().toISOString(),
-			};
-			Object.keys(dataChannels).map((peer_id) => dataChannels[peer_id].send(JSON.stringify(dataMessage)));
+			this.sendDataMessage(key, value);
 
 			switch(key) {
 				case "audioEnabled":
-					document.getElementById(thisPeerId + "_audioEnabled").className = "audioEnabled icon-mic" + (value ? "" : "-off");
+					document.getElementById(this.peerId + "_audioEnabled").className = "audioEnabled icon-mic" + (value ? "" : "-off");
 					break;
 				case "videoEnabled":
-					document.getElementById(thisPeerId + "_videoEnabled").style.display = value ? "none" : "block";
+					document.getElementById(this.peerId + "_videoEnabled").style.display = value ? "none" : "block";
 					break;
 				case "peerName":
-					document.getElementById(dataMessage.id + "_videoPeerName").innerHTML = value + " (you)";
+					document.getElementById(this.peerId + "_videoPeerName").innerHTML = value + " (you)";
 					break
 				// ...
 				default:
@@ -205,20 +199,33 @@ const App = new Vue({
 			e.preventDefault();
 			if (this.typing.length && Object.keys(peers).length > 0) {
 				const composeElement = document.getElementById("compose");
-				const dataMessage = {
-					type: "chat",
-					name: this.name,
-					message: this.typing,
-					date: new Date().toISOString(),
-				};
-				this.chats.push(dataMessage);
-				Object.keys(dataChannels).map((peer_id) => dataChannels[peer_id].send(JSON.stringify(dataMessage)));
+				this.sendDataMessage("chat", this.typing);
 				this.typing = "";
 				composeElement.textContent = "";
 				composeElement.blur;
 			} else {
 				alert('No peers in the room');
 			}
+		},
+		sendDataMessage: function(key, value) {
+			const dataMessage = {
+				type: key,
+				name: this.name,
+				id: this.peerId,
+				message: value,
+				date: new Date().toISOString(),
+			}
+
+			switch(key) {
+				case "chat":
+					this.chats.push(dataMessage);
+					break;
+				// ...
+				default:
+					break;
+			}
+
+			Object.keys(dataChannels).map((peer_id) => dataChannels[peer_id].send(JSON.stringify(dataMessage)));
 		},
 		handleIncomingDataChannelMessage: function(dataMessage) {
 			// console.log(dataMessage);

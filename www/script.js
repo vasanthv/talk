@@ -42,11 +42,10 @@ const ROOM_ID = (() => {
 const USE_AUDIO = true;
 const USE_VIDEO = true;
 
-let thisPeerId = null; /* this peer_id aka signalingSocket.id */
 let signalingSocket = null; /* our socket.io connection to our webserver */
 let localMediaStream = null; /* our own microphone / webcam */
 let peers = {}; /* keep track of our peer connections, indexed by peer_id (aka socket.io id) */
-let peersInfo = {} /* keep track of the peers Info in the channel, indexed by peer_id (aka socket.io id) */
+let channel = {} /* keep track of the peers Info in the channel, indexed by peer_id (aka socket.io id) */
 let peerMediaElements = {}; /* keep track of our <video>/<audio> tags, indexed by peer_id */
 let dataChannels = {};
 
@@ -64,9 +63,9 @@ function init() {
 
 	signalingSocket.on("connect", function() {
 
-		thisPeerId = signalingSocket.id;
+		App.peerId = signalingSocket.id;
 
-		console.log('PEER_ID: ' + thisPeerId);
+		console.log('peerId: ' + App.peerId);
 
 		const userData = {
 			peerName: App.name,
@@ -108,8 +107,8 @@ function init() {
 		const peer_id = config.peer_id;
 		if (peer_id in peers) return;
 
-		peersInfo = config.peers_info;
-		//console.log('[Join] - connected peers in the channel', JSON.stringify(peersInfo, null, 2));
+		channel = config.channel;
+		//console.log('[Join] - connected peers in the channel', JSON.stringify(channel, null, 2));
 
 		const peerConnection = new RTCPeerConnection(
 			{ iceServers: ICE_SERVERS },
@@ -136,21 +135,21 @@ function init() {
 			resizeVideos();
 			App.showIntro = false;
 
-			for (let id in peersInfo) {
-				const videoPeerName = document.getElementById(id + "_videoPeerName");
-				const peerName = peersInfo[id]["userData"]["peerName"];
+			for (let peerId in channel) {
+				const videoPeerName = document.getElementById(peerId + "_videoPeerName");
+				const peerName = channel[peerId]["userData"]["peerName"];
 				if (videoPeerName && peerName) {
-					videoPeerName.innerHTML = peerName + (id == thisPeerId ? " (you)" : "");
+					videoPeerName.innerHTML = peerName + (peerId == App.peerId ? " (you)" : "");
 				}
 
-				const videoAvatarImg = document.getElementById(id + "_videoEnabled");
-				const videoEnabled = peersInfo[id]["userData"]["videoEnabled"];
+				const videoAvatarImg = document.getElementById(peerId + "_videoEnabled");
+				const videoEnabled = channel[peerId]["userData"]["videoEnabled"];
 				if (videoAvatarImg && !videoEnabled) {
 					videoAvatarImg.style.display = "block";
 				}
 
-				const audioEnabledEl = document.getElementById(id + "_audioEnabled");
-				const audioEnabled = peersInfo[id]["userData"]["audioEnabled"];
+				const audioEnabledEl = document.getElementById(peerId + "_audioEnabled");
+				const audioEnabled = channel[peerId]["userData"]["audioEnabled"];
 				if (audioEnabledEl) {
 					audioEnabledEl.className = "audioEnabled icon-mic" + (audioEnabled ? "" : "-off");
 				}
@@ -249,8 +248,8 @@ function init() {
 		delete peers[peer_id];
 		delete peerMediaElements[config.peer_id];
 
-		delete peersInfo[config.peer_id];
-		//console.log('removePeer', JSON.stringify(peersInfo, null, 2));
+		delete channel[config.peer_id];
+		//console.log('removePeer', JSON.stringify(channel, null, 2));
 	});
 }
 const attachMediaStream = (element, stream) => (element.srcObject = stream);
@@ -264,7 +263,7 @@ function setupLocalMedia(callback, errorback) {
 		.getUserMedia({ audio: USE_AUDIO, video: USE_VIDEO })
 		.then((stream) => {
 			localMediaStream = stream;
-			const localMedia = getVideoElement(thisPeerId, true);
+			const localMedia = getVideoElement(App.peerId, true);
 			attachMediaStream(localMedia, stream);
 			resizeVideos();
 			if (callback) callback();
@@ -317,7 +316,7 @@ const getVideoElement = (peerId, isLocal) => {
 		}
 	});
 
-	const videoAvatarImgSize = App.isMobileDevice ? "100px" : "200px";
+	const videoAvatarImgSize = App.isMobileDevice ? "60px" : "200px";
 	const videoAvatarImg = document.createElement('img');
 	videoAvatarImg.setAttribute("id", peerId + "_videoEnabled");
 	videoAvatarImg.setAttribute("src", "img/videoOff.png");

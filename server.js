@@ -68,8 +68,8 @@ io.sockets.on("connection", (socket) => {
 		console.log("[" + socket.id + "] join - connected peers grouped by channel", util.inspect(peers, options));
 
 		for (const id in channels[channel]) {
-			channels[channel][id].emit("addPeer", { peer_id: socket.id, should_create_offer: false, peers_info: peers[channel] });
-			socket.emit("addPeer", { peer_id: id, should_create_offer: true, peers_info: peers[channel] });
+			channels[channel][id].emit("addPeer", { peer_id: socket.id, should_create_offer: false, channel: peers[channel] });
+			socket.emit("addPeer", { peer_id: id, should_create_offer: true, channel: peers[channel] });
 		}
 
 		channels[channel][socket.id] = socket;
