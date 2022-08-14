@@ -321,6 +321,7 @@ input {
 	background: #fafafa;
 	border-radius: 1rem;
 }
+#actions button.icon-exit,
 #actions button.icon-mic-off,
 #actions button.icon-video-off {
 	color: #e74c3c !important;

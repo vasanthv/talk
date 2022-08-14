@@ -127,6 +127,10 @@
 						v-on:click="screenShareToggle"
 					></button>
 					<button
+						v-bind:class="'icon-exit'"
+						v-on:click="exit"
+					></button>
+					<button
 						v-bind:class="'icon-more-horizontal '+(showSettings ? 'active' : '')"
 						v-on:click="showSettings = !showSettings"
 					></button>

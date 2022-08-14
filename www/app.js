@@ -253,5 +253,8 @@ const App = new Vue({
 				(date.getHours() >= 12 ? "PM" : "AM")
 			);
 		},
+		exit: function() {
+			window.location.href = "/";
+		}
 	},
 });
