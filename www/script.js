@@ -1,4 +1,4 @@
-/* globals App, io, cabin*/
+/* globals App, io */
 
 /**
  * TODO Recommended to using only one Stun/Turn
@@ -55,6 +55,8 @@ function init() {
 	App.isTablet = /(ipad|tablet|(android(?!.*mobile))|(windows(?!.*phone)(.*touch))|kindle|playbook|silk|(puffin(?!.*(IP|AP|WP))))/.test(App.userAgent.toLowerCase());
 	App.isIpad = /macintosh/.test(App.userAgent.toLowerCase()) && 'ontouchend' in document;
 	App.isDesktop = (!App.isMobileDevice && !App.isTablet && !App.isIpad);
+
+	App.roomId = ROOM_ID;
 
 	App.roomLink = `${APP_URL}/${ROOM_ID}`;
 
@@ -187,7 +189,7 @@ function init() {
 									session_description: localDescription,
 								});
 							})
-							.catch((err) => {
+							.catch(() => {
 								alert("Offer setLocalDescription failed!")
 							});
 					})

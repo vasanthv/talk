@@ -1,8 +1,9 @@
-/* globals attachMediaStream, Vue,  peers, localMediaStream, dataChannels */
+/* globals attachMediaStream, Vue,  peers, localMediaStream, dataChannels, signalingSocket */
 const App = new Vue({
 	el: "#app",
 	data: {
 		peerId: "",
+		roomId: "",
 		roomLink: "",
 		copyText: "",
 		userAgent: "",
@@ -100,7 +101,7 @@ const App = new Vue({
 				});
 		},
 		updateUserData: function(key, value) {
-			signalingSocket.emit("updateUserData", { channel: ROOM_ID, key: key, value: value });
+			signalingSocket.emit("updateUserData", { channel: App.roomId, key: key, value: value });
 
 			this.sendDataMessage(key, value);
 
