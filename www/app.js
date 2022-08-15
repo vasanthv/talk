@@ -18,7 +18,7 @@ const App = new Vue({
 		audioDevices: [],
 		audioEnabled: true,
 		videoEnabled: true,
-		screenshareEnabled: false,
+		screenShareEnabled: false,
 		showIntro: true,
 		showChat: false,
 		showSettings: false,
@@ -62,7 +62,7 @@ const App = new Vue({
 		screenShareToggle: function(e) {
 			e.stopPropagation();
 			let screenMediaPromise;
-			if (!App.screenshareEnabled) {
+			if (!App.screenShareEnabled) {
 				if (navigator.getDisplayMedia) {
 					screenMediaPromise = navigator.getDisplayMedia({ video: true });
 				} else if (navigator.mediaDevices.getDisplayMedia) {
@@ -78,7 +78,7 @@ const App = new Vue({
 			}
 			screenMediaPromise
 				.then((screenStream) => {
-					App.screenshareEnabled = !App.screenshareEnabled;
+					App.screenShareEnabled = !App.screenShareEnabled;
 
 					this.videoEnabled = true;
 					this.updateUserData("videoEnabled", this.videoEnabled);
@@ -94,7 +94,7 @@ const App = new Vue({
 					this.toggleSelfVideoMirror();
 
 					screenStream.getVideoTracks()[0].onended = function() {
-						if (App.screenshareEnabled) 
+						if (App.screenShareEnabled) 
 							App.screenShareToggle();
 					};
 				})
