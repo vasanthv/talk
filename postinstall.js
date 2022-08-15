@@ -1,3 +1,5 @@
+"use strict";
+
 const fs = require("fs");
 const path = require("path");
 if (process.env.NODE_ENV === "production" && process.env.TALK_GA_SCRIPT) {

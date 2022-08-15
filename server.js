@@ -1,3 +1,5 @@
+"use strict"; // https://www.w3schools.com/js/js_strict.asp
+
 const express = require("express");
 const path = require("path");
 const http = require("http");

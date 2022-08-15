@@ -1,4 +1,7 @@
 /* globals attachMediaStream, Vue,  peers, localMediaStream, dataChannels, signalingSocket */
+
+"use strict";
+
 const App = new Vue({
 	el: "#app",
 	data: {

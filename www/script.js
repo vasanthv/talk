@@ -1,5 +1,7 @@
 /* globals App, io */
 
+"use strict";
+
 /**
  * TODO Recommended to using only one Stun/Turn
  * https://github.com/coturn/coturn
