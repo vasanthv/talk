@@ -123,6 +123,7 @@
 						v-on:click="showChat = !showChat"
 					></button>
 					<button
+						v-if="!isMobileDevice"
 						v-bind:class="'icon-monitor '+(screenshareEnabled ? 'active' : '')"
 						v-on:click="screenShareToggle"
 					></button>
