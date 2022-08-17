@@ -26,7 +26,7 @@ const App = new Vue({
 		selectedAudioDeviceId: "",
 		selectedVideoDeviceId: "",
 		name: window.localStorage.name || "Unnamed",
-		isDark: false,
+		isDark: window.localStorage.dark == "true" || false,
 		typing: "",
 		chats: [],
 	},
@@ -57,6 +57,7 @@ const App = new Vue({
 			document.querySelector("#videos .video #selfVideo").classList.toggle("mirror");
 		},
 		toggleTheme: function() {
+			window.localStorage.dark = this.isDark;
 			this.isDark ? setDarkTheme() : setDefaultTheme();
 			this.isDark = !this.isDark;
 		},
