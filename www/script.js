@@ -52,6 +52,8 @@ let peerMediaElements = {}; /* keep track of our <video>/<audio> tags, indexed b
 let dataChannels = {};
 
 function init() {
+	App.toggleTheme();
+
 	App.userAgent = navigator.userAgent;
 	App.isMobileDevice = !!(/Android|webOS|iPhone|iPad|iPod|BB10|BlackBerry|IEMobile|Opera Mini|Mobile|mobile/i.test(App.userAgent.toUpperCase() || ''));
 	App.isTablet = /(ipad|tablet|(android(?!.*mobile))|(windows(?!.*phone)(.*touch))|kindle|playbook|silk|(puffin(?!.*(IP|AP|WP))))/.test(App.userAgent.toLowerCase());
