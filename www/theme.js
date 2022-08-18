@@ -17,7 +17,7 @@ const setDarkTheme = () => {
 	setStyle("--settings-link-h-cl", "#fff");
 	setStyle("--actions-bg", "rgba(0, 0, 0, 0.5)");
 	setStyle("--actions-btn-cl", "#fff");
-	setStyle("--actions-btn-h-bg", "rgba(0, 0, 0, 0.8)");
+	setStyle("--actions-btn-h-bg", "rgba(9, 9, 9, 0.8)");
 	setStyle("--actions-btn-h-cl", "#fff");
 	setStyle("--actions-btn-a-bg", "#0a0a0a");
 }
