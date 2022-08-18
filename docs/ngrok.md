@@ -11,6 +11,23 @@ In order to use it on `Talk` app, you need to do 2 steps:
 NGROK_AUTH_TOKEN="YourNgrokAuthToken" npm start
 ```
 
+---
+
+Or if you want to run it with `Docker`, set your token in `docker-compose.yml`
+
+```yaml
+    environment:
+      NGROK_AUTH_TOKEN: "YourNgrokAuthToken"
+```
+
+then
+
+```bash
+docker-compose up
+```
+
+---
+
 If set correctly, in the `Server log console` you should see something like:
 
 ```js
