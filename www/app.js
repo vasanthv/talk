@@ -80,7 +80,7 @@ const App = new Vue({
 				}
 			} else {
 				screenMediaPromise = navigator.mediaDevices.getUserMedia({ video: true });
-				document.getElementById(this.peerId + "_videoEnabled").style.display = "none";
+				document.getElementById(this.peerId + "_videoEnabled").style.visibility = "hidden";
 			}
 			screenMediaPromise
 				.then((screenStream) => {
@@ -119,7 +119,7 @@ const App = new Vue({
 					document.getElementById(this.peerId + "_audioEnabled").className = "audioEnabled icon-mic" + (value ? "" : "-off");
 					break;
 				case "videoEnabled":
-					document.getElementById(this.peerId + "_videoEnabled").style.display = value ? "none" : "block";
+					document.getElementById(this.peerId + "_videoEnabled").style.visibility = value ? "hidden" : "visible";
 					break;
 				case "peerName":
 					document.getElementById(this.peerId + "_videoPeerName").innerHTML = value + " (you)";
@@ -252,7 +252,7 @@ const App = new Vue({
 					document.getElementById(dataMessage.id + "_audioEnabled").className = "audioEnabled icon-mic" + (dataMessage.message ? "" : "-off");
 					break;
 				case "videoEnabled":
-					document.getElementById(dataMessage.id + "_videoEnabled").style.display = dataMessage.message ? "none" : "block";
+					document.getElementById(dataMessage.id + "_videoEnabled").style.visibility = dataMessage.message ? "hidden" : "visible";
 					break;
 				case "peerName":
 					document.getElementById(dataMessage.id + "_videoPeerName").innerHTML = dataMessage.message;

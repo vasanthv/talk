@@ -137,7 +137,7 @@ input {
 
 .videoAvatarImg {
 	z-index: 1;
-	display: none;
+	visibility: hidden;
     position: absolute;
     top: 50%;
     left: 50%;

@@ -152,7 +152,7 @@ function init() {
 				const videoAvatarImg = document.getElementById(peerId + "_videoEnabled");
 				const videoEnabled = channel[peerId]["userData"]["videoEnabled"];
 				if (videoAvatarImg && !videoEnabled) {
-					videoAvatarImg.style.display = "block";
+					videoAvatarImg.style.visibility = "visible";
 				}
 
 				const audioEnabledEl = document.getElementById(peerId + "_audioEnabled");
