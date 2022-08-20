@@ -3,8 +3,10 @@
 "use strict";
 
 /**
- * TODO Recommended to using only one Stun/Turn
- * https://github.com/coturn/coturn
+ * TODO I recommend using only one Stun/Trun 
+ * 
+ * Note: The current Turn Servers seems not reachable.
+ * 		 To Setup your own Stun/Turn check out: https://github.com/coturn/coturn
  */
 const ICE_SERVERS = [
 	{ urls: "stun:stun.l.google.com:19302" },
@@ -24,6 +26,14 @@ const ICE_SERVERS = [
 		credential: "u1SQDR/SQsPQIxXNWQT7czc/G4c=",
 	},
 ];
+
+/*
+TODO If you not use coturn, use these working ice_servers
+const ICE_SERVERS = [
+    { urls: "stun:stun.l.google.com:19302" },
+    { urls: "turn:openrelay.metered.ca:443", username: "openrelayproject", credential: "openrelayproject" }
+]
+*/
 
 const APP_URL = (() => {
 	const protocol = "http" + (location.hostname == "localhost" ? "" : "s") + "://";
