@@ -3,7 +3,7 @@
 "use strict";
 
 /**
- * TODO I recommend using only one Stun/Trun 
+ * TODO I recommend using only one Stun/Turn 
  * 
  * Note: The current Turn Servers seems not reachable.
  * 		 To Setup your own Stun/Turn check out: https://github.com/coturn/coturn
