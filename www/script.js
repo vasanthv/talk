@@ -2,38 +2,10 @@
 
 "use strict";
 
-/**
- * TODO I recommend using only one Stun/Turn 
- * 
- * Note: The current Turn Servers seems not reachable.
- * 		 To Setup your own Stun/Turn check out: https://github.com/coturn/coturn
- */
-const ICE_SERVERS = [
-	{ urls: "stun:stun.l.google.com:19302" },
-	{ urls: "stun:stun.stunprotocol.org:3478" },
-	{ urls: "stun:stun.sipnet.net:3478" },
-	{ urls: "stun:stun.ideasip.com:3478" },
-	{ urls: "stun:stun.iptel.org:3478" },
-	{ urls: "turn:numb.viagenie.ca", username: "imvasanthv@gmail.com", credential: "d0ntuseme" },
-	{
-		urls: [
-			"turn:173.194.72.127:19305?transport=udp",
-			"turn:[2404:6800:4008:C01::7F]:19305?transport=udp",
-			"turn:173.194.72.127:443?transport=tcp",
-			"turn:[2404:6800:4008:C01::7F]:443?transport=tcp",
-		],
-		username: "CKjCuLwFEgahxNRjuTAYzc/s6OMT",
-		credential: "u1SQDR/SQsPQIxXNWQT7czc/G4c=",
-	},
-];
-
-/*
-TODO If you not use coturn, use these working ice_servers
 const ICE_SERVERS = [
     { urls: "stun:stun.l.google.com:19302" },
     { urls: "turn:openrelay.metered.ca:443", username: "openrelayproject", credential: "openrelayproject" }
 ]
-*/
 
 const APP_URL = (() => {
 	const protocol = "http" + (location.hostname == "localhost" ? "" : "s") + "://";
@@ -127,10 +99,7 @@ function init() {
 		channel = config.channel;
 		//console.log('[Join] - connected peers in the channel', JSON.stringify(channel, null, 2));
 
-		const peerConnection = new RTCPeerConnection(
-			{ iceServers: ICE_SERVERS },
-			{ optional: [{ DtlsSrtpKeyAgreement: true }] }
-		);
+		const peerConnection = new RTCPeerConnection({ iceServers: ICE_SERVERS });
 		peers[peer_id] = peerConnection;
 
 		peerConnection.onicecandidate = function(event) {
