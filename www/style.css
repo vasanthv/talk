@@ -1,5 +1,53 @@
 @import "icomoon/style.css";
 
+:root {
+
+/* App theme: White mode */
+	--body-bg: #fff;
+	--intro-bg:  #fff;
+	--intro-cl:  #000;
+	--chat-wrap-bg: #fff;
+	--chat-wrap-ch-bg: linear-gradient(white 30%, rgba(190, 179, 179, 0)), linear-gradient(rgba(255, 255, 255, 0), white 70%) 0 100%, radial-gradient(50% 0, farthest-side, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)), radial-gradient(50% 100%, farthest-side, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)) 0 100%;
+    --chat-wrap-ch-bg: linear-gradient(white 30%, rgba(255, 255, 255, 0)), linear-gradient(rgba(255, 255, 255, 0), white 70%) 0 100%, radial-gradient(farthest-side at 50% 0, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)), radial-gradient(farthest-side at 50% 100%, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)) 0 100%;
+	--chat-wrap-ch-bgc: white;
+	--chat-wrap-ch-cl: #000;
+	--chat-wrap-cb-bg: #f6f6f6;
+	--chat-wrap-cb-cl: #000;
+	--settings-bg: rgba(255, 255, 255, 0.9);
+	--settings-cl: #000;
+	--settings-link-h-bg: #fff;
+	--settings-link-h-cl: #000;
+	--actions-bg: rgba(255, 255, 255, 0.5);
+	--actions-btn-cl: #000;
+	--actions-btn-h-bg: rgba(255, 255, 255, 0.8);
+	--actions-btn-h-cl: #000;
+	--actions-btn-a-bg: #fafafa;
+
+/* App theme: Dark mode */
+/* 
+	--body-bg: #000;
+	--intro-bg:  #000;
+	--intro-cl:  #fff; 
+    --chat-wrap-bg: #000;
+	--chat-wrap-ch-bg: linear-gradient(black 30%, rgb(90 85 85 / 0%)), linear-gradient(rgb(5 5 5 / 0%), black 70%) 0 100%, radial-gradient(50% 0, farthest-side, rgb(246 243 243 / 20%), rgb(250 249 249 / 0%)), radial-gradient(50% 100%, farthest-side, rgb(250 246 246 / 20%), rgb(251 249 249 / 0%)) 0 100%;
+	--chat-wrap-ch-bg: linear-gradient(black 30%, rgb(5 5 5 / 0%)), linear-gradient(rgb(2 2 2 / 0%), black 70%) 0 100%, radial-gradient(farthest-side at 50% 0, rgb(246 241 241 / 20%), rgb(244 240 240 / 0%)), radial-gradient(farthest-side at 50% 100%, rgb(250 249 249 / 20%), rgb(250 248 248 / 0%)) 0 100%;
+	--chat-wrap-ch-bgc: black;
+	--chat-wrap-ch-cl: #fff;
+	--chat-wrap-cb-bg: #060606;
+	--chat-wrap-cb-cl: #fff;
+	--settings-bg: rgba(0, 0, 0, 0.9);
+	--settings-cl: #fff;
+	--settings-link-h-bg: #000;
+	--settings-link-h-cl: #fff;
+	--actions-bg: rgba(0, 0, 0, 0.5);
+	--actions-btn-cl: #fff;
+	--actions-btn-h-bg: rgba(9, 9, 9, 0.8);
+	--actions-btn-h-cl: #fff;
+	--actions-btn-a-bg: #0a0a0a;
+*/
+
+}
+
 * {
 	outline: none;
 }
@@ -11,7 +59,7 @@ body {
 	line-height: 1.6;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
-	background: #fff;
+	background: var(--body-bg);
 }
 input {
 	display: block;
@@ -87,11 +135,53 @@ input {
 	display: none;
 }
 
+.videoAvatarImg {
+	z-index: 1;
+	visibility: hidden;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.videoPeerName {
+	z-index: 2;
+	position: absolute;
+	padding: 5px;
+	top: 10px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+	font-weight: bold;
+	font-size: 0.7rem;
+	color: #FFFFFF;
+	background-color: #00000031;
+	border: none;
+	border-radius: 5px;
+	box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.16), 0px 1px 4px rgba(0, 0, 0, 0.16);
+}
+
+.audioEnabled.icon-mic-off,
+.audioEnabled.icon-mic {
+	z-index: 3;
+	position: absolute;
+	padding: 5px;
+	top: 5px;
+    left: 5px;
+	font-weight: bold;
+	font-size: 1.2rem;
+	color: #FFFFFF;
+	background-color: #00000031;
+	border: none;
+	border-radius: 5px;
+	box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.16), 0px 1px 4px rgba(0, 0, 0, 0.16);
+}
+
 #app {
 	display: none;
 }
 #intro {
-	background: #fff;
+	background: var(--intro-bg);
+	color: var(--intro-cl);
 	position: fixed;
 	bottom: 6rem;
 	left: 0px;
@@ -128,7 +218,7 @@ input {
 }
 
 #chatWrap {
-	background: #fff;
+	background: var(--chat-wrap-bg);
 	position: fixed;
 	bottom: 6rem;
 	left: 0px;
@@ -146,18 +236,12 @@ input {
 	overflow: auto;
 	max-height: 240px;
 	margin: auto;
-	background: /* Shadow covers */ linear-gradient(white 30%, rgba(255, 255, 255, 0)),
-		linear-gradient(rgba(255, 255, 255, 0), white 70%) 0 100%,
-		/* Shadows */ radial-gradient(50% 0, farthest-side, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)),
-		radial-gradient(50% 100%, farthest-side, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)) 0 100%;
-	background: /* Shadow covers */ linear-gradient(white 30%, rgba(255, 255, 255, 0)),
-		linear-gradient(rgba(255, 255, 255, 0), white 70%) 0 100%,
-		/* Shadows */ radial-gradient(farthest-side at 50% 0, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)),
-		radial-gradient(farthest-side at 50% 100%, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)) 0 100%;
+	color: var(--chat-wrap-ch-cl);
+	background: var(--chat-wrap-ch-bg);
+	background: var(--chat-wrap-ch-bg);
 	background-repeat: no-repeat;
-	background-color: white;
+	background-color: var(--chat-wrap-ch-bgc);
 	background-size: 100% 40px, 100% 40px, 100% 14px, 100% 14px;
-
 	background-attachment: local, local, scroll, scroll;
 }
 #chatWrap .chat {
@@ -173,7 +257,8 @@ input {
 }
 #chatWrap #composeBox {
 	position: relative;
-	background: #f6f6f6;
+	background: var(--chat-wrap-cb-bg);
+	color: var(--chat-wrap-cb-cl);
 	border-radius: 1rem;
 	padding: 0.7rem 1rem;
 	margin-top: 0.5rem;
@@ -195,7 +280,8 @@ input {
 }
 
 #settings {
-	background: rgba(255, 255, 255, 0.9);
+	background: var(--settings-bg);
+	color: var(--settings-cl);
 	box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.16), 0px 1px 4px rgba(0, 0, 0, 0.16);
 	position: fixed;
 	bottom: 5rem;
@@ -228,7 +314,8 @@ input {
 	margin-right: 0.5rem;
 }
 #settings .link:hover {
-	background: #fff;
+	background: var(--settings-link-h-bg);
+	color: var(--settings-link-h-cl);
 }
 #settings .link.copy {
 	margin-bottom: 0.5rem;
@@ -256,7 +343,8 @@ input {
 }
 
 #actions {
-	background: rgba(255, 255, 255, 0.5);
+	z-index: 100;
+	background: var(--actions-bg);
 	box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.16), 0px 1px 4px rgba(0, 0, 0, 0.16);
 	margin: auto;
 	box-sizing: border-box;
@@ -271,15 +359,18 @@ input {
 	padding: 1rem;
 	cursor: pointer;
 	margin: auto;
+	color: var(--actions-btn-cl);
 }
 #actions button:hover {
-	background: rgba(255, 255, 255, 0.8);
+	background: var(--actions-btn-h-bg);
+	color: var(--actions-btn-h-cl);
 	border-radius: 1rem;
 }
 #actions button.active {
-	background: #fafafa;
+	background: var(--actions-btn-a-bg);
 	border-radius: 1rem;
 }
+#actions button.icon-exit,
 #actions button.icon-mic-off,
 #actions button.icon-video-off {
 	color: #e74c3c !important;

@@ -27,8 +27,9 @@
 		<link rel="stylesheet" href="/style.css" />
 		<script defer src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
 		<script defer src="/socket.io/socket.io.js"></script>
-		<script defer src="vue.min.js"></script>
+		<script defer src="vue.min.js"></script> <!-- TODO where is? -->
 		<script defer src="app.js"></script>
+		<script defer src="theme.js"></script>
 		<script defer src="script.js"></script>
 		<title>Talk - Free group video call for the web</title>
 	</head>
@@ -112,6 +113,10 @@
 					Mirror / Unmirror
 					<small class="light">(self-view)</small>
 				</div>
+				<div class="copy link" v-on:click="toggleTheme">
+					⚪️  / ⚫️ 
+				<small class="light">(theme)</small>
+				</div>
 			</div>
 
 			<div id="actionsWrap" v-bind:class="hideToolbar ? 'hidden' : ''">
@@ -123,8 +128,13 @@
 						v-on:click="showChat = !showChat"
 					></button>
 					<button
-						v-bind:class="'icon-monitor '+(screenshareEnabled ? 'active' : '')"
+						v-if="!isMobileDevice"
+						v-bind:class="'icon-monitor '+(screenShareEnabled ? 'active' : '')"
 						v-on:click="screenShareToggle"
+					></button>
+					<button
+						v-bind:class="'icon-exit'"
+						v-on:click="exit"
 					></button>
 					<button
 						v-bind:class="'icon-more-horizontal '+(showSettings ? 'active' : '')"

@@ -1,6 +1,6 @@
 {
 	"name": "talk",
-	"version": "2.0.4",
+	"version": "3.0.0",
 	"description": "A free video call app for the web.",
 	"main": "server.js",
 	"scripts": {
@@ -23,8 +23,9 @@
 	},
 	"homepage": "https://github.com/vasanthv/talk#readme",
 	"dependencies": {
-		"express": "^4.17.1",
-		"socket.io": "^4.0.1",
+		"express": "^4.18.1",
+		"ngrok": "^4.3.2",
+		"socket.io": "^4.5.1",
 		"vue": "^2.6.12"
 	}
 }
