@@ -41,6 +41,12 @@ npm start
 
 to start the talk server on port 3000. Your talk instance will be running on http://localhost:3000. Alternatively you can run the application using docker with `docker-compose up`.
 
+### How to self host it
+
+In order to self-host it on your dedicated server, Talk must be exposed on `https` following [this documentation](./docs/self-hosting.md).
+
+You can also expose it quickly on `https` from your local PC or any host, thanks to [ngrok](https://ngrok.com/) following [this documentation](./docs/ngrok.md).
+
 ### LICENSE
 
 <a href="https://github.com/vasanthv/talk/blob/master/LICENSE">MIT License</a>
