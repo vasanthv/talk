@@ -3,9 +3,9 @@
 "use strict";
 
 const ICE_SERVERS = [
-    { urls: "stun:stun.l.google.com:19302" },
-    { urls: "turn:openrelay.metered.ca:443", username: "openrelayproject", credential: "openrelayproject" }
-]
+	{ urls: "stun:stun.l.google.com:19302" },
+	{ urls: "turn:openrelay.metered.ca:443", username: "openrelayproject", credential: "openrelayproject" },
+];
 
 const APP_URL = (() => {
 	const protocol = "http" + (location.hostname == "localhost" ? "" : "s") + "://";
@@ -15,9 +15,7 @@ const APP_URL = (() => {
 const ROOM_ID = (() => {
 	let roomName = location.pathname.substring(1);
 	if (!roomName) {
-		roomName = Math.random()
-			.toString(36)
-			.substr(2, 6);
+		roomName = Math.random().toString(36).substr(2, 6);
 		window.history.pushState({ url: `${APP_URL}/${roomName}` }, roomName, `${APP_URL}/${roomName}`);
 	}
 	return roomName;
@@ -29,18 +27,21 @@ const USE_VIDEO = true;
 let signalingSocket = null; /* our socket.io connection to our webserver */
 let localMediaStream = null; /* our own microphone / webcam */
 let peers = {}; /* keep track of our peer connections, indexed by peer_id (aka socket.io id) */
-let channel = {} /* keep track of the peers Info in the channel, indexed by peer_id (aka socket.io id) */
+let channel = {}; /* keep track of the peers Info in the channel, indexed by peer_id (aka socket.io id) */
 let peerMediaElements = {}; /* keep track of our <video>/<audio> tags, indexed by peer_id */
 let dataChannels = {};
 
 function init() {
-	App.toggleTheme();
-
 	App.userAgent = navigator.userAgent;
-	App.isMobileDevice = !!(/Android|webOS|iPhone|iPad|iPod|BB10|BlackBerry|IEMobile|Opera Mini|Mobile|mobile/i.test(App.userAgent.toUpperCase() || ''));
-	App.isTablet = /(ipad|tablet|(android(?!.*mobile))|(windows(?!.*phone)(.*touch))|kindle|playbook|silk|(puffin(?!.*(IP|AP|WP))))/.test(App.userAgent.toLowerCase());
-	App.isIpad = /macintosh/.test(App.userAgent.toLowerCase()) && 'ontouchend' in document;
-	App.isDesktop = (!App.isMobileDevice && !App.isTablet && !App.isIpad);
+	App.isMobileDevice = !!/Android|webOS|iPhone|iPad|iPod|BB10|BlackBerry|IEMobile|Opera Mini|Mobile|mobile/i.test(
+		App.userAgent.toUpperCase() || ""
+	);
+	App.isTablet =
+		/(ipad|tablet|(android(?!.*mobile))|(windows(?!.*phone)(.*touch))|kindle|playbook|silk|(puffin(?!.*(IP|AP|WP))))/.test(
+			App.userAgent.toLowerCase()
+		);
+	App.isIpad = /macintosh/.test(App.userAgent.toLowerCase()) && "ontouchend" in document;
+	App.isDesktop = !App.isMobileDevice && !App.isTablet && !App.isIpad;
 
 	App.roomId = ROOM_ID;
 
@@ -49,11 +50,10 @@ function init() {
 	signalingSocket = io(APP_URL);
 	signalingSocket = io();
 
-	signalingSocket.on("connect", function() {
-
+	signalingSocket.on("connect", function () {
 		App.peerId = signalingSocket.id;
 
-		console.log('peerId: ' + App.peerId);
+		console.log("peerId: " + App.peerId);
 
 		const userData = {
 			peerName: App.name,
@@ -68,12 +68,12 @@ function init() {
 
 		if (localMediaStream) joinChatChannel(ROOM_ID, userData);
 		else
-			setupLocalMedia(function() {
+			setupLocalMedia(function () {
 				joinChatChannel(ROOM_ID, userData);
 			});
 	});
 
-	signalingSocket.on("disconnect", function() {
+	signalingSocket.on("disconnect", function () {
 		for (let peer_id in peerMediaElements) {
 			document.getElementById("videos").removeChild(peerMediaElements[peer_id].parentNode);
 			resizeVideos();
@@ -90,7 +90,7 @@ function init() {
 		signalingSocket.emit("join", { channel: channel, userData: userData });
 	}
 
-	signalingSocket.on("addPeer", function(config) {
+	signalingSocket.on("addPeer", function (config) {
 		//console.log("addPeer", config);
 
 		const peer_id = config.peer_id;
@@ -102,7 +102,7 @@ function init() {
 		const peerConnection = new RTCPeerConnection({ iceServers: ICE_SERVERS });
 		peers[peer_id] = peerConnection;
 
-		peerConnection.onicecandidate = function(event) {
+		peerConnection.onicecandidate = function (event) {
 			if (event.candidate) {
 				signalingSocket.emit("relayICECandidate", {
 					peer_id: peer_id,
@@ -114,7 +114,7 @@ function init() {
 			}
 		};
 
-		peerConnection.onaddstream = function(event) {
+		peerConnection.onaddstream = function (event) {
 			const remoteMedia = getVideoElement(peer_id);
 			peerMediaElements[peer_id] = remoteMedia;
 			attachMediaStream(remoteMedia, event.stream);
@@ -125,7 +125,7 @@ function init() {
 				const videoPeerName = document.getElementById(peerId + "_videoPeerName");
 				const peerName = channel[peerId]["userData"]["peerName"];
 				if (videoPeerName && peerName) {
-					videoPeerName.innerHTML = peerName + (peerId == App.peerId ? " (you)" : "");
+					videoPeerName.innerHTML = peerName;
 				}
 
 				const videoAvatarImg = document.getElementById(peerId + "_videoEnabled");
@@ -142,7 +142,7 @@ function init() {
 			}
 		};
 
-		peerConnection.ondatachannel = function(event) {
+		peerConnection.ondatachannel = function (event) {
 			console.log("Datachannel event" + peer_id, event);
 			event.channel.onmessage = (msg) => {
 				let dataMessage = {};
@@ -173,17 +173,17 @@ function init() {
 								});
 							})
 							.catch(() => {
-								alert("Offer setLocalDescription failed!")
+								alert("Offer setLocalDescription failed!");
 							});
 					})
 					.catch((error) => {
-						console.log("Error sending offer: ", error)
+						console.log("Error sending offer: ", error);
 					});
-			}
+			};
 		}
 	});
 
-	signalingSocket.on("sessionDescription", function(config) {
+	signalingSocket.on("sessionDescription", function (config) {
 		const peer_id = config.peer_id;
 		const peer = peers[peer_id];
 		const remoteDescription = config.session_description;
@@ -214,15 +214,15 @@ function init() {
 		);
 	});
 
-	signalingSocket.on("iceCandidate", function(config) {
+	signalingSocket.on("iceCandidate", function (config) {
 		const peer = peers[config.peer_id];
 		const iceCandidate = config.ice_candidate;
 		peer.addIceCandidate(new RTCIceCandidate(iceCandidate)).catch((error) => {
-			console.log('Error addIceCandidate', error);
+			console.log("Error addIceCandidate", error);
 		});
 	});
 
-	signalingSocket.on("removePeer", function(config) {
+	signalingSocket.on("removePeer", function (config) {
 		const peer_id = config.peer_id;
 		if (peer_id in peerMediaElements) {
 			document.getElementById("videos").removeChild(peerMediaElements[peer_id].parentNode);
@@ -290,10 +290,14 @@ const getVideoElement = (peerId, isLocal) => {
 	audioEnabled.setAttribute("id", peerId + "_audioEnabled");
 	audioEnabled.className = "audioEnabled icon-mic";
 
-	const peerName = document.createElement("p");
-	peerName.setAttribute("id", peerId + "_videoPeerName");
-	peerName.className = "videoPeerName";
-	peerName.innerHTML = App.name + " (you)";
+	const peerNameEle = document.createElement("div");
+	peerNameEle.setAttribute("id", peerId + "_videoPeerName");
+	peerNameEle.className = "videoPeerName";
+	if (isLocal) {
+		peerNameEle.innerHTML = `${App.name ?? ""} (you)`;
+	} else {
+		peerNameEle.innerHTML = "Unnamed";
+	}
 
 	const fullScreenBtn = document.createElement("button");
 	fullScreenBtn.className = "icon-maximize";
@@ -306,7 +310,7 @@ const getVideoElement = (peerId, isLocal) => {
 	});
 
 	const videoAvatarImgSize = App.isMobileDevice ? "100px" : "200px";
-	const videoAvatarImg = document.createElement('img');
+	const videoAvatarImg = document.createElement("img");
 	videoAvatarImg.setAttribute("id", peerId + "_videoEnabled");
 	videoAvatarImg.setAttribute("src", "img/videoOff.png");
 	videoAvatarImg.setAttribute("width", videoAvatarImgSize);
@@ -316,7 +320,7 @@ const getVideoElement = (peerId, isLocal) => {
 	videoWrap.setAttribute("id", peerId);
 	videoWrap.appendChild(media);
 	videoWrap.appendChild(audioEnabled);
-	videoWrap.appendChild(peerName);
+	videoWrap.appendChild(peerNameEle);
 	videoWrap.appendChild(fullScreenBtn);
 	videoWrap.appendChild(videoAvatarImg);
 	document.getElementById("videos").appendChild(videoWrap);
@@ -331,11 +335,11 @@ const resizeVideos = () => {
 	});
 };
 
-document.body.addEventListener("click", () => {
+document.addEventListener("click", () => {
 	if (!App.showChat && !App.showSettings && !App.showIntro) {
 		App.hideToolbar = !App.hideToolbar;
 	}
-	if(App.showSettings && App.showChat) {
+	if (App.showSettings && App.showChat) {
 		App.showChat = !App.showChat;
 		App.showSettings = !App.showSettings;
 	}

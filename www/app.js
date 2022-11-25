@@ -1,4 +1,4 @@
-/* globals attachMediaStream, Vue,  peers, localMediaStream, dataChannels, signalingSocket, setDarkTheme, setDefaultTheme */
+/* globals attachMediaStream, Vue,  peers, localMediaStream, dataChannels, signalingSocket */
 
 "use strict";
 
@@ -25,14 +25,13 @@ const App = new Vue({
 		hideToolbar: false,
 		selectedAudioDeviceId: "",
 		selectedVideoDeviceId: "",
-		name: window.localStorage.name || "Unnamed",
-		isDark: window.localStorage.dark == "true" || false,
+		name: window.localStorage.name,
 		typing: "",
 		chats: [],
 	},
 	computed: {},
 	methods: {
-		copyURL: function() {
+		copyURL: function () {
 			navigator.clipboard.writeText(this.roomLink).then(
 				() => {
 					this.copyText = "Copied 👍";
@@ -41,31 +40,26 @@ const App = new Vue({
 				(err) => console.error(err)
 			);
 		},
-		audioToggle: function(e) {
+		audioToggle: function (e) {
 			e.stopPropagation();
 			localMediaStream.getAudioTracks()[0].enabled = !localMediaStream.getAudioTracks()[0].enabled;
 			this.audioEnabled = !this.audioEnabled;
 			this.updateUserData("audioEnabled", this.audioEnabled);
 		},
-		videoToggle: function(e) {
+		videoToggle: function (e) {
 			e.stopPropagation();
 			localMediaStream.getVideoTracks()[0].enabled = !localMediaStream.getVideoTracks()[0].enabled;
 			this.videoEnabled = !this.videoEnabled;
 			this.updateUserData("videoEnabled", this.videoEnabled);
 		},
-		toggleSelfVideoMirror: function() {
+		toggleSelfVideoMirror: function () {
 			document.querySelector("#videos .video #selfVideo").classList.toggle("mirror");
 		},
-		toggleTheme: function() {
-			window.localStorage.dark = this.isDark;
-			this.isDark ? setDarkTheme() : setDefaultTheme();
-			this.isDark = !this.isDark;
-		},
-		nameToLocalStorage: function() {
+		nameToLocalStorage: function () {
 			window.localStorage.name = this.name;
 			this.updateUserData("peerName", this.name);
 		},
-		screenShareToggle: function(e) {
+		screenShareToggle: function (e) {
 			e.stopPropagation();
 			let screenMediaPromise;
 			if (!App.screenShareEnabled) {
@@ -99,9 +93,8 @@ const App = new Vue({
 					attachMediaStream(document.getElementById("selfVideo"), newStream);
 					this.toggleSelfVideoMirror();
 
-					screenStream.getVideoTracks()[0].onended = function() {
-						if (App.screenShareEnabled) 
-							App.screenShareToggle();
+					screenStream.getVideoTracks()[0].onended = function () {
+						if (App.screenShareEnabled) App.screenShareToggle();
 					};
 				})
 				.catch((e) => {
@@ -109,27 +102,25 @@ const App = new Vue({
 					console.error(e);
 				});
 		},
-		updateUserData: function(key, value) {
-			signalingSocket.emit("updateUserData", { channel: App.roomId, key: key, value: value });
-
+		updateUserData: function (key, value) {
 			this.sendDataMessage(key, value);
 
-			switch(key) {
+			switch (key) {
 				case "audioEnabled":
-					document.getElementById(this.peerId + "_audioEnabled").className = "audioEnabled icon-mic" + (value ? "" : "-off");
+					document.getElementById(this.peerId + "_audioEnabled").className =
+						"audioEnabled icon-mic" + (value ? "" : "-off");
 					break;
 				case "videoEnabled":
 					document.getElementById(this.peerId + "_videoEnabled").style.visibility = value ? "hidden" : "visible";
 					break;
 				case "peerName":
 					document.getElementById(this.peerId + "_videoPeerName").innerHTML = value + " (you)";
-					break
-				// ...
+					break;
 				default:
 					break;
 			}
 		},
-		changeCamera: function(deviceId) {
+		changeCamera: function (deviceId) {
 			navigator.mediaDevices
 				.getUserMedia({ video: { deviceId: deviceId } })
 				.then((camStream) => {
@@ -154,11 +145,10 @@ const App = new Vue({
 					alert("Error while swaping camera");
 				});
 		},
-		changeMicrophone: function(deviceId) {
+		changeMicrophone: function (deviceId) {
 			navigator.mediaDevices
 				.getUserMedia({ audio: { deviceId: deviceId } })
 				.then((micStream) => {
-
 					this.audioEnabled = true;
 					this.updateUserData("audioEnabled", this.audioEnabled);
 
@@ -178,33 +168,30 @@ const App = new Vue({
 					alert("Error while swaping microphone");
 				});
 		},
-		sanitizeString: function(str) {
+		sanitizeString: function (str) {
 			const tagsToReplace = { "&": "&amp;", "<": "&lt;", ">": "&gt;" };
 			const replaceTag = (tag) => tagsToReplace[tag] || tag;
 			const safe_tags_replace = (str) => str.replace(/[&<>]/g, replaceTag);
 			return safe_tags_replace(str);
 		},
-		linkify: function(str) {
+		linkify: function (str) {
 			return this.sanitizeString(str).replace(/(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%]+/gi, (match) => {
-				let displayURL = match
-					.trim()
-					.replace("https://", "")
-					.replace("https://", "");
+				let displayURL = match.trim().replace("https://", "").replace("https://", "");
 				displayURL = displayURL.length > 25 ? displayURL.substr(0, 25) + "&hellip;" : displayURL;
 				const url = !/^https?:\/\//i.test(match) ? "http://" + match : match;
 				return `<a href="${url}" target="_blank" class="link" rel="noopener">${displayURL}</a>`;
 			});
 		},
-		edit: function(e) {
+		edit: function (e) {
 			this.typing = e.srcElement.textContent;
 		},
-		paste: function(e) {
+		paste: function (e) {
 			e.preventDefault();
 			const clipboardData = e.clipboardData || window.clipboardData;
 			const pastedText = clipboardData.getData("Text");
 			document.execCommand("inserttext", false, pastedText.replace(/(\r\n\t|\n|\r\t)/gm, " "));
 		},
-		sendChat: function(e) {
+		sendChat: function (e) {
 			e.stopPropagation();
 			e.preventDefault();
 
@@ -217,31 +204,29 @@ const App = new Vue({
 				composeElement.textContent = "";
 				composeElement.blur;
 			} else {
-				alert('No peers in the room');
+				alert("No peers in the room");
 			}
 		},
-		sendDataMessage: function(key, value) {
+		sendDataMessage: function (key, value) {
 			const dataMessage = {
 				type: key,
 				name: this.name,
 				id: this.peerId,
 				message: value,
 				date: new Date().toISOString(),
-			}
+			};
 
-			switch(key) {
+			switch (key) {
 				case "chat":
 					this.chats.push(dataMessage);
 					break;
-				// ...
 				default:
 					break;
 			}
 
 			Object.keys(dataChannels).map((peer_id) => dataChannels[peer_id].send(JSON.stringify(dataMessage)));
 		},
-		handleIncomingDataChannelMessage: function(dataMessage) {
-			// console.log(dataMessage);
+		handleIncomingDataChannelMessage: function (dataMessage) {
 			switch (dataMessage.type) {
 				case "chat":
 					this.showChat = true;
@@ -249,20 +234,22 @@ const App = new Vue({
 					this.chats.push(dataMessage);
 					break;
 				case "audioEnabled":
-					document.getElementById(dataMessage.id + "_audioEnabled").className = "audioEnabled icon-mic" + (dataMessage.message ? "" : "-off");
+					document.getElementById(dataMessage.id + "_audioEnabled").className =
+						"audioEnabled icon-mic" + (dataMessage.message ? "" : "-off");
 					break;
 				case "videoEnabled":
-					document.getElementById(dataMessage.id + "_videoEnabled").style.visibility = dataMessage.message ? "hidden" : "visible";
+					document.getElementById(dataMessage.id + "_videoEnabled").style.visibility = dataMessage.message
+						? "hidden"
+						: "visible";
 					break;
 				case "peerName":
 					document.getElementById(dataMessage.id + "_videoPeerName").innerHTML = dataMessage.message;
 					break;
-				// ...
 				default:
 					break;
 			}
 		},
-		formatDate: function(dateString) {
+		formatDate: function (dateString) {
 			const date = new Date(dateString);
 			const hours = date.getHours() > 12 ? date.getHours() - 12 : date.getHours();
 			return (
@@ -276,8 +263,9 @@ const App = new Vue({
 		setStyle: function (key, value) {
 			document.documentElement.style.setProperty(key, value);
 		},
-		exit: function() {
-			window.location.href = "/";
-		}
+		exit: function () {
+			window.open("", "_parent", "");
+			window.close();
+		},
 	},
 });

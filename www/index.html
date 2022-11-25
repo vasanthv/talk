@@ -29,7 +29,6 @@
 		<script defer src="/socket.io/socket.io.js"></script>
 		<script defer src="vue.min.js"></script>
 		<script defer src="app.js"></script>
-		<script defer src="theme.js"></script>
 		<script defer src="script.js"></script>
 		<title>Talk - Free group video call for the web</title>
 	</head>
@@ -85,37 +84,39 @@
 			</div>
 
 			<div id="settings" v-if="showSettings">
+				<div id="name" class="label">
+					<span>Name:</span>
+					<input type="text" placeholder="Enter your name" v-model="name" v-on:keyup="nameToLocalStorage" />
+				</div>
+				<hr class="separator" />
+
 				<div class="label">Camera 📹</div>
 				<div v-for="(videoDevice, i) in videoDevices" v-bind:key="videoDevice.deviceId">
 					<div
-						v-bind:class="'link '+(selectedVideoDeviceId === videoDevice.deviceId ? 'active' : '')"
+						v-bind:class="'link indent '+(selectedVideoDeviceId === videoDevice.deviceId ? 'active' : '')"
 						v-on:click="changeCamera(videoDevice.deviceId)"
 					>
 						{{videoDevice.label}}
 					</div>
 				</div>
+				<hr class="separator" />
 
 				<div class="label">Microphone 🎙️</div>
 				<div v-for="(audioDevice, i) in audioDevices" v-bind:key="audioDevice.deviceId">
 					<div
-						v-bind:class="'link '+(selectedAudioDeviceId === audioDevice.deviceId ? 'active' : '')"
+						v-bind:class="'link indent '+(selectedAudioDeviceId === audioDevice.deviceId ? 'active' : '')"
 						v-on:click="changeMicrophone(audioDevice.deviceId)"
 					>
 						{{audioDevice.label}}
 					</div>
 				</div>
+				<hr class="separator" />
 
-				<div class="label">Name 📛</div>
-				<input type="text" placeholder="Your name" v-model="name" v-on:keyup="nameToLocalStorage" />
-
-				<div class="copy link" v-on:click="copyURL">{{copyText || "Copy room link"}}</div>
-				<div class="copy link" v-on:click="toggleSelfVideoMirror">
+				<div class="link" v-on:click="copyURL">{{copyText || "Copy room link"}}</div>
+				<hr class="separator" />
+				<div class="link" v-on:click="toggleSelfVideoMirror">
 					Mirror / Unmirror
 					<small class="light">(self-view)</small>
-				</div>
-				<div class="copy link" v-on:click="toggleTheme">
-					⚪️  / ⚫️ 
-				<small class="light">(theme)</small>
 				</div>
 			</div>
 
@@ -132,10 +133,7 @@
 						v-bind:class="'icon-monitor '+(screenShareEnabled ? 'active' : '')"
 						v-on:click="screenShareToggle"
 					></button>
-					<button
-						v-bind:class="'icon-exit'"
-						v-on:click="exit"
-					></button>
+					<button v-bind:class="'icon-exit'" v-on:click="exit"></button>
 					<button
 						v-bind:class="'icon-more-horizontal '+(showSettings ? 'active' : '')"
 						v-on:click="showSettings = !showSettings"

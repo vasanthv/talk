@@ -1,51 +1,31 @@
 @import "icomoon/style.css";
 
 :root {
-
-/* App theme: White mode */
-	--body-bg: #fff;
-	--intro-bg:  #fff;
-	--intro-cl:  #000;
-	--chat-wrap-bg: #fff;
-	--chat-wrap-ch-bg: linear-gradient(white 30%, rgba(190, 179, 179, 0)), linear-gradient(rgba(255, 255, 255, 0), white 70%) 0 100%, radial-gradient(50% 0, farthest-side, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)), radial-gradient(50% 100%, farthest-side, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)) 0 100%;
-    --chat-wrap-ch-bg: linear-gradient(white 30%, rgba(255, 255, 255, 0)), linear-gradient(rgba(255, 255, 255, 0), white 70%) 0 100%, radial-gradient(farthest-side at 50% 0, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)), radial-gradient(farthest-side at 50% 100%, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)) 0 100%;
+	--body-bg: #1e1f23;
+	--intro-bg: #ffffff;
+	--intro-cl: #000000;
+	--chat-wrap-bg: #ffffff;
+	--chat-wrap-ch-bg: linear-gradient(white 30%, rgba(190, 179, 179, 0)),
+		linear-gradient(rgba(255, 255, 255, 0), white 70%) 0 100%,
+		radial-gradient(50% 0, farthest-side, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)),
+		radial-gradient(50% 100%, farthest-side, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)) 0 100%;
+	--chat-wrap-ch-bg: linear-gradient(white 30%, rgba(255, 255, 255, 0)),
+		linear-gradient(rgba(255, 255, 255, 0), white 70%) 0 100%,
+		radial-gradient(farthest-side at 50% 0, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)),
+		radial-gradient(farthest-side at 50% 100%, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)) 0 100%;
 	--chat-wrap-ch-bgc: white;
-	--chat-wrap-ch-cl: #000;
+	--chat-wrap-ch-cl: #000000;
 	--chat-wrap-cb-bg: #f6f6f6;
-	--chat-wrap-cb-cl: #000;
-	--settings-bg: rgba(255, 255, 255, 0.9);
-	--settings-cl: #000;
-	--settings-link-h-bg: #fff;
-	--settings-link-h-cl: #000;
-	--actions-bg: rgba(255, 255, 255, 0.5);
-	--actions-btn-cl: #000;
-	--actions-btn-h-bg: rgba(255, 255, 255, 0.8);
-	--actions-btn-h-cl: #000;
+	--chat-wrap-cb-cl: #000000;
+	--settings-bg: #ffffff;
+	--settings-cl: #000000;
+	--settings-link-h-bg: #f6f6f6;
+	--settings-link-h-cl: #000000;
+	--actions-bg: rgba(255, 255, 255, 0.9);
+	--actions-btn-cl: #000000;
+	--actions-btn-h-bg: rgba(255, 255, 255, 1);
+	--actions-btn-h-cl: #000000;
 	--actions-btn-a-bg: #fafafa;
-
-/* App theme: Dark mode */
-/* 
-	--body-bg: #000;
-	--intro-bg:  #000;
-	--intro-cl:  #fff; 
-    --chat-wrap-bg: #000;
-	--chat-wrap-ch-bg: linear-gradient(black 30%, rgb(90 85 85 / 0%)), linear-gradient(rgb(5 5 5 / 0%), black 70%) 0 100%, radial-gradient(50% 0, farthest-side, rgb(246 243 243 / 20%), rgb(250 249 249 / 0%)), radial-gradient(50% 100%, farthest-side, rgb(250 246 246 / 20%), rgb(251 249 249 / 0%)) 0 100%;
-	--chat-wrap-ch-bg: linear-gradient(black 30%, rgb(5 5 5 / 0%)), linear-gradient(rgb(2 2 2 / 0%), black 70%) 0 100%, radial-gradient(farthest-side at 50% 0, rgb(246 241 241 / 20%), rgb(244 240 240 / 0%)), radial-gradient(farthest-side at 50% 100%, rgb(250 249 249 / 20%), rgb(250 248 248 / 0%)) 0 100%;
-	--chat-wrap-ch-bgc: black;
-	--chat-wrap-ch-cl: #fff;
-	--chat-wrap-cb-bg: #060606;
-	--chat-wrap-cb-cl: #fff;
-	--settings-bg: rgba(0, 0, 0, 0.9);
-	--settings-cl: #fff;
-	--settings-link-h-bg: #000;
-	--settings-link-h-cl: #fff;
-	--actions-bg: rgba(0, 0, 0, 0.5);
-	--actions-btn-cl: #fff;
-	--actions-btn-h-bg: rgba(9, 9, 9, 0.8);
-	--actions-btn-h-cl: #fff;
-	--actions-btn-a-bg: #0a0a0a;
-*/
-
 }
 
 * {
@@ -74,31 +54,29 @@ input {
 }
 .video {
 	float: left;
-	width: 25vw;
-	height: 50vh;
+	width: calc(25vw - 1rem);
+	height: calc(50vh - 1rem);
 	overflow: hidden;
 	position: relative;
+	padding: 0.5rem;
 }
-.video.one {
-	width: 100vw;
-	height: 100vh;
-}
+.video.one,
 .video.two {
-	width: 50vw;
-	height: 100vh;
+	width: calc(50vw - 1rem);
+	height: calc(100vh - 1rem);
 }
 .video.three {
-	width: 33.33vw;
-	height: 100vh;
+	width: calc(33.33vw - 1rem);
+	height: calc(100vh - 1rem);
 }
 .video.four {
-	width: 50vw;
-	height: 50vh;
+	width: calc(50vw - 1rem);
+	height: calc(50vh - 1rem);
 }
 .video.five,
 .video.six {
-	width: 33.33vw;
-	height: 50vh;
+	width: calc(33.33vw - 1rem);
+	height: calc(50vh - 1rem);
 }
 .video video {
 	width: 100%;
@@ -107,6 +85,7 @@ input {
 	margin: auto;
 	box-sizing: border-box;
 	object-fit: cover;
+	border-radius: 1rem;
 }
 .video video.mirror {
 	transform: rotateY(180deg);
@@ -120,8 +99,8 @@ input {
 }
 .video button {
 	position: absolute;
-	top: 0.1rem;
-	right: 0px;
+	top: 0.5rem;
+	right: 0.5rem;
 	z-index: 10;
 	font-size: 2rem;
 	color: white;
@@ -138,26 +117,24 @@ input {
 .videoAvatarImg {
 	z-index: 1;
 	visibility: hidden;
-    position: absolute;
-    top: 50%;
-    left: 50%;
+	position: absolute;
+	top: 50%;
+	left: 50%;
 	transform: translate(-50%, -50%);
 }
 
 .videoPeerName {
 	z-index: 2;
 	position: absolute;
-	padding: 5px;
-	top: 10px;
-    left: 50%;
-    transform: translate(-50%, -50%);
+	padding: 0.5rem 0.75rem;
+	bottom: 1rem;
+	left: 1rem;
 	font-weight: bold;
 	font-size: 0.7rem;
-	color: #FFFFFF;
-	background-color: #00000031;
+	color: #ffffff;
+	background-color: rgba(0, 0, 0, 0.7);
 	border: none;
 	border-radius: 5px;
-	box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.16), 0px 1px 4px rgba(0, 0, 0, 0.16);
 }
 
 .audioEnabled.icon-mic-off,
@@ -165,11 +142,11 @@ input {
 	z-index: 3;
 	position: absolute;
 	padding: 5px;
-	top: 5px;
-    left: 5px;
+	bottom: 1rem;
+	right: 1rem;
 	font-weight: bold;
 	font-size: 1.2rem;
-	color: #FFFFFF;
+	color: #ffffff;
 	background-color: #00000031;
 	border: none;
 	border-radius: 5px;
@@ -187,7 +164,7 @@ input {
 	left: 0px;
 	right: 0px;
 	z-index: 100;
-	width: 18rem;
+	width: 20.8rem;
 	margin: auto;
 	padding: 1rem;
 	box-sizing: border-box;
@@ -224,7 +201,7 @@ input {
 	left: 0px;
 	right: 0px;
 	z-index: 100;
-	width: 18rem;
+	width: 20.8rem;
 	margin: auto;
 	padding: 1rem;
 	box-sizing: border-box;
@@ -288,7 +265,7 @@ input {
 	left: 0px;
 	right: 0px;
 	z-index: 100;
-	width: 17rem;
+	width: 20.8rem;
 	margin: auto;
 	box-sizing: border-box;
 	border-radius: 1rem;
@@ -296,18 +273,24 @@ input {
 	overflow-y: auto;
 }
 #settings .label {
-	padding: 1rem 1rem 0.25rem;
+	padding: 0.5rem 1rem;
 	font-weight: bold;
 }
+#settings .separator {
+	margin: 0px;
+	border-top: 1px solid var(--actions-btn-a-bg);
+}
 #settings .link {
-	padding: 0.25rem 1rem;
+	padding: 0.5rem 1rem;
 	white-space: nowrap;
 	width: 100%;
 	box-sizing: border-box;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	cursor: pointer;
-	border-radius: 1rem;
+}
+#settings .link.indent {
+	padding: 0.5rem 1rem 0.5rem 2rem;
 }
 #settings .link.active:before {
 	content: "✔️";
@@ -317,14 +300,15 @@ input {
 	background: var(--settings-link-h-bg);
 	color: var(--settings-link-h-cl);
 }
-#settings .link.copy {
-	margin-bottom: 0.5rem;
+#settings #name {
+	display: flex;
+	align-items: center;
 }
 #settings input {
-	margin: 0rem 1rem 1rem;
-	width: calc(100% - 2rem);
+	background: none;
+	border: none;
+	flex: 1;
 }
-
 #actionsWrap {
 	position: fixed;
 	bottom: 1rem;
@@ -379,21 +363,22 @@ input {
 @media only screen and (max-width: 960px) {
 	.video {
 		float: left;
-		width: 50vw;
-		height: 25vh;
+		width: calc(50vw - 1rem);
+		height: calc(25vh - 1rem);
 		overflow: hidden;
 	}
+	.video.one,
 	.video.two {
-		width: 100vw;
-		height: 50vh;
+		width: calc(100vw - 1rem);
+		height: calc(50vh - 1rem);
 	}
 	.video.three {
-		width: 100vw;
-		height: 33.33vh;
+		width: calc(100vw - 1rem);
+		height: calc(33.33vh - 1rem);
 	}
 	.video.five,
 	.video.six {
-		width: 50vw;
-		height: 33.33vh;
+		width: calc(50vw - 1rem);
+		height: calc(33.33vh - 1rem);
 	}
 }
