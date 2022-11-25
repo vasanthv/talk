@@ -264,8 +264,12 @@ const App = new Vue({
 			document.documentElement.style.setProperty(key, value);
 		},
 		exit: function () {
-			window.open("", "_parent", "");
-			window.close();
+			for (let peer_id in peers) {
+				peers[peer_id].close();
+			}
+			setTimeout(() => {
+				alert("You have been disconnected. You can now close this window.");
+			}, 100);
 		},
 	},
 });
