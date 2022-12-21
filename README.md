@@ -1,6 +1,6 @@
 # <p align="center">Talk</p>
 
-<p align="center">A free group video call app with screen sharing.</p>
+<p align="center">A free, peer-to-peer, disposable group video calling app.</p>
 
 ---
 
@@ -14,7 +14,7 @@ It is built using WebRTC, so all your video, audio & text chat is peer-to-peer. 
 
 ---
 
-### Prerequisites: 
+### Prerequisites:
 
 - Node.js 8.x or above
 - NPM

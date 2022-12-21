@@ -26,6 +26,7 @@
 	--actions-btn-h-bg: rgba(255, 255, 255, 1);
 	--actions-btn-h-cl: #000000;
 	--actions-btn-a-bg: #fafafa;
+	--vh: 1vh;
 }
 
 * {
@@ -55,7 +56,7 @@ input {
 .video {
 	float: left;
 	width: calc(25vw - 1rem);
-	height: calc(50vh - 1rem);
+	height: calc((var(--vh, 1vh) * 50) - 1rem);
 	overflow: hidden;
 	position: relative;
 	padding: 0.5rem;
@@ -63,20 +64,20 @@ input {
 .video.one,
 .video.two {
 	width: calc(50vw - 1rem);
-	height: calc(100vh - 1rem);
+	height: calc((var(--vh, 1vh) * 100) - 1rem);
 }
 .video.three {
 	width: calc(33.33vw - 1rem);
-	height: calc(100vh - 1rem);
+	height: calc((var(--vh, 1vh) * 100) - 1rem);
 }
 .video.four {
 	width: calc(50vw - 1rem);
-	height: calc(50vh - 1rem);
+	height: calc((var(--vh, 1vh) * 50) - 1rem);
 }
 .video.five,
 .video.six {
 	width: calc(33.33vw - 1rem);
-	height: calc(50vh - 1rem);
+	height: calc((var(--vh, 1vh) * 50) - 1rem);
 }
 .video video {
 	width: 100%;
@@ -364,21 +365,21 @@ input {
 	.video {
 		float: left;
 		width: calc(50vw - 1rem);
-		height: calc(25vh - 1rem);
+		height: calc((var(--vh, 1vh) * 25) - 1rem);
 		overflow: hidden;
 	}
 	.video.one,
 	.video.two {
 		width: calc(100vw - 1rem);
-		height: calc(50vh - 1rem);
+		height: calc((var(--vh, 1vh) * 50) - 1rem);
 	}
 	.video.three {
 		width: calc(100vw - 1rem);
-		height: calc(33.33vh - 1rem);
+		height: calc((var(--vh, 1vh) * 33.33) - 1rem);
 	}
 	.video.five,
 	.video.six {
 		width: calc(50vw - 1rem);
-		height: calc(33.33vh - 1rem);
+		height: calc((var(--vh, 1vh) * 33.33) - 1rem);
 	}
 }
