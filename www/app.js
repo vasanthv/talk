@@ -264,6 +264,7 @@ const App = new Vue({
 			document.documentElement.style.setProperty(key, value);
 		},
 		exit: function () {
+			signalingSocket.close();
 			for (let peer_id in peers) {
 				peers[peer_id].close();
 			}
