@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
+		<!-- GOOGLE_ANALYTICS_SCRIPT -->
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<meta
 			name="viewport"
@@ -15,24 +16,17 @@
 		<link rel="icon" href="favicon.png" type="image/png" />
 		<link rel="stylesheet" href="style.css" />
 		<title>Talk - A free video call app for the web</title>
-		<!-- Global site tag (gtag.js) - Google Analytics -->
-		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-19124340-30"></script>
-		<script>
-			window.dataLayer = window.dataLayer || [];
-			function gtag() {
-				dataLayer.push(arguments);
-			}
-			gtag("js", new Date());
-
-			gtag("config", "UA-19124340-30");
-		</script>
 		<style>
 			#wrapper {
+				color: #efefef;
 				width: 100%;
 				max-width: 768px;
 				padding: 10px;
 				box-sizing: border-box;
 				margin: 1rem auto;
+			}
+			#wrapper a {
+				color: #efefef;
 			}
 			#logo img {
 				position: relative;
@@ -45,7 +39,7 @@
 		<div id="wrapper">
 			<header>
 				<div id="logo">
-					<img src="favicon.svg" />
+					<a href="/"><img src="favicon.svg" style="width: 2rem" /></a>
 				</div>
 			</header>
 			<h3>Legal</h3>
@@ -74,9 +68,7 @@
 				Talk is purely peer-to-peer, which means the user's video & audio is not sent to our server at all. We use
 				Google Analytics to track aggregated usage statistics to improve our service.
 			</p>
-			<p>
-				The makers of Talk have no intention of using personally or selling any of the above-mentioned data.
-			</p>
+			<p>The makers of Talk have no intention of using personally or selling any of the above-mentioned data.</p>
 		</div>
 	</body>
 </html>
