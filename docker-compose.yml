@@ -1,8 +1,8 @@
 version: "2.0"
 
 services:
-  talk:
-    container_name: talk
+  tlk:
+    container_name: tlk
     environment:
       NGROK_AUTH_TOKEN: ""
     restart: always

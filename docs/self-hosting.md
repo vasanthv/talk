@@ -1,4 +1,4 @@
-# Talk - Self Hosting
+# Tlk - Self Hosting
 
 ## Requirments
 
@@ -26,10 +26,10 @@ $ npm install -g npm@latest
 ## Quick start
 
 ```bash
-# Clone Talk repo
-$ git clone https://github.com/vasanthv/talk.git
-# Go to Talk dir
-$ cd talk
+# Clone Tlk repo
+$ git clone https://github.com/vasanthv/tlk.git
+# Go to Tlk dir
+$ cd tlk
 # Install dependencies
 $ npm install
 # Start the server
@@ -49,7 +49,7 @@ Using [PM2](https://pm2.keymetrics.io) to run it as daemon
 $ npm install -g pm2
 # Start the server
 $ pm2 start server.js
-# Takes a snapshot 
+# Takes a snapshot
 $ pm2 save
 # Add it on startup
 $ pm2 startup
@@ -123,7 +123,7 @@ $ sudo vim /etc/nginx/sites-enabled/default
 Paste this:
 
 ```bash
-# Talk - HTTPS — proxy all requests to the Node app
+# Tlk - HTTPS — proxy all requests to the Node app
 server {
 	# Enable HTTP/2
 	listen 443 ssl http2;
@@ -160,13 +160,13 @@ $ sudo certbot renew --dry-run
 $ sudo certbot certificates
 ```
 
-Check Your Talk instance: https://your.domain.name
+Check Your Tlk instance: https://your.domain.name
 
 ---
 
 ## Update script
 
-In order to have Your Talk instance always updated to latest, we going to create a script
+In order to have Your Tlk instance always updated to latest, we going to create a script
 
 ```bash
 $ cd
@@ -181,7 +181,7 @@ If you use `PM2`, paste this:
 ```bash
 #!/bin/bash
 
-cd talk
+cd tlk
 git pull
 pm2 stop server.js
 sudo npm install
@@ -195,7 +195,7 @@ If you use `Docker`, paste this:
 ```bash
 #!/bin/bash
 
-cd talk
+cd tlk
 git pull
 docker-compose down
 docker-compose build
@@ -211,9 +211,9 @@ Make the script executable
 $ chmod +x talkUpdate.sh
 ```
 
-Follow the commits of the Talk project [here](https://github.com/vasanthv/talk/commits/master)
+Follow the commits of the Tlk project [here](https://github.com/vasanthv/tlk/commits/master)
 
-To update Your Talk instance at latest commit, execute:
+To update Your Tlk instance at latest commit, execute:
 
 ```bash
 ./talkUpdate.sh
@@ -223,6 +223,6 @@ To update Your Talk instance at latest commit, execute:
 
 <br />
 
-# Talk - Ngrok
+# Tlk - Ngrok
 
 If you want to self host it quickly, without all this settings, just follow [this documentation](./ngrok.md)

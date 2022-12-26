@@ -2,7 +2,7 @@
 
 More info about what is `ngrok` you can check [here](https://ngrok.com/).
 
-In order to use it on `Talk` app, you need to do 2 steps:
+In order to use it on `Tlk` app, you need to do 2 steps:
 
 1. [Sign up for free](https://ngrok.com) and you will receive `YourNgrokAuthToken`.
 2. `Set this token` in `env var` before to start the app like:
@@ -16,8 +16,8 @@ NGROK_AUTH_TOKEN="YourNgrokAuthToken" npm start
 Or if you want to run it with `Docker`, set your token in `docker-compose.yml`
 
 ```yaml
-    environment:
-      NGROK_AUTH_TOKEN: "YourNgrokAuthToken"
+environment:
+  NGROK_AUTH_TOKEN: "YourNgrokAuthToken"
 ```
 
 then
@@ -31,7 +31,7 @@ docker-compose up
 If set correctly, in the `Server log console` you should see something like:
 
 ```js
-> talk@3.0.0 start
+> tlk@3.0.0 start
 > node server.js
 
 Server {
