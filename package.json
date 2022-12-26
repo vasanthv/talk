@@ -1,7 +1,7 @@
 {
-	"name": "talk",
+	"name": "tlk",
 	"version": "3.0.0",
-	"description": "A free video call app for the web.",
+	"description": "Free video call app for the web.",
 	"main": "server.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
@@ -9,7 +9,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/vasanthv/talk.git"
+		"url": "git+https://github.com/vasanthv/tlk.git"
 	},
 	"keywords": [
 		"webrtc",
@@ -19,9 +19,9 @@
 	"author": "Vasanth.V <imvasanthv@gmail.com>",
 	"license": "ISC",
 	"bugs": {
-		"url": "https://github.com/vasanthv/talk/issues"
+		"url": "https://github.com/vasanthv/tlk/issues"
 	},
-	"homepage": "https://github.com/vasanthv/talk#readme",
+	"homepage": "https://github.com/vasanthv/tlk#readme",
 	"dependencies": {
 		"express": "^4.18.2",
 		"ngrok": "^4.3.3",
