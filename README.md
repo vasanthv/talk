@@ -1,8 +1,8 @@
-# Tlk
+# Tlk (pronounced as Talk)
 
-## Free, peer-to-peer, disposable group video calling app for the web. Works in all major browsers. No signups. No downloads. 100% peer-to-peer.
+## Free, peer-to-peer, group video call app for the web. Works in all major browsers. No signups. No downloads. 100% peer-to-peer.
 
-It is built using WebRTC, so all your video, audio & text chat is peer-to-peer. Group video call is achieved using WebRTC mesh. So the quality of the call is inversely proportional to the number of people on the call. The sweet number is somewhere around 6 to 8 people in an average high-speed connection.
+Tlk is built using WebRTC, so all your video, audio & text chat is peer-to-peer. Group video call is achieved using WebRTC mesh. So the quality of the call is inversely proportional to the number of people on the call. The sweet number is somewhere around 6 to 8 people in an average high-speed connection.
 
 ---
 
