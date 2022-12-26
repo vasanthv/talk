@@ -153,7 +153,7 @@ input {
 	box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.16), 0px 1px 4px rgba(0, 0, 0, 0.16);
 }
 
-#app {
+#app > #appWrap {
 	display: none;
 }
 #intro {

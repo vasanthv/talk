@@ -11,13 +11,14 @@ const util = require("util");
 
 // util options
 const options = {
-    depth: null,
-    colors: true,
+	depth: null,
+	colors: true,
 };
 
 // Server all the static files from www folder
 app.use(express.static(path.join(__dirname, "www")));
 app.use(express.static(path.join(__dirname, "icons")));
+app.use(express.static(path.join(__dirname, "assets")));
 app.use(express.static(path.join(__dirname, "node_modules/vue/dist/")));
 
 // Get PORT from env variable else assign 3000 for development
@@ -31,7 +32,7 @@ server.listen(PORT, null, () => {
 	if (NGROK_AUTH_TOKEN) {
 		ngrokStart();
 	} else {
-		console.log("Server", { 
+		console.log("Server", {
 			listening_on: "http://localhost:" + PORT,
 			node_version: process.versions.node,
 		});
@@ -39,28 +40,28 @@ server.listen(PORT, null, () => {
 });
 
 /**
- * Expose Server to external with https tunnel using ngrok: 
+ * Expose Server to external with https tunnel using ngrok:
  * https://www.npmjs.com/package/ngrok
  */
 async function ngrokStart() {
-    try {
-        await ngrok.authtoken(NGROK_AUTH_TOKEN);
-        await ngrok.connect(PORT);
-        let api = ngrok.getApi();
-        let data = await api.listTunnels();
-        let pu0 = data.tunnels[0].public_url;
-        let pu1 = data.tunnels[1].public_url;
-        let tunnelHttps = pu0.startsWith('https') ? pu0 : pu1;
+	try {
+		await ngrok.authtoken(NGROK_AUTH_TOKEN);
+		await ngrok.connect(PORT);
+		let api = ngrok.getApi();
+		let data = await api.listTunnels();
+		let pu0 = data.tunnels[0].public_url;
+		let pu1 = data.tunnels[1].public_url;
+		let tunnelHttps = pu0.startsWith("https") ? pu0 : pu1;
 		// Server settings
-        console.log('Server', {
-            listen_on: "http://localhost:" + PORT,
-            tunnel_https: tunnelHttps,
-            node_version: process.versions.node,
-        });
-    } catch (err) {
-        console.warn('Error ngrokStart', err.body);
-        process.exit(1);
-    }
+		console.log("Server", {
+			listen_on: "http://localhost:" + PORT,
+			tunnel_https: tunnelHttps,
+			node_version: process.versions.node,
+		});
+	} catch (err) {
+		console.warn("Error ngrokStart", err.body);
+		process.exit(1);
+	}
 }
 
 app.get("/legal", (req, res) => res.sendFile(path.join(__dirname, "www/legal.html")));
@@ -104,12 +105,16 @@ io.sockets.on("connection", (socket) => {
 
 		peers[channel][socket.id] = {
 			userData: config.userData,
-        };
+		};
 
 		console.log("[" + socket.id + "] join - connected peers grouped by channel", util.inspect(peers, options));
 
 		for (const id in channels[channel]) {
-			channels[channel][id].emit("addPeer", { peer_id: socket.id, should_create_offer: false, channel: peers[channel] });
+			channels[channel][id].emit("addPeer", {
+				peer_id: socket.id,
+				should_create_offer: false,
+				channel: peers[channel],
+			});
 			socket.emit("addPeer", { peer_id: id, should_create_offer: true, channel: peers[channel] });
 		}
 
@@ -118,16 +123,16 @@ io.sockets.on("connection", (socket) => {
 	});
 
 	socket.on("updateUserData", async (config) => {
-        const channel = socketHostName + config.channel;
-        const key = config.key;
-        const value = config.value;
+		const channel = socketHostName + config.channel;
+		const key = config.key;
+		const value = config.value;
 		for (let id in peers[channel]) {
 			if (id == socket.id) {
 				peers[channel][id]["userData"][key] = value;
 			}
 		}
 		console.log("[" + socket.id + "] updateUserData", util.inspect(peers[channel][socket.id], options));
-    });
+	});
 
 	const part = (channel) => {
 		// Socket not in channel
@@ -139,7 +144,7 @@ io.sockets.on("connection", (socket) => {
 		delete peers[channel][socket.id];
 		if (Object.keys(peers[channel]).length == 0) {
 			// last peer disconnected from the channel
-			delete peers[channel]; 
+			delete peers[channel];
 		}
 		console.log("[" + socket.id + "] part - connected peers grouped by channel", util.inspect(peers, options));
 

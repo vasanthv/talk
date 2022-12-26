@@ -312,7 +312,7 @@ const getVideoElement = (peerId, isLocal) => {
 	const videoAvatarImgSize = App.isMobileDevice ? "100px" : "200px";
 	const videoAvatarImg = document.createElement("img");
 	videoAvatarImg.setAttribute("id", peerId + "_videoEnabled");
-	videoAvatarImg.setAttribute("src", "img/videoOff.png");
+	videoAvatarImg.setAttribute("src", "videoOff.png");
 	videoAvatarImg.setAttribute("width", videoAvatarImgSize);
 	videoAvatarImg.setAttribute("height", videoAvatarImgSize);
 	videoAvatarImg.className = "videoAvatarImg";
