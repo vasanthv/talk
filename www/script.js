@@ -337,7 +337,6 @@ const resizeVideos = () => {
 
 const calcViewPortUnit = () => {
 	let vh = document.getElementById("blanket").offsetHeight * 0.01;
-	console.log(vh);
 	document.documentElement.style.setProperty("--vh", `${vh}px`);
 };
 window.addEventListener("resize", calcViewPortUnit);
