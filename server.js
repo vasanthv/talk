@@ -1,6 +1,5 @@
 "use strict"; // https://www.w3schools.com/js/js_strict.asp
 
-const ngrok = require("ngrok");
 const express = require("express");
 const path = require("path");
 const http = require("http");
@@ -24,45 +23,12 @@ app.use(express.static(path.join(__dirname, "node_modules/vue/dist/")));
 // Get PORT from env variable else assign 3000 for development
 const PORT = process.env.PORT || 3000;
 
-// Get NGROK_AUTH_TOKEN from env variable: https://ngrok.com
-const NGROK_AUTH_TOKEN = process.env.NGROK_AUTH_TOKEN || "";
-
 server.listen(PORT, null, () => {
-	// On default not set
-	if (NGROK_AUTH_TOKEN) {
-		ngrokStart();
-	} else {
-		console.log("Server", {
-			listening_on: "http://localhost:" + PORT,
-			node_version: process.versions.node,
-		});
-	}
+	console.log("Server", {
+		listening_on: "http://localhost:" + PORT,
+		node_version: process.versions.node,
+	});
 });
-
-/**
- * Expose Server to external with https tunnel using ngrok:
- * https://www.npmjs.com/package/ngrok
- */
-async function ngrokStart() {
-	try {
-		await ngrok.authtoken(NGROK_AUTH_TOKEN);
-		await ngrok.connect(PORT);
-		let api = ngrok.getApi();
-		let data = await api.listTunnels();
-		let pu0 = data.tunnels[0].public_url;
-		let pu1 = data.tunnels[1].public_url;
-		let tunnelHttps = pu0.startsWith("https") ? pu0 : pu1;
-		// Server settings
-		console.log("Server", {
-			listen_on: "http://localhost:" + PORT,
-			tunnel_https: tunnelHttps,
-			node_version: process.versions.node,
-		});
-	} catch (err) {
-		console.warn("Error ngrokStart", err.body);
-		process.exit(1);
-	}
-}
 
 app.get("/legal", (req, res) => res.sendFile(path.join(__dirname, "www/legal.html")));
 
