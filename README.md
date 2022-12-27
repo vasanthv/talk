@@ -1,16 +1,8 @@
-# <p align="center">Tlk</p>
+# Tlk (pronounced as Talk)
 
-<p align="center">A free, peer-to-peer, disposable group video calling app.</p>
+## Free, peer-to-peer, group video call app for the web. Works in all major browsers. No signups. No downloads. 100% peer-to-peer.
 
----
-
-<p align="center">
-    <img src="www/img/talk.png">
-</p>
-
----
-
-It is built using WebRTC, so all your video, audio & text chat is peer-to-peer. Group video call is achieved using WebRTC mesh. So the quality of the call is inversely proportional to the number of people on the call. The sweet number is somewhere around 6 to 8 people in an average high-speed connection.
+Tlk is built using WebRTC, so all your video, audio & text chat is peer-to-peer. Group video call is achieved using WebRTC mesh. So the quality of the call is inversely proportional to the number of people on the call. The sweet number is somewhere around 6 to 8 people in an average high-speed connection.
 
 ---
 
@@ -45,7 +37,7 @@ to start the tlk server on port 3000. Your tlk instance will be running on http:
 
 In order to self-host it on your dedicated server, Tlk must be exposed on `https` following [this documentation](./docs/self-hosting.md).
 
-You can also expose it quickly on `https` from your local PC or any host, thanks to [ngrok](https://ngrok.com/) following [this documentation](./docs/ngrok.md).
+You can also expose it quickly on `https` from your local PC or any host using [ngrok](https://ngrok.com/).
 
 ### LICENSE
 
