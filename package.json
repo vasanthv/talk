@@ -1,6 +1,6 @@
 {
 	"name": "tlk",
-	"version": "3.0.0",
+	"version": "3.1.0",
 	"description": "Free video call app for the web.",
 	"main": "server.js",
 	"scripts": {
