@@ -1,45 +1,16 @@
-"use strict"; // https://www.w3schools.com/js/js_strict.asp
-
-const express = require("express");
-const path = require("path");
-const http = require("http");
-const app = express();
-const server = http.createServer(app);
-const io = require("socket.io")(server);
+/*
+Note: This socket connection is used a signalling server as WebRTC does not support discovery of other peers. 
+Your audio, video & chat messages does not use this socket.
+*/
 const util = require("util");
-
-// util options
-const options = {
-	depth: null,
-	colors: true,
-};
-
-// Server all the static files from www folder
-app.use(express.static(path.join(__dirname, "www")));
-app.use(express.static(path.join(__dirname, "icons")));
-app.use(express.static(path.join(__dirname, "assets")));
-app.use(express.static(path.join(__dirname, "node_modules/vue/dist/")));
-
-// Get PORT from env variable else assign 3000 for development
-const PORT = process.env.PORT || 3000;
-
-server.listen(PORT, null, () => {
-	console.log("Server", {
-		listening_on: "http://localhost:" + PORT,
-		node_version: process.versions.node,
-	});
-});
-
-app.get("/legal", (req, res) => res.sendFile(path.join(__dirname, "www/legal.html")));
-
-// All URL patterns should served with the same file.
-app.get(["/", "/:room"], (req, res) => res.sendFile(path.join(__dirname, "www/index.html")));
 
 const channels = {};
 const sockets = {};
 const peers = {};
 
-io.sockets.on("connection", (socket) => {
+const options = { depth: null, colors: true };
+
+const signallingServer = (socket) => {
 	const socketHostName = socket.handshake.headers.host.split(":")[0];
 
 	socket.channels = {};
@@ -142,4 +113,6 @@ io.sockets.on("connection", (socket) => {
 			});
 		}
 	});
-});
+};
+
+module.exports = signallingServer;
