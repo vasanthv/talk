@@ -37,7 +37,7 @@ to start the tlk server on port 3000. Your tlk instance will be running on http:
 
 In order to self-host it on your dedicated server, Tlk must be exposed on `https` following [this documentation](./docs/self-hosting.md).
 
-You can also expose it quickly on `https` from your local PC or any host, thanks to [ngrok](https://ngrok.com/) following [this documentation](./docs/ngrok.md).
+You can also expose it quickly on `https` from your local PC or any host using [ngrok](https://ngrok.com/).
 
 ### LICENSE
 
