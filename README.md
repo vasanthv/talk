@@ -33,12 +33,6 @@ npm start
 
 to start the tlk server on port 3000. Your tlk instance will be running on http://localhost:3000. Alternatively you can run the application using docker with `docker-compose up`.
 
-### How to self host it
-
-In order to self-host it on your dedicated server, Tlk must be exposed on `https` following [this documentation](./docs/self-hosting.md).
-
-You can also expose it quickly on `https` from your local PC or any host using [ngrok](https://ngrok.com/).
-
 ### LICENSE
 
 <a href="https://github.com/vasanthv/tlk/blob/master/LICENSE">MIT License</a>
