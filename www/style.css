@@ -2,6 +2,7 @@
 
 :root {
 	--body-bg: #1e1f23;
+	--blanket-color: rgb(30, 31, 35, 0.9);
 	--intro-bg: #ffffff;
 	--intro-cl: #000000;
 	--chat-wrap-bg: #ffffff;
@@ -52,6 +53,12 @@ input {
 }
 .light {
 	color: #878787;
+}
+.bold {
+	font-weight: bold;
+}
+.italic {
+	font-style: italic;
 }
 #blanket {
 	position: absolute;
@@ -366,6 +373,67 @@ input {
 #actions button.icon-mic-off,
 #actions button.icon-video-off {
 	color: #e74c3c !important;
+}
+
+#callFeedbackWrap {
+	position: fixed;
+	top: 0px;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+	background: var(--blanket-color);
+	z-index: 110;
+}
+#callFeedback {
+	position: absolute;
+	padding: 1rem;
+	box-sizing: border-box;
+	width: 100%;
+	max-width: 400px;
+	height: 320px;
+	top: 0px;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+	margin: auto;
+	background: var(--settings-bg);
+	border-radius: 1rem;
+}
+#feedbackWrap .thankYou {
+	display: none;
+}
+#feedbackWrap:focus-within .question {
+	display: none;
+}
+#feedbackWrap:focus-within .thankYou {
+	display: block;
+}
+#feedbackButtons {
+	display: flex;
+	justify-content: space-between;
+	margin: 1rem auto;
+}
+#feedbackButtons button {
+	cursor: pointer;
+	border: none;
+	background: #7f8c8d;
+	border: 5px solid #7f8c8d;
+	width: 30%;
+	font-size: 2rem;
+	padding: 0.5rem 0px;
+	border-radius: 1rem;
+}
+#feedbackButtons button[data-cabin-event="call-quality-nah"] {
+	background: #c0392b;
+	border-color: #c0392b;
+}
+#feedbackButtons button[data-cabin-event="call-quality-yay"] {
+	background: #27ae60;
+	border-color: #27ae60;
+}
+#feedbackButtons button:active,
+#feedbackButtons button:focus {
+	border-color: #000;
 }
 
 @media only screen and (max-width: 960px) {

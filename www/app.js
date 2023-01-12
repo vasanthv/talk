@@ -28,6 +28,7 @@ const App = Vue.createApp({
 			name: window.localStorage.name,
 			typing: "",
 			chats: [],
+			callEnded: false,
 		};
 	},
 	methods: {
@@ -268,9 +269,7 @@ const App = Vue.createApp({
 			for (let peer_id in peers) {
 				peers[peer_id].close();
 			}
-			setTimeout(() => {
-				alert("You have been disconnected. You can now close this window.");
-			}, 100);
+			this.callEnded = true;
 		},
 	},
 }).mount("#app");

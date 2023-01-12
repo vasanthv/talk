@@ -66,6 +66,23 @@
 					</div>
 				</div>
 
+				<div id="callFeedbackWrap" v-if="callEnded">
+					<div id="callFeedback">
+						<div class="bold">Your call has been disconnected. You can now close this window.</div>
+						<br />
+
+						<div id="feedbackWrap">
+							<div class="question italic">How was the quality of call?</div>
+							<div class="thankYou bold">Thank you for your feedback</div>
+							<div id="feedbackButtons">
+								<button data-cabin-event="call-quality-nah">😟<br />Nah!</button>
+								<button data-cabin-event="call-quality-meh">😐<br />Meh!</button>
+								<button data-cabin-event="call-quality-yay">😀<br />Yay!</button>
+							</div>
+						</div>
+					</div>
+				</div>
+
 				<div id="chatWrap" v-if="showChat">
 					<div id="chats">
 						<div class="chat" v-for="(chat, i) in chats" v-bind:key="i">
