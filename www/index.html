@@ -75,9 +75,9 @@
 							<div class="question italic">How was the quality of call?</div>
 							<div class="thankYou bold">Thank you for your feedback</div>
 							<div id="feedbackButtons">
-								<button data-cabin-event="call-quality-nah">😟<br />Nah!</button>
-								<button data-cabin-event="call-quality-meh">😐<br />Meh!</button>
-								<button data-cabin-event="call-quality-yay">😀<br />Yay!</button>
+								<button data-cabin-event="call-quality-nah" v-on:click="onCallFeedback">😟<br />Nah!</button>
+								<button data-cabin-event="call-quality-meh" v-on:click="onCallFeedback">😐<br />Meh!</button>
+								<button data-cabin-event="call-quality-yay" v-on:click="onCallFeedback">😀<br />Yay!</button>
 							</div>
 						</div>
 					</div>

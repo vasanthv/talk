@@ -264,6 +264,13 @@ const App = Vue.createApp({
 		setStyle(key, value) {
 			document.documentElement.style.setProperty(key, value);
 		},
+		onCallFeedback(e) {
+			try {
+				if (cabin) {
+					cabin.event(e.target.getAttribute("data-cabin-event"));
+				}
+			} catch (e) {}
+		},
 		exit() {
 			signalingSocket.close();
 			for (let peer_id in peers) {
