@@ -1,0 +1,89 @@
+body {
+	color: #212121;
+	margin: 0;
+	font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell,
+		"Helvetica Neue", sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	font-size: 1.2rem;
+	line-height: 1.5;
+}
+a {
+	color: inherit;
+}
+a.button {
+	display: inline-block;
+	background: #212121;
+	color: #fff;
+	border: none;
+	border-radius: 0.2rem;
+	height: 3.2rem;
+	line-height: 3.2rem;
+	font-family: inherit;
+	font-size: 1.25rem;
+	font-weight: bold;
+	padding: 0px 1.5rem;
+	cursor: pointer;
+	text-decoration: none;
+}
+label {
+	font-weight: bold;
+}
+.wrap {
+	width: 100%;
+	max-width: 640px;
+	margin: auto;
+}
+.flex {
+	display: flex;
+}
+.row {
+	padding: 0px 1rem;
+	margin: 1.25rem auto;
+}
+.small {
+	font-size: 0.75em;
+}
+.title {
+	font-weight: bold;
+	font-size: 1.5rem;
+}
+.light {
+	color: #989898;
+}
+.spacer {
+	height: 5rem;
+}
+#logo {
+	width: 3rem;
+	margin-right: 0.5rem;
+}
+#roomurl {
+	display: flex;
+	align-items: center;
+	border: 0.2rem solid #212121;
+	color: #212121;
+	font-family: inherit;
+	font-size: 1.25rem;
+	width: 100%;
+	height: 3.2rem;
+	max-width: 320px;
+	padding: 0px 1rem;
+	border-radius: 0.2rem;
+	box-sizing: border-box;
+	line-height: 2.7rem;
+	margin-right: 0.5rem;
+}
+#roomurl > span {
+	color: #444;
+	font-weight: bold;
+}
+#roomurl input {
+	border: none;
+	background: none;
+	font: inherit;
+	outline: none;
+}
+#roomurl input::placeholder {
+	color: #888;
+}

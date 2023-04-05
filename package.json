@@ -1,11 +1,11 @@
 {
 	"name": "tlk",
-	"version": "3.1.1",
-	"description": "Free video call app for the web.",
-	"main": "index.js",
+	"version": "4.0.0",
+	"description": "A free, peer-to-peer, encrypted, open-source video calling for the web.",
+	"main": "start.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"start": "node index.js",
+		"start": "node start.js",
 		"postinstall": "node postinstall.js"
 	},
 	"repository": {

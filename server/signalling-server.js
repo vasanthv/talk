@@ -1,6 +1,6 @@
 /*
 Note: This socket connection is used a signalling server as WebRTC does not support discovery of other peers. 
-Your audio, video & chat messages does not use this socket.
+User's audio, video & chat messages does not use this socket.
 */
 const util = require("util");
 
