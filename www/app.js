@@ -97,6 +97,11 @@ const App = Vue.createApp({
 					screenStream.getVideoTracks()[0].onended = function () {
 						if (App.screenShareEnabled) App.screenShareToggle();
 					};
+					try {
+						if (cabin) {
+							cabin.event("screen-share-"+App.screenShareEnabled);
+						}
+					} catch (e) {}			
 				})
 				.catch((e) => {
 					alert("Unable to share screen. Please use a supported browser.");
