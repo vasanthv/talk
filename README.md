@@ -33,6 +33,23 @@ npm start
 
 to start the tlk server on port 3000. Your tlk instance will be running on http://localhost:3000. Alternatively you can run the application using docker with `docker-compose up`.
 
+### How to self host it
+
+In order to self-host it on your dedicated server, Tlk must be exposed on `https` following [this documentation](./docs/self-hosting.md).
+
+You can also expose it quickly on `https` from your local PC or any host using [ngrok](https://ngrok.com/).
+
+### Using TURN REST API Authentication
+
+If you're using `coturn` - set up `use-auth-secret` and provision a secret either via `static-auth-secret` or via `turnadmin -s`
+
+Set up following environment variables:
+
+* `SHARED_SECRET`: This should match the parameter provided to coturn
+* `CUSTOM_STUN_SERVER`: `stun:stun.your.domain.name`
+* `CUSTOM_TURN_SERVER`: `turn:stun.your.domain.name`
+* `CREDENTIAL_LIFETIME`: How long should the credential be valid for (in seconds)
+
 ### LICENSE
 
 <a href="https://github.com/vasanthv/tlk/blob/master/LICENSE">MIT License</a>

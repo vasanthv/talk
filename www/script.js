@@ -73,6 +73,11 @@ function init() {
 			});
 	});
 
+	signalingSocket.on("ice_servers", function(data) {
+		console.log('Received ICE Servers', data);
+		App.ice_servers = data;
+	});
+
 	signalingSocket.on("disconnect", function () {
 		for (let peer_id in peerMediaElements) {
 			document.getElementById("videos").removeChild(peerMediaElements[peer_id].parentNode);
@@ -99,7 +104,7 @@ function init() {
 		channel = config.channel;
 		//console.log('[Join] - connected peers in the channel', JSON.stringify(channel, null, 2));
 
-		const peerConnection = new RTCPeerConnection({ iceServers: ICE_SERVERS });
+		const peerConnection = new RTCPeerConnection({ iceServers: App.ice_servers || ICE_SERVERS });
 		peers[peer_id] = peerConnection;
 
 		peerConnection.onicecandidate = function (event) {

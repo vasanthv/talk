@@ -1,8 +1,24 @@
 /*
-Note: This socket connection is used a signalling server as WebRTC does not support discovery of other peers. 
+Note: This socket connection is used a signalling server as WebRTC does not support discovery of other peers.
 Your audio, video & chat messages does not use this socket.
 */
 const util = require("util");
+const { createHmac } = require("crypto");
+
+const { SHARED_SECRET, CUSTOM_STUN_SERVER, CUSTOM_TURN_SERVER } = process.env
+const CREDENTIAL_LIFETIME = parseInt(process.env.CREDENTIAL_LIFETIME, 10) || 3600;
+
+function getTurnCredentials(name, secret = SHARED_SECRET, duration = CREDENTIAL_LIFETIME) {
+	const timestamp = parseInt(Date.now() / 1000) + duration;
+	const username = `${timestamp}:${name}`;
+	const hmac = createHmac("sha1", secret);
+	hmac.setEncoding('base64')
+	hmac.write(username);
+	hmac.end();
+
+	const credential = hmac.read();
+	return { username, credential };
+}
 
 const channels = {};
 const sockets = {};
@@ -28,6 +44,13 @@ const signallingServer = (socket) => {
 	socket.on("join", (config) => {
 		console.log("[" + socket.id + "] join ", config);
 		const channel = socketHostName + config.channel;
+
+		if(SHARED_SECRET && CUSTOM_STUN_SERVER && CUSTOM_TURN_SERVER) {
+			socket.emit('ice_servers', [
+				{ urls: CUSTOM_STUN_SERVER },
+				{ urls: CUSTOM_TURN_SERVER, ...getTurnCredentials(config.channel) }
+			]);
+		}
 
 		// Already Joined
 		if (channel in socket.channels) return;
