@@ -31,7 +31,7 @@ let channel = {}; /* keep track of the peers Info in the channel, indexed by pee
 let peerMediaElements = {}; /* keep track of our <video>/<audio> tags, indexed by peer_id */
 let dataChannels = {};
 
-function init() {
+function initiateCall() {
 	App.userAgent = navigator.userAgent;
 	App.isMobileDevice = !!/Android|webOS|iPhone|iPad|iPod|BB10|BlackBerry|IEMobile|Opera Mini|Mobile|mobile/i.test(
 		App.userAgent.toUpperCase() || ""
@@ -119,7 +119,6 @@ function init() {
 			peerMediaElements[peer_id] = remoteMedia;
 			attachMediaStream(remoteMedia, event.stream);
 			resizeVideos();
-			App.showIntro = false;
 
 			for (let peerId in channel) {
 				const videoPeerName = document.getElementById(peerId + "_videoPeerName");
@@ -343,7 +342,7 @@ window.addEventListener("resize", calcViewPortUnit);
 window.addEventListener("load", calcViewPortUnit);
 
 document.addEventListener("click", () => {
-	if (!App.showChat && !App.showSettings && !App.showIntro) {
+	if (!App.showChat && !App.showSettings) {
 		App.hideToolbar = !App.hideToolbar;
 	}
 	if (App.showSettings && App.showChat) {
@@ -352,4 +351,4 @@ document.addEventListener("click", () => {
 	}
 });
 
-window.onload = init;
+// window.onload = init;

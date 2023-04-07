@@ -17,12 +17,17 @@ app.use(express.static(path.join(__dirname, "assets")));
 app.use(express.static(path.join(__dirname, "node_modules/vue/dist/")));
 
 server.listen(PORT, null, () => {
-	console.log("Server", { listening_on: "http://localhost:" + PORT, node_version: process.versions.node });
+	console.log("Tlk server started");
+	console.log({ port: PORT, node_version: process.versions.node });
 });
 
+// serve the landing page
+app.get("/", (req, res) => res.sendFile(path.join(__dirname, "www/index.html")));
+
+// serve the terms / legal page
 app.get("/legal", (req, res) => res.sendFile(path.join(__dirname, "www/legal.html")));
 
-// All URL patterns should served with the same file.
-app.get(["/", "/:room"], (req, res) => res.sendFile(path.join(__dirname, "www/index.html")));
+// All other URL patterns will serve the app.
+app.get("/:room", (req, res) => res.sendFile(path.join(__dirname, "www/app.html")));
 
 io.sockets.on("connection", signallingServer);

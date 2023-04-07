@@ -39,9 +39,6 @@ body {
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue",
 		sans-serif;
 	line-height: 1.6;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	background: var(--body-bg);
 }
 input {
 	display: block;
@@ -53,6 +50,9 @@ input {
 }
 .light {
 	color: #878787;
+}
+.red {
+	color: #c0392b;
 }
 .bold {
 	font-weight: bold;
@@ -67,54 +67,42 @@ input {
 	/* mobile viewport bug fix */
 	min-height: -webkit-fill-available;
 }
-.video {
-	float: left;
-	width: calc(25vw - 1rem);
-	height: calc((var(--vh, 1vh) * 50) - 1rem);
+#videos {
+	display: flex;
+	justify-content: center;
+	flex-wrap: wrap;
+}
+#videos .video {
+	flex-shrink: 0;
+	width: 400px;
+	height: 300px;
 	overflow: hidden;
 	position: relative;
+	box-sizing: border-box;
 	padding: 0.5rem;
 }
-.video.one,
-.video.two {
-	width: calc(50vw - 1rem);
-	height: calc((var(--vh, 1vh) * 100) - 1rem);
-}
-.video.three {
-	width: calc(33.33vw - 1rem);
-	height: calc((var(--vh, 1vh) * 100) - 1rem);
-}
-.video.four {
-	width: calc(50vw - 1rem);
-	height: calc((var(--vh, 1vh) * 50) - 1rem);
-}
-.video.five,
-.video.six {
-	width: calc(33.33vw - 1rem);
-	height: calc((var(--vh, 1vh) * 50) - 1rem);
-}
-.video video {
+#videos .video video {
 	width: 100%;
 	height: 100%;
 	display: block;
 	margin: auto;
 	box-sizing: border-box;
 	object-fit: cover;
-	border-radius: 1rem;
+	border-radius: 0.5rem;
 }
-.video video.mirror {
+#videos .video video.mirror {
 	transform: rotateY(180deg);
 	-webkit-transform: rotateY(180deg);
 	-moz-transform: rotateY(180deg);
 }
-.video:fullscreen video {
-	background: #acadd3;
+#videos .video:fullscreen video {
+	background: #000;
 	object-fit: contain;
 	border: none;
 }
-.video button {
+#videos .video button {
 	position: absolute;
-	top: 0.5rem;
+	bottom: 1rem;
 	right: 0.5rem;
 	z-index: 10;
 	font-size: 2rem;
@@ -125,8 +113,12 @@ input {
 	text-shadow: 2px 2px 5px #989898;
 	padding: 0.1rem 0.4rem;
 }
-.video:fullscreen button {
+#videos .video:fullscreen button {
 	display: none;
+}
+#videos.mt8 .video {
+	width: 200px;
+	height: 150px;
 }
 
 .videoAvatarImg {
@@ -141,72 +133,77 @@ input {
 .videoPeerName {
 	z-index: 2;
 	position: absolute;
-	padding: 0.5rem 0.75rem;
+	padding: 0rem 0.75rem 0rem 0rem;
 	bottom: 1rem;
-	left: 1rem;
+	left: 3rem;
 	font-weight: bold;
 	font-size: 0.7rem;
 	color: #ffffff;
 	background-color: rgba(0, 0, 0, 0.7);
 	border: none;
-	border-radius: 5px;
+	border-top-right-radius: 0.25rem;
+	border-bottom-right-radius: 0.25rem;
+	height: 2rem;
+	line-height: 2rem;
+	box-sizing: border-box;
 }
 
 .audioEnabled.icon-mic-off,
 .audioEnabled.icon-mic {
+	text-align: center;
 	z-index: 3;
 	position: absolute;
-	padding: 5px;
+	padding: 0rem 0.25rem;
 	bottom: 1rem;
-	right: 1rem;
+	left: 1rem;
 	font-weight: bold;
-	font-size: 1.2rem;
+	font-size: 1rem;
 	color: #ffffff;
-	background-color: #00000031;
+	background-color: rgba(0, 0, 0, 0.7);
+	border-top-left-radius: 0.25rem;
+	border-bottom-left-radius: 0.25rem;
 	border: none;
-	border-radius: 5px;
-	box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.16), 0px 1px 4px rgba(0, 0, 0, 0.16);
+	height: 2rem;
+	width: 2rem;
+	line-height: 2rem;
+	box-sizing: border-box;
 }
 
 #app > #appWrap {
 	display: none;
 }
 #intro {
-	background: var(--intro-bg);
-	color: var(--intro-cl);
 	position: fixed;
-	bottom: 6rem;
+	top: 6rem;
 	left: 0px;
 	right: 0px;
 	z-index: 100;
-	width: 20.8rem;
+	width: 100%;
+	max-width: 32rem;
 	margin: auto;
 	padding: 1rem;
 	box-sizing: border-box;
 	border-radius: 1rem;
 	box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.16), 0px 1px 4px rgba(0, 0, 0, 0.16);
 }
-#intro .roomLink {
-	text-decoration: underline;
-	text-decoration-style: dashed;
-	text-underline-offset: 0.2rem;
-	word-wrap: break-word;
-	word-break: break-word;
+#intro h3 {
+	margin: 0px;
 }
-#intro .copyURL {
-	color: inherit;
-	text-decoration: none;
+#intro label {
 	font-weight: bold;
-	-webkit-user-select: none;
-	user-select: none;
 }
 #intro .footer {
 	display: flex;
 	justify-content: space-between;
 }
-#intro .footer .terms {
-	position: relative;
-	top: -0.25rem;
+#intro .footer button {
+	background: #6549d5;
+	color: #fff;
+	font-size: 1rem;
+	border: none;
+	border-radius: 0.25rem;
+	padding: 0.5rem 1rem;
+	cursor: pointer;
 }
 
 #chatWrap {
@@ -436,25 +433,9 @@ input {
 	border-color: #000;
 }
 
-@media only screen and (max-width: 960px) {
-	.video {
-		float: left;
-		width: calc(50vw - 1rem);
-		height: calc((var(--vh, 1vh) * 25) - 1rem);
-		overflow: hidden;
-	}
-	.video.one,
-	.video.two {
-		width: calc(100vw - 1rem);
-		height: calc((var(--vh, 1vh) * 50) - 1rem);
-	}
-	.video.three {
-		width: calc(100vw - 1rem);
-		height: calc((var(--vh, 1vh) * 33.33) - 1rem);
-	}
-	.video.five,
-	.video.six {
-		width: calc(50vw - 1rem);
-		height: calc((var(--vh, 1vh) * 33.33) - 1rem);
+@media only screen and (max-width: 800px) {
+	#videos .video {
+		width: 50vw;
+		height: 33.3vh;
 	}
 }
