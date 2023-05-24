@@ -17,7 +17,7 @@ app.use(express.static(path.join(__dirname, "assets")));
 app.use(express.static(path.join(__dirname, "node_modules/vue/dist/")));
 
 server.listen(PORT, null, () => {
-	console.log("Tlk server started");
+	console.log("Talk server started");
 	console.log({ port: PORT, node_version: process.versions.node });
 });
 

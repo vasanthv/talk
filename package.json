@@ -1,5 +1,5 @@
 {
-	"name": "tlk",
+	"name": "talk",
 	"version": "4.0.0",
 	"description": "A free, peer-to-peer, encrypted, open-source video calling for the web.",
 	"main": "start.js",
@@ -10,7 +10,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/vasanthv/tlk.git"
+		"url": "git+https://github.com/vasanthv/talk.git"
 	},
 	"keywords": [
 		"webrtc",
@@ -20,9 +20,9 @@
 	"author": "Vasanth.V <imvasanthv@gmail.com>",
 	"license": "ISC",
 	"bugs": {
-		"url": "https://github.com/vasanthv/tlk/issues"
+		"url": "https://github.com/vasanthv/talk/issues"
 	},
-	"homepage": "https://github.com/vasanthv/tlk#readme",
+	"homepage": "https://github.com/vasanthv/talk#readme",
 	"dependencies": {
 		"express": "^4.18.2",
 		"socket.io": "^4.5.3",
