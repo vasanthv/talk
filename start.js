@@ -3,7 +3,9 @@ const path = require("path");
 const http = require("http");
 const app = express();
 const server = http.createServer(app);
-const io = require("socket.io")(server, { cors: { origin: "*" } });
+const io = require("socket.io")(server, {
+	cors: { origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(",") : "*" },
+});
 
 const signallingServer = require("./server/signalling-server.js");
 
