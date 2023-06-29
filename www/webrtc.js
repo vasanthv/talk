@@ -115,7 +115,7 @@ function initiateCall() {
 		};
 
 		peerConnection.onaddstream = function (event) {
-			if (channel[peer_id]["userData"]["isBot"]) return;
+			if (!channel[peer_id]["userData"]["userAgent"]) return;
 
 			const remoteMedia = getVideoElement(peer_id);
 			peerMediaElements[peer_id] = remoteMedia;
