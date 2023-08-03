@@ -140,7 +140,7 @@
 					</div>
 				</div>
 
-				<div id="actionsWrap" v-bind:class="hideToolbar ? 'hidden' : ''" v-if="callInitiated">
+				<div id="actionsWrap" v-if="callInitiated">
 					<div id="actions">
 						<button v-bind:class="'icon-mic'+(audioEnabled ? '' : '-off')" v-on:click="audioToggle"></button>
 						<button v-bind:class="'icon-video'+(videoEnabled ? '' : '-off')" v-on:click="videoToggle"></button>
