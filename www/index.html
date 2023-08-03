@@ -42,7 +42,14 @@
 				<h3>No sign ups. No downloads.<br />Works in all major browsers.</h3>
 				<div class="flex">
 					<div id="roomurl">
-						<span>tlk.li/</span><input type="text" placeholder="room-name" pattern="[a-zA-Z0-9]{8}" v-model="roomId" />
+						<span>tlk.li/</span
+						><input
+							type="text"
+							placeholder="room-name"
+							pattern="[a-zA-Z0-9]{8}"
+							v-model="roomId"
+							v-on:keydown.enter="goToRoom"
+						/>
 					</div>
 					<a v-bind:href="'/'+roomId" class="button">Start</a>
 				</div>
