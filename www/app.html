@@ -82,7 +82,7 @@
 				</div>
 
 				<div id="chatWrap" v-if="showChat">
-					<div id="chats">
+					<div id="chats" ref="chatContainer">
 						<div class="chat" v-for="(chat, i) in chats" v-bind:key="i">
 							<span class="name">{{chat.name}}</span>
 							<span class="date light"> &middot; {{formatDate(chat.date)}}</span>
