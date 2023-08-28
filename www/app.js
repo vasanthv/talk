@@ -237,6 +237,7 @@ const App = Vue.createApp({
 			switch (key) {
 				case "chat":
 					this.chats.push(dataMessage);
+					this.$nextTick(this.scrollToBottom);
 					break;
 				default:
 					break;
@@ -250,6 +251,7 @@ const App = Vue.createApp({
 					this.showChat = true;
 					this.hideToolbar = false;
 					this.chats.push(dataMessage);
+					this.$nextTick(this.scrollToBottom);
 					break;
 				case "audioEnabled":
 					document.getElementById(dataMessage.id + "_audioEnabled").className =
@@ -266,6 +268,10 @@ const App = Vue.createApp({
 				default:
 					break;
 			}
+		},
+		scrollToBottom() {
+			const chatContainer = this.$refs.chatContainer;
+			chatContainer.scrollTop = chatContainer.scrollHeight;
 		},
 		formatDate(dateString) {
 			const date = new Date(dateString);
