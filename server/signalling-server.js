@@ -94,7 +94,6 @@ const signallingServer = (socket) => {
 	socket.on("relayICECandidate", (config) => {
 		let peer_id = config.peer_id;
 		let ice_candidate = config.ice_candidate;
-		console.log("[" + socket.id + "] relay ICE-candidate to [" + peer_id + "] ", ice_candidate);
 
 		if (peer_id in sockets) {
 			sockets[peer_id].emit("iceCandidate", { peer_id: socket.id, ice_candidate: ice_candidate });
@@ -104,7 +103,6 @@ const signallingServer = (socket) => {
 	socket.on("relaySessionDescription", (config) => {
 		let peer_id = config.peer_id;
 		let session_description = config.session_description;
-		console.log("[" + socket.id + "] relay SessionDescription to [" + peer_id + "] ", session_description);
 
 		if (peer_id in sockets) {
 			sockets[peer_id].emit("sessionDescription", {
