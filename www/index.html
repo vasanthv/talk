@@ -6,133 +6,74 @@
 			name="viewport"
 			content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
 		/>
-		<meta name="description" content="Talk - A free video call app for the web." />
+		<meta
+			name="description"
+			content="A free, peer-to-peer, encrypted, open-source video calling for the web. No sign ups. No downloads."
+		/>
 		<meta
 			name="keywords"
 			content="group video chat, video communication, multiparty video chat, video chat, webrtc, peer to peer, p2p"
 		/>
 		<meta name="application-name" content="Talk" />
 		<!-- Meta data for link fetching -->
-		<meta property="og:url" content="https://usetalk.io" />
-		<meta property="og:image" content="https://usetalk.io/icon.png" />
+		<meta property="og:url" content="https://tlk.li" />
+		<meta property="og:image" content="https://tlk.li/og-image.png" />
 		<meta property="og:title" content="Talk - Free group video call for the web" />
 		<meta
 			property="og:description"
-			content="Talk is a free & open-source video conference app for the web. Works in all major browsers. No signups. No downloads. 100% peer-to-peer."
+			content="A free, peer-to-peer, encrypted, open-source video calling for the web. No sign ups. No downloads."
 		/>
 
 		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 		<link rel="icon" href="/favicon.svg" />
-		<link rel="stylesheet" href="/style.css" />
-		<script defer src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
-		<script defer src="/socket.io/socket.io.js"></script>
-		<script defer src="vue.min.js"></script>
-		<script defer src="app.js"></script>
-		<script defer src="script.js"></script>
+		<link rel="stylesheet" href="/home.css" />
 		<title>Talk - Free group video call for the web</title>
-		<!-- Below line is an alytics script. Delete it if you are deploying it on your own cloud  -->
-		<script async defer src="https://stats.usetalk.io/hello.js"></script>
+		<script defer src="/vue.global.prod.js"></script>
+		<script defer src="/home.js"></script>
+
+		<!-- ANALYTICS_SCRIPT -->
 	</head>
 
 	<body>
-		<section id="videos"></section>
-		<main id="app" v-bind:style="'display:block'">
-			<div id="intro" v-if="showIntro && !showChat && !showSettings">
-				<p>
-					<strong>Talk</strong> is a free & open-source video conference app for the web. <br />Works in all major
-					browsers. No signups. No downloads. 100% peer-to-peer.
-				</p>
-				<p>
-					<small>
-						<i>Share this link to start talking. </i><br />
-						<span class="roomLink">{{roomLink}}</span>
-						<a class="copyURL" href="javascript:void(0)" v-on:click="copyURL">{{copyText || "Copy"}}</a>
-					</small>
-				</p>
-				<div class="footer">
-					<iframe
-						src="https://ghbtns.com/github-btn.html?user=vasanthv&repo=talk&type=star&count=true"
-						frameborder="0"
-						scrolling="0"
-						width="150"
-						height="20"
-						title="GitHub"
-					></iframe>
-					<a href="/legal.html" class="terms light"><small>Terms</small></a>
-				</div>
-			</div>
-
-			<div id="chatWrap" v-if="showChat">
-				<div id="chats">
-					<div class="chat" v-for="(chat, i) in chats" v-bind:key="i">
-						<span class="name">{{chat.name}}</span>
-						<span class="date light"> &middot; {{formatDate(chat.date)}}</span>
-						<div class="message" v-html="linkify(chat.message)"></div>
+		<main class="wrap">
+			<div id="app" class="row">
+				<h1 class="flex"><img src="favicon.svg" id="logo" /> Talk</h1>
+				<h2>A free, peer-to-peer, open-source video calling for the web.</h2>
+				<h3>No sign ups. No downloads.<br />Works in all major browsers.</h3>
+				<div class="flex">
+					<div id="roomurl">
+						<span>tlk.li/</span
+						><input
+							type="text"
+							placeholder="room-name"
+							pattern="[a-zA-Z0-9]{8}"
+							v-model="roomId"
+							v-on:keydown.enter="goToRoom"
+						/>
 					</div>
-					<div id="noChat" class="light" v-if="!chats.length"><small>No chat messages.</small></div>
+					<a v-bind:href="'/'+roomId" class="button">Start</a>
 				</div>
-				<div id="composeBox">
-					<div id="placeholder" v-if="typing.length <= 0">Type message...</div>
-					<div
-						id="compose"
-						contenteditable="true"
-						v-on:keydown.enter="sendChat"
-						v-on:input="edit($event)"
-						v-on:paste="paste($event)"
-					></div>
-				</div>
-				<small class="light">Press enter to submit</small>
+
+				<p><a href="javascript:void(0)" v-on:click="generateRandomRoomId">Generate a random room</a></p>
+			</div>
+			<div class="spacer"></div>
+			<div class="row">
+				<iframe
+					src="https://ghbtns.com/github-btn.html?user=vasanthv&repo=talk&type=star&count=true&size=large"
+					frameborder="0"
+					scrolling="0"
+					width="170"
+					height="30"
+					title="GitHub"
+				></iframe>
 			</div>
 
-			<div id="settings" v-if="showSettings">
-				<div class="label">Camera 📹</div>
-				<div v-for="(videoDevice, i) in videoDevices" v-bind:key="videoDevice.deviceId">
-					<div
-						v-bind:class="'link '+(selectedVideoDeviceId === videoDevice.deviceId ? 'active' : '')"
-						v-on:click="changeCamera(videoDevice.deviceId)"
-					>
-						{{videoDevice.label}}
-					</div>
-				</div>
-
-				<div class="label">Microphone 🎙️</div>
-				<div v-for="(audioDevice, i) in audioDevices" v-bind:key="audioDevice.deviceId">
-					<div
-						v-bind:class="'link '+(selectedAudioDeviceId === audioDevice.deviceId ? 'active' : '')"
-						v-on:click="changeMicrophone(audioDevice.deviceId)"
-					>
-						{{audioDevice.label}}
-					</div>
-				</div>
-
-				<div class="label">Name 📛</div>
-				<input type="text" placeholder="Your name" v-model="name" v-on:keyup="nameToLocalStorage" />
-
-				<div class="copy link" v-on:click="copyURL">{{copyText || "Copy room link"}}</div>
-				<div class="copy link" v-on:click="toggleSelfVideoMirror">
-					Mirror / Unmirror
-					<small class="light">(self-view)</small>
-				</div>
+			<div class="row small light">
+				&copy; tlk.li &middot; <a href="/legal">Legal</a> &middot;
+				<a href="mailto:vasanth@tlk.li" target="_blank">Contact</a>
 			</div>
 
-			<div id="actionsWrap" v-bind:class="hideToolbar ? 'hidden' : ''">
-				<div id="actions">
-					<button v-bind:class="'icon-mic'+(audioEnabled ? '' : '-off')" v-on:click="audioToggle"></button>
-					<button v-bind:class="'icon-video'+(videoEnabled ? '' : '-off')" v-on:click="videoToggle"></button>
-					<button
-						v-bind:class="'icon-message-square '+(showChat ? 'active' : '')"
-						v-on:click="showChat = !showChat"
-					></button>
-					<button
-						v-bind:class="'icon-monitor '+(screenshareEnabled ? 'active' : '')"
-						v-on:click="screenShareToggle"
-					></button>
-					<button
-						v-bind:class="'icon-more-horizontal '+(showSettings ? 'active' : '')"
-						v-on:click="showSettings = !showSettings"
-					></button>
-				</div>
-			</div>
+			<br /><br />
 		</main>
 	</body>
 </html>

@@ -1,10 +1,12 @@
 {
 	"name": "talk",
-	"version": "2.0.4",
-	"description": "A free video call app for the web.",
-	"main": "server.js",
+	"version": "4.0.0",
+	"description": "A free, peer-to-peer, encrypted, open-source video calling for the web.",
+	"main": "start.js",
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "node start.js",
+		"postinstall": "node postinstall.js"
 	},
 	"repository": {
 		"type": "git",
@@ -22,8 +24,8 @@
 	},
 	"homepage": "https://github.com/vasanthv/talk#readme",
 	"dependencies": {
-		"express": "^4.17.1",
-		"socket.io": "^4.0.1",
-		"vue": "^2.6.12"
+		"express": "^4.18.2",
+		"socket.io": "^4.5.3",
+		"vue": "^3.2.41"
 	}
 }

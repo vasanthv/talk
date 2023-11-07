@@ -1,27 +1,47 @@
-/* globals attachMediaStream, Vue,  peers, localMediaStream, dataChannels */
-const App = new Vue({
-	el: "#app",
-	data: {
-		roomLink: "",
-		copyText: "",
-		videoDevices: [],
-		audioDevices: [],
-		audioEnabled: true,
-		videoEnabled: true,
-		screenshareEnabled: false,
-		showIntro: true,
-		showChat: false,
-		showSettings: false,
-		hideToolbar: false,
-		selectedAudioDeviceId: "",
-		selectedVideoDeviceId: "",
-		name: window.localStorage.name || "",
-		typing: "",
-		chats: [],
+/* globals attachMediaStream, Vue,  peers, localMediaStream, dataChannels, signalingSocket */
+
+"use strict";
+
+const App = Vue.createApp({
+	data() {
+		return {
+			peerId: "",
+			roomId: "",
+			roomLink: "",
+			copyText: "",
+			userAgent: "",
+			isMobileDevice: false,
+			isTablet: false,
+			isIpad: false,
+			isDesktop: false,
+			videoDevices: [],
+			audioDevices: [],
+			audioEnabled: true,
+			videoEnabled: true,
+			screenShareEnabled: false,
+			showChat: false,
+			showSettings: false,
+			hideToolbar: true,
+			selectedAudioDeviceId: "",
+			selectedVideoDeviceId: "",
+			name: window.localStorage.name,
+			nameError: false,
+			typing: "",
+			chats: [],
+			callInitiated: false,
+			callEnded: false,
+		};
 	},
-	computed: {},
 	methods: {
-		copyURL: function() {
+		initiateCall() {
+			if (this.name) {
+				this.callInitiated = true;
+				window.initiateCall();
+			} else {
+				this.nameError = true;
+			}
+		},
+		copyURL() {
 			navigator.clipboard.writeText(this.roomLink).then(
 				() => {
 					this.copyText = "Copied 👍";
@@ -30,26 +50,32 @@ const App = new Vue({
 				(err) => console.error(err)
 			);
 		},
-		audioToggle: function(e) {
+		audioToggle(e) {
 			e.stopPropagation();
 			localMediaStream.getAudioTracks()[0].enabled = !localMediaStream.getAudioTracks()[0].enabled;
 			this.audioEnabled = !this.audioEnabled;
+			this.updateUserData("audioEnabled", this.audioEnabled);
 		},
-		videoToggle: function(e) {
+		videoToggle(e) {
 			e.stopPropagation();
 			localMediaStream.getVideoTracks()[0].enabled = !localMediaStream.getVideoTracks()[0].enabled;
 			this.videoEnabled = !this.videoEnabled;
+			this.updateUserData("videoEnabled", this.videoEnabled);
 		},
-		toggleSelfVideoMirror: function() {
+		toggleSelfVideoMirror() {
 			document.querySelector("#videos .video #selfVideo").classList.toggle("mirror");
 		},
-		nameToLocalStorage: function() {
+		updateName() {
 			window.localStorage.name = this.name;
 		},
-		screenShareToggle: function(e) {
+		updateNameAndPublish() {
+			window.localStorage.name = this.name;
+			this.updateUserData("peerName", this.name);
+		},
+		screenShareToggle(e) {
 			e.stopPropagation();
 			let screenMediaPromise;
-			if (!App.screenshareEnabled) {
+			if (!App.screenShareEnabled) {
 				if (navigator.getDisplayMedia) {
 					screenMediaPromise = navigator.getDisplayMedia({ video: true });
 				} else if (navigator.mediaDevices.getDisplayMedia) {
@@ -61,10 +87,14 @@ const App = new Vue({
 				}
 			} else {
 				screenMediaPromise = navigator.mediaDevices.getUserMedia({ video: true });
+				document.getElementById(this.peerId + "_videoEnabled").style.visibility = "hidden";
 			}
 			screenMediaPromise
 				.then((screenStream) => {
-					App.screenshareEnabled = !App.screenshareEnabled;
+					App.screenShareEnabled = !App.screenShareEnabled;
+
+					this.videoEnabled = true;
+					this.updateUserData("videoEnabled", this.videoEnabled);
 
 					for (let peer_id in peers) {
 						const sender = peers[peer_id].getSenders().find((s) => (s.track ? s.track.kind === "video" : false));
@@ -76,20 +106,47 @@ const App = new Vue({
 					attachMediaStream(document.getElementById("selfVideo"), newStream);
 					this.toggleSelfVideoMirror();
 
-					screenStream.getVideoTracks()[0].onended = function() {
-						if (App.screenshareEnabled) App.screenShareToggle();
+					screenStream.getVideoTracks()[0].onended = function () {
+						if (App.screenShareEnabled) App.screenShareToggle();
 					};
+					try {
+						if (cabin) {
+							cabin.event("screen-share-"+App.screenShareEnabled);
+						}
+					} catch (e) {}			
 				})
 				.catch((e) => {
 					alert("Unable to share screen. Please use a supported browser.");
 					console.error(e);
 				});
 		},
-		changeCamera: function(deviceId) {
+		updateUserData(key, value) {
+			this.sendDataMessage(key, value);
+
+			switch (key) {
+				case "audioEnabled":
+					document.getElementById(this.peerId + "_audioEnabled").className =
+						"audioEnabled icon-mic" + (value ? "" : "-off");
+					break;
+				case "videoEnabled":
+					document.getElementById(this.peerId + "_videoEnabled").style.visibility = value ? "hidden" : "visible";
+					break;
+				case "peerName":
+					document.getElementById(this.peerId + "_videoPeerName").innerHTML = value + " (you)";
+					break;
+				default:
+					break;
+			}
+		},
+		changeCamera(deviceId) {
 			navigator.mediaDevices
 				.getUserMedia({ video: { deviceId: deviceId } })
 				.then((camStream) => {
 					console.log(camStream);
+
+					this.videoEnabled = true;
+					this.updateUserData("videoEnabled", this.videoEnabled);
+
 					for (let peer_id in peers) {
 						const sender = peers[peer_id].getSenders().find((s) => (s.track ? s.track.kind === "video" : false));
 						sender.replaceTrack(camStream.getVideoTracks()[0]);
@@ -106,10 +163,13 @@ const App = new Vue({
 					alert("Error while swaping camera");
 				});
 		},
-		changeMicrophone: function(deviceId) {
+		changeMicrophone(deviceId) {
 			navigator.mediaDevices
 				.getUserMedia({ audio: { deviceId: deviceId } })
 				.then((micStream) => {
+					this.audioEnabled = true;
+					this.updateUserData("audioEnabled", this.audioEnabled);
+
 					for (let peer_id in peers) {
 						const sender = peers[peer_id].getSenders().find((s) => (s.track ? s.track.kind === "audio" : false));
 						sender.replaceTrack(micStream.getAudioTracks()[0]);
@@ -126,62 +186,94 @@ const App = new Vue({
 					alert("Error while swaping microphone");
 				});
 		},
-		sanitizeString: function(str) {
+		sanitizeString(str) {
 			const tagsToReplace = { "&": "&amp;", "<": "&lt;", ">": "&gt;" };
 			const replaceTag = (tag) => tagsToReplace[tag] || tag;
 			const safe_tags_replace = (str) => str.replace(/[&<>]/g, replaceTag);
 			return safe_tags_replace(str);
 		},
-		linkify: function(str) {
+		linkify(str) {
 			return this.sanitizeString(str).replace(/(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%]+/gi, (match) => {
-				let displayURL = match
-					.trim()
-					.replace("https://", "")
-					.replace("https://", "");
+				let displayURL = match.trim().replace("https://", "").replace("https://", "");
 				displayURL = displayURL.length > 25 ? displayURL.substr(0, 25) + "&hellip;" : displayURL;
 				const url = !/^https?:\/\//i.test(match) ? "http://" + match : match;
 				return `<a href="${url}" target="_blank" class="link" rel="noopener">${displayURL}</a>`;
 			});
 		},
-		edit: function(e) {
+		edit(e) {
 			this.typing = e.srcElement.textContent;
 		},
-		paste: function(e) {
+		paste(e) {
 			e.preventDefault();
 			const clipboardData = e.clipboardData || window.clipboardData;
 			const pastedText = clipboardData.getData("Text");
 			document.execCommand("inserttext", false, pastedText.replace(/(\r\n\t|\n|\r\t)/gm, " "));
 		},
-		sendChat: function(e) {
+		sendChat(e) {
 			e.stopPropagation();
 			e.preventDefault();
-			if (this.typing.length) {
+
+			if (!this.typing.length) return;
+
+			if (Object.keys(peers).length > 0) {
 				const composeElement = document.getElementById("compose");
-				const chatMessage = {
-					type: "chat",
-					name: this.name || "Unnamed",
-					message: this.typing,
-					date: new Date().toISOString(),
-				};
-				this.chats.push(chatMessage);
-				Object.keys(dataChannels).map((peer_id) => dataChannels[peer_id].send(JSON.stringify(chatMessage)));
+				this.sendDataMessage("chat", this.typing);
 				this.typing = "";
 				composeElement.textContent = "";
 				composeElement.blur;
+			} else {
+				alert("No peers in the room");
 			}
 		},
-		handleIncomingDataChannelMessage: function(chatMessage) {
-			switch (chatMessage.type) {
+		sendDataMessage(key, value) {
+			const dataMessage = {
+				type: key,
+				name: this.name,
+				id: this.peerId,
+				message: value,
+				date: new Date().toISOString(),
+			};
+
+			switch (key) {
+				case "chat":
+					this.chats.push(dataMessage);
+					this.$nextTick(this.scrollToBottom);
+					break;
+				default:
+					break;
+			}
+
+			Object.keys(dataChannels).map((peer_id) => dataChannels[peer_id].send(JSON.stringify(dataMessage)));
+		},
+		handleIncomingDataChannelMessage(dataMessage) {
+			switch (dataMessage.type) {
 				case "chat":
 					this.showChat = true;
 					this.hideToolbar = false;
-					this.chats.push(chatMessage);
+					this.chats.push(dataMessage);
+					this.$nextTick(this.scrollToBottom);
+					break;
+				case "audioEnabled":
+					document.getElementById(dataMessage.id + "_audioEnabled").className =
+						"audioEnabled icon-mic" + (dataMessage.message ? "" : "-off");
+					break;
+				case "videoEnabled":
+					document.getElementById(dataMessage.id + "_videoEnabled").style.visibility = dataMessage.message
+						? "hidden"
+						: "visible";
+					break;
+				case "peerName":
+					document.getElementById(dataMessage.id + "_videoPeerName").innerHTML = dataMessage.message;
 					break;
 				default:
 					break;
 			}
 		},
-		formatDate: function(dateString) {
+		scrollToBottom() {
+			const chatContainer = this.$refs.chatContainer;
+			chatContainer.scrollTop = chatContainer.scrollHeight;
+		},
+		formatDate(dateString) {
 			const date = new Date(dateString);
 			const hours = date.getHours() > 12 ? date.getHours() - 12 : date.getHours();
 			return (
@@ -192,5 +284,22 @@ const App = new Vue({
 				(date.getHours() >= 12 ? "PM" : "AM")
 			);
 		},
+		setStyle(key, value) {
+			document.documentElement.style.setProperty(key, value);
+		},
+		onCallFeedback(e) {
+			try {
+				if (cabin) {
+					cabin.event(e.target.getAttribute("data-cabin-event"));
+				}
+			} catch (e) {}
+		},
+		exit() {
+			signalingSocket.close();
+			for (let peer_id in peers) {
+				peers[peer_id].close();
+			}
+			this.callEnded = true;
+		},
 	},
-});
+}).mount("#app");

@@ -13,39 +13,33 @@
 		/>
 		<meta name="application-name" content="Talk" />
 		<link rel="icon" href="favicon.png" type="image/png" />
-		<link rel="stylesheet" href="style.css" />
+		<link rel="stylesheet" href="home.css" />
 		<title>Talk - A free video call app for the web</title>
-		<!-- Global site tag (gtag.js) - Google Analytics -->
-		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-19124340-30"></script>
-		<script>
-			window.dataLayer = window.dataLayer || [];
-			function gtag() {
-				dataLayer.push(arguments);
-			}
-			gtag("js", new Date());
-
-			gtag("config", "UA-19124340-30");
-		</script>
 		<style>
 			#wrapper {
+				color: #212121;
 				width: 100%;
 				max-width: 768px;
 				padding: 10px;
 				box-sizing: border-box;
 				margin: 1rem auto;
 			}
+			#wrapper a {
+				color: #212121;
+			}
 			#logo img {
 				position: relative;
 				left: -2px;
 			}
 		</style>
+		<!-- ANALYTICS_SCRIPT -->
 	</head>
 
 	<body>
 		<div id="wrapper">
 			<header>
 				<div id="logo">
-					<img src="favicon.svg" />
+					<a href="/"><img src="favicon.svg" style="width: 2rem" /></a>
 				</div>
 			</header>
 			<h3>Legal</h3>
@@ -71,12 +65,10 @@
 				stored on your browser and used to identify the chat messages you send.
 			</p>
 			<p>
-				Talk is purely peer-to-peer, which means the user's video & audio is not sent to our server at all. We use
-				Google Analytics to track aggregated usage statistics to improve our service.
+				Talk is purely peer-to-peer, which means the user\'s video & audio is not sent to our server at all. We also use
+				Cabin Analytics to track aggregated usage statistics in order to improve our service.
 			</p>
-			<p>
-				The makers of Talk have no intention of using personally or selling any of the above-mentioned data.
-			</p>
+			<p>The makers of Talk have no intention of using personally or selling any of the above-mentioned data.</p>
 		</div>
 	</body>
 </html>

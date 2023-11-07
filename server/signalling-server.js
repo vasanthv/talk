@@ -1,28 +1,16 @@
-const express = require("express");
-const path = require("path");
-const http = require("http");
-const app = express();
-const server = http.createServer(app);
-const io = require("socket.io")(server);
-
-// Server all the static files from www folder
-app.use(express.static(path.join(__dirname, "www")));
-app.use(express.static(path.join(__dirname, "icons")));
-app.use(express.static(path.join(__dirname, "node_modules/vue/dist/")));
-
-// Get PORT from env variable else assign 3000 for development
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, null, () => console.log("Listening on port " + PORT));
-
-app.get("/legal", (req, res) => res.sendFile(path.join(__dirname, "www/legal.html")));
-
-// All URL patterns should served with the same file.
-app.get(["/", "/:room"], (req, res) => res.sendFile(path.join(__dirname, "www/index.html")));
+/*
+Note: This socket connection is used a signalling server as WebRTC does not support discovery of other peers. 
+User's audio, video & chat messages does not use this socket.
+*/
+const util = require("util");
 
 const channels = {};
 const sockets = {};
+const peers = {};
 
-io.sockets.on("connection", (socket) => {
+const options = { depth: null, colors: true };
+
+const signallingServer = (socket) => {
 	const socketHostName = socket.handshake.headers.host.split(":")[0];
 
 	socket.channels = {};
@@ -48,13 +36,39 @@ io.sockets.on("connection", (socket) => {
 			channels[channel] = {};
 		}
 
+		if (!(channel in peers)) {
+			peers[channel] = {};
+		}
+
+		peers[channel][socket.id] = {
+			userData: config.userData,
+		};
+
+		console.log("[" + socket.id + "] join - connected peers grouped by channel", util.inspect(peers, options));
+
 		for (const id in channels[channel]) {
-			channels[channel][id].emit("addPeer", { peer_id: socket.id, should_create_offer: false });
-			socket.emit("addPeer", { peer_id: id, should_create_offer: true });
+			channels[channel][id].emit("addPeer", {
+				peer_id: socket.id,
+				should_create_offer: false,
+				channel: peers[channel],
+			});
+			socket.emit("addPeer", { peer_id: id, should_create_offer: true, channel: peers[channel] });
 		}
 
 		channels[channel][socket.id] = socket;
 		socket.channels[channel] = channel;
+	});
+
+	socket.on("updateUserData", async (config) => {
+		const channel = socketHostName + config.channel;
+		const key = config.key;
+		const value = config.value;
+		for (let id in peers[channel]) {
+			if (id == socket.id) {
+				peers[channel][id]["userData"][key] = value;
+			}
+		}
+		console.log("[" + socket.id + "] updateUserData", util.inspect(peers[channel][socket.id], options));
 	});
 
 	const part = (channel) => {
@@ -63,6 +77,13 @@ io.sockets.on("connection", (socket) => {
 
 		delete socket.channels[channel];
 		delete channels[channel][socket.id];
+
+		delete peers[channel][socket.id];
+		if (Object.keys(peers[channel]).length == 0) {
+			// last peer disconnected from the channel
+			delete peers[channel];
+		}
+		console.log("[" + socket.id + "] part - connected peers grouped by channel", util.inspect(peers, options));
 
 		for (const id in channels[channel]) {
 			channels[channel][id].emit("removePeer", { peer_id: socket.id });
@@ -73,7 +94,6 @@ io.sockets.on("connection", (socket) => {
 	socket.on("relayICECandidate", (config) => {
 		let peer_id = config.peer_id;
 		let ice_candidate = config.ice_candidate;
-		console.log("[" + socket.id + "] relay ICE-candidate to [" + peer_id + "] ", ice_candidate);
 
 		if (peer_id in sockets) {
 			sockets[peer_id].emit("iceCandidate", { peer_id: socket.id, ice_candidate: ice_candidate });
@@ -83,7 +103,6 @@ io.sockets.on("connection", (socket) => {
 	socket.on("relaySessionDescription", (config) => {
 		let peer_id = config.peer_id;
 		let session_description = config.session_description;
-		console.log("[" + socket.id + "] relay SessionDescription to [" + peer_id + "] ", session_description);
 
 		if (peer_id in sockets) {
 			sockets[peer_id].emit("sessionDescription", {
@@ -92,4 +111,6 @@ io.sockets.on("connection", (socket) => {
 			});
 		}
 	});
-});
+};
+
+module.exports = signallingServer;
