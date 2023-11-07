@@ -1,0 +1,21 @@
+name: 'Docker PR Clean Up'
+permissions:
+  packages: write
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  purge-image:
+    name: Delete image from ghcr.io
+    runs-on: ubuntu-latest
+    steps:
+      - name: Prune
+        uses: vlaurin/action-ghcr-prune@main
+        with:
+          token: ${{ secrets.PACKAGES_TOKEN }}
+          container: ${{ github.event.repository.name }}
+          dry-run: false
+          tag-regex: pr-${{github.event.pull_request.number}}
+          untagged: true

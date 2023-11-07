@@ -1,0 +1,71 @@
+name: Create Releases From Branches
+permissions: write-all
+
+on:
+  push:
+    branches:
+      # See https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#filter-pattern-cheat-sheet
+      - releases/v[0-9]+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]${GITHUB_REF#refs/heads/}"
+        id: extract_branch
+
+      - uses: GoogleCloudPlatform/release-please-action@v3.7.1
+        id: release
+        with:
+          release-type: simple
+          default-branch: ${{ steps.extract_branch.outputs.branch }}
+          token: "${{ secrets.PACKAGES_TOKEN }}"
+
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: '0'
+
+      - name: Tag major and patch versions
+        if: ${{ steps.release.outputs.release_created }}
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git remote add gh-token "https://${{ secrets.PACKAGES_TOKEN}}@github.com/google-github-actions/release-please-action.git"
+          git tag -d v${{ steps.release.outputs.major }} || true
+          git tag -d v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }} || true
+          git push origin :v${{ steps.release.outputs.major }} || true
+          git push origin :v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }} || true
+          git tag -a v${{ steps.release.outputs.major }} -m "Release v${{ steps.release.outputs.major }}"
+          git tag -a v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }} -m "Release v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}"
+          git push origin v${{ steps.release.outputs.major }}
+          git push origin v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}
+
+      - name: Recreate latest tags for release ordering
+        if: ${{ steps.release.outputs.release_created }}
+        id: recreate-latest-tags
+        run: |
+          git fetch -avtf
+          LATEST="$(git tag -l|tail -1)"
+          LATEST_MAJOR="$(git tag -l|tail -1|awk -F"." '{print $1}')"
+          LATEST_MINOR="$(git tag -l|tail -1|awk -F"." '{print $1"."$2}')"
+          git checkout main
+          git tag -d "${LATEST}"
+          git tag -d "${LATEST_MAJOR}"
+          git tag -d "${LATEST_MINOR}"
+          git push origin :"${LATEST}"
+          git push origin :"${LATEST_MAJOR}"
+          git push origin :"${LATEST_MINOR}"
+          git tag -a "${LATEST}" -m "Release ${LATEST}"
+          git tag -a "${LATEST_MAJOR}" -m "Release ${LATEST_MAJOR}"
+          git tag -a "${LATEST_MINOR}" -m "Release ${LATEST_MINOR}"
+          git push origin "${LATEST}"
+          git push origin "${LATEST_MAJOR}"
+          git push origin "${LATEST_MINOR}"
+          echo "::set-output name=LATEST_RELEASE::${LATEST}"
+
+      - name: Publish release on GitHub
+        if: ${{ steps.release.outputs.release_created }}
+        uses: test-room-7/action-publish-release-drafts@v0
+        with:
+          tag-name: ${{ steps.recreate-latest-tags.outputs.LATEST_RELEASE }}
