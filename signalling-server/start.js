@@ -14,8 +14,6 @@ const PORT = process.env.PORT || 3000;
 
 // Server all the static files from www folder
 app.use(express.static(path.join(__dirname, "www")));
-app.use(express.static(path.join(__dirname, "icons")));
-app.use(express.static(path.join(__dirname, "assets")));
 app.use(express.static(path.join(__dirname, "node_modules/vue/dist/")));
 
 server.listen(PORT, null, () => {

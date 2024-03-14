@@ -1,8 +1,26 @@
-/*
-Note: This socket connection is used a signalling server as WebRTC does not support discovery of other peers. 
-User's audio, video & chat messages does not use this socket.
-*/
+/**
+ * A simple signalling server implementation using socket.io.
+ * This socket connection is used a signalling server as WebRTC does not support discovery of other peers.
+ * User's audio, video & chat messages does not use this socket.
+ */
+
+const express = require("express");
+const http = require("http");
+const app = express();
+const server = http.createServer(app);
+const io = require("socket.io")(server, {
+	cors: { origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(",") : "*" },
+});
+
 const util = require("util");
+
+// Get PORT from env variable else assign 3000 for development
+const PORT = process.env.PORT || 3000;
+
+server.listen(PORT, null, () => {
+	console.log("Talk server started");
+	console.log({ port: PORT, node_version: process.versions.node });
+});
 
 const channels = {};
 const sockets = {};
@@ -113,4 +131,4 @@ const signallingServer = (socket) => {
 	});
 };
 
-module.exports = signallingServer;
+io.sockets.on("connection", signallingServer);

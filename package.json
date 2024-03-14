@@ -5,8 +5,7 @@
 	"main": "start.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"start": "node start.js",
-		"postinstall": "node postinstall.js"
+		"start": "node signalling-server/index.js"
 	},
 	"repository": {
 		"type": "git",
@@ -25,7 +24,6 @@
 	"homepage": "https://github.com/vasanthv/talk#readme",
 	"dependencies": {
 		"express": "^4.18.2",
-		"socket.io": "^4.5.3",
-		"vue": "^3.2.41"
+		"socket.io": "^4.5.3"
 	}
 }

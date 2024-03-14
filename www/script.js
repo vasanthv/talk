@@ -2,11 +2,20 @@
 
 "use strict";
 
+const searchParams = new URLSearchParams(window.location.search);
+let roomId = searchParams.get("room");
+
+if (!roomId) {
+	roomId = Math.random().toString(36).substr(2, 6);
+	searchParams.set("room", roomId);
+	window.location.search = searchParams.toString();
+}
+
 const App = Vue.createApp({
 	data() {
 		return {
 			peerId: "",
-			roomId: "",
+			roomId: roomId,
 			roomLink: "",
 			copyText: "",
 			userAgent: "",
@@ -25,7 +34,6 @@ const App = Vue.createApp({
 			selectedAudioDeviceId: "",
 			selectedVideoDeviceId: "",
 			name: window.localStorage.name,
-			nameError: false,
 			typing: "",
 			chats: [],
 			callInitiated: false,
@@ -34,12 +42,12 @@ const App = Vue.createApp({
 	},
 	methods: {
 		initiateCall() {
-			if (this.name) {
-				this.callInitiated = true;
-				window.initiateCall();
-			} else {
-				this.nameError = true;
-			}
+			if (!this.roomId) return alert("Invalid room id");
+
+			if (!this.name) return alert("Invalid name");
+
+			this.callInitiated = true;
+			window.initiateCall();
 		},
 		copyURL() {
 			navigator.clipboard.writeText(this.roomLink).then(
@@ -111,9 +119,9 @@ const App = Vue.createApp({
 					};
 					try {
 						if (cabin) {
-							cabin.event("screen-share-"+App.screenShareEnabled);
+							cabin.event("screen-share-" + App.screenShareEnabled);
 						}
-					} catch (e) {}			
+					} catch (e) {}
 				})
 				.catch((e) => {
 					alert("Unable to share screen. Please use a supported browser.");

@@ -9,20 +9,12 @@ const ICE_SERVERS = [
 
 const APP_URL = (() => {
 	const protocol = "http" + (location.hostname == "localhost" ? "" : "s") + "://";
-	return protocol + location.hostname + (location.hostname == "localhost" ? ":3000" : "");
-})();
-
-const ROOM_ID = (() => {
-	let roomName = location.pathname.substring(1);
-	if (!roomName) {
-		roomName = Math.random().toString(36).substr(2, 6);
-		window.history.pushState({ url: `${APP_URL}/${roomName}` }, roomName, `${APP_URL}/${roomName}`);
-	}
-	return roomName;
+	return protocol + location.hostname + (location.hostname == "localhost" ? location.port : "");
 })();
 
 const USE_AUDIO = true;
 const USE_VIDEO = true;
+const SIGNALLING_SERVER = "http://localhost:3000";
 
 let signalingSocket = null; /* our socket.io connection to our webserver */
 let localMediaStream = null; /* our own microphone / webcam */
@@ -31,7 +23,7 @@ let channel = {}; /* keep track of the peers Info in the channel, indexed by pee
 let peerMediaElements = {}; /* keep track of our <video>/<audio> tags, indexed by peer_id */
 let dataChannels = {};
 
-function initiateCall() {
+window.initiateCall = () => {
 	App.userAgent = navigator.userAgent;
 	App.isMobileDevice = !!/Android|webOS|iPhone|iPad|iPod|BB10|BlackBerry|IEMobile|Opera Mini|Mobile|mobile/i.test(
 		App.userAgent.toUpperCase() || ""
@@ -43,12 +35,9 @@ function initiateCall() {
 	App.isIpad = /macintosh/.test(App.userAgent.toLowerCase()) && "ontouchend" in document;
 	App.isDesktop = !App.isMobileDevice && !App.isTablet && !App.isIpad;
 
-	App.roomId = ROOM_ID;
+	App.roomLink = `${APP_URL}/?room=${App.roomId}`;
 
-	App.roomLink = `${APP_URL}/${ROOM_ID}`;
-
-	signalingSocket = io(APP_URL);
-	signalingSocket = io();
+	signalingSocket = io(SIGNALLING_SERVER);
 
 	signalingSocket.on("connect", function () {
 		App.peerId = signalingSocket.id;
@@ -66,10 +55,10 @@ function initiateCall() {
 			isDesktop: App.isDesktop,
 		};
 
-		if (localMediaStream) joinChatChannel(ROOM_ID, userData);
+		if (localMediaStream) joinChatChannel(App.roomId, userData);
 		else
 			setupLocalMedia(function () {
-				joinChatChannel(ROOM_ID, userData);
+				joinChatChannel(App.roomId, userData);
 			});
 	});
 
@@ -239,7 +228,7 @@ function initiateCall() {
 		delete channel[config.peer_id];
 		//console.log('removePeer', JSON.stringify(channel, null, 2));
 	});
-}
+};
 
 const attachMediaStream = (element, stream) => (element.srcObject = stream);
 
@@ -352,5 +341,3 @@ document.addEventListener("click", () => {
 		App.showSettings = !App.showSettings;
 	}
 });
-
-// window.onload = init;
