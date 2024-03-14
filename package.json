@@ -17,7 +17,7 @@
 		"video"
 	],
 	"author": "Vasanth.V <imvasanthv@gmail.com>",
-	"license": "ISC",
+	"license": "MIT",
 	"bugs": {
 		"url": "https://github.com/vasanthv/talk/issues"
 	},

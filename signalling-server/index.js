@@ -29,7 +29,7 @@ const peers = {};
 const options = { depth: null, colors: true };
 
 const signallingServer = (socket) => {
-	const socketHostName = socket.handshake.headers.host.split(":")[0];
+	const clientAddress = socket.handshake.address;
 
 	socket.channels = {};
 	sockets[socket.id] = socket;
@@ -45,7 +45,7 @@ const signallingServer = (socket) => {
 
 	socket.on("join", (config) => {
 		console.log("[" + socket.id + "] join ", config);
-		const channel = socketHostName + config.channel;
+		const channel = clientAddress + config.channel;
 
 		// Already Joined
 		if (channel in socket.channels) return;
@@ -78,7 +78,7 @@ const signallingServer = (socket) => {
 	});
 
 	socket.on("updateUserData", async (config) => {
-		const channel = socketHostName + config.channel;
+		const channel = clientAddress + config.channel;
 		const key = config.key;
 		const value = config.value;
 		for (let id in peers[channel]) {
