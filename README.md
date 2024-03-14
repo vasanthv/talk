@@ -31,7 +31,7 @@ Run the app
 npm start
 ```
 
-to start the talk server on port 3000. Your talk instance will be running on http://localhost:3000. Alternatively you can run the application using docker with `docker-compose up`.
+to start the talk server on port 3000. Your talk instance will be running on http://localhost:3000.
 
 ### LICENSE
 
